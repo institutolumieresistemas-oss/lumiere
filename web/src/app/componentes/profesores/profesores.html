@@ -1,0 +1,128 @@
+<section class="profesores-section" [ngClass]="'layout-' + (props.layout || 'scroll')">
+
+    <h2 class="titulo">Conoce a nuestros expertos</h2>
+
+    <div [ngSwitch]="props.layout || 'scroll'" class="mt-4">
+
+        <!-- 1. CARRUSEL HORIZONTAL -->
+        <div *ngSwitchCase="'scroll'" class="profesores-scroll">
+            <div class="profesor-card" *ngFor="let profesor of props.profesores; let i = index">
+                <div class="imagen-wrapper" (click)="abrirModalDetalle(profesor)" style="cursor: pointer;">
+                    <img [src]="profesor.foto || 'https://picsum.photos/260/160?random=' + i" alt="{{ profesor.nombre }}">
+                </div>
+                <div class="contenido" (click)="abrirModalDetalle(profesor)" style="cursor: pointer;">
+                    <h3>{{ profesor.nombre }}</h3>
+                    <span class="especialidad">
+                        {{ profesor.especialidad }}
+                    </span>
+                    <div *ngIf="props.mostrarRedes" class="redes-sociales mt-2">
+                        <a *ngIf="profesor.tiktok" [href]="profesor.tiktok" target="_blank" class="mx-1 social-icon" (click)="$event.stopPropagation()">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a *ngIf="profesor.instagram" [href]="profesor.instagram" target="_blank" class="mx-1 social-icon" (click)="$event.stopPropagation()">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a *ngIf="profesor.facebook" [href]="profesor.facebook" target="_blank" class="mx-1 social-icon" (click)="$event.stopPropagation()">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a *ngIf="profesor.youtube" [href]="profesor.youtube" target="_blank" class="mx-1 social-icon" (click)="$event.stopPropagation()">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. POLAROID FLIP -->
+        <div *ngSwitchCase="'polaroid'" class="polaroid-grid container">
+            <div class="polaroid-card-wrapper" *ngFor="let profesor of props.profesores; let i = index">
+                <div class="polaroid-inner" (click)="abrirModalDetalle(profesor)" style="cursor: pointer;">
+                    <div class="polaroid-front">
+                        <img [src]="profesor.foto || 'https://picsum.photos/260/260?random=' + i" alt="{{ profesor.nombre }}">
+                        <div class="polaroid-caption">
+                            <h3>{{ profesor.nombre }}</h3>
+                            <p class="specialty-handwritten">{{ profesor.especialidad }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. STORIES GRID -->
+        <div *ngSwitchCase="'stories'" class="stories-grid-container container">
+            <div class="story-bubble" *ngFor="let profesor of props.profesores; let i = index" (click)="abrirModalDetalle(profesor)">
+                <div class="story-avatar-wrapper">
+                    <img [src]="profesor.foto || 'https://picsum.photos/120/120?random=' + i" alt="{{ profesor.nombre }}">
+                </div>
+                <h4>{{ profesor.nombre }}</h4>
+                <span>{{ profesor.especialidad }}</span>
+            </div>
+        </div>
+
+        <!-- 4. FICHAS DE ESTUDIO (FLASHCARDS) -->
+        <div *ngSwitchCase="'flashcard'" class="flashcard-grid container">
+            <div class="flashcard-prof-card" *ngFor="let profesor of props.profesores; let i = index" (click)="abrirModalDetalle(profesor)">
+                <img [src]="profesor.foto || 'https://picsum.photos/260/180?random=' + i" alt="{{ profesor.nombre }}">
+                <div class="p-3">
+                    <h3>{{ profesor.nombre }}</h3>
+                    <span class="flashcard-badge">{{ profesor.especialidad }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. SWIPE DECK -->
+        <div *ngSwitchCase="'deck'" class="deck-container container">
+            <div *ngIf="props.profesores.length > 0" class="deck-wrapper">
+                <div class="deck-card active">
+                    <img [src]="props.profesores[activeDeckIndex].foto || 'https://picsum.photos/400/300'" alt="{{ props.profesores[activeDeckIndex].nombre }}" (click)="abrirModalDetalle(props.profesores[activeDeckIndex])">
+                    <div class="deck-info" (click)="abrirModalDetalle(props.profesores[activeDeckIndex])">
+                        <h3>{{ props.profesores[activeDeckIndex].nombre }}</h3>
+                        <span class="badge bg-primary px-3 py-2 fs-6 rounded-pill">{{ props.profesores[activeDeckIndex].especialidad }}</span>
+                    </div>
+                </div>
+                <div class="deck-controls mt-3 d-flex gap-2 justify-content-center">
+                    <button class="btn btn-outline-dark" (click)="activeDeckIndex = (activeDeckIndex - 1 + props.profesores.length) % props.profesores.length">⏮</button>
+                    <button class="btn btn-outline-dark" (click)="activeDeckIndex = (activeDeckIndex + 1) % props.profesores.length">⏭</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- MODAL DETALLE -->
+<div *ngIf="detalleOpen" class="modal-config" (click)="cerrarModalDetalle()">
+    <div class="modal-content text-center" (click)="$event.stopPropagation()" style="max-width: 440px;">
+        <div class="text-end">
+            <button (click)="cerrarModalDetalle()" style="border: none; background: transparent; font-size: 1.6rem; cursor: pointer; line-height: 1;">&times;</button>
+        </div>
+        
+        <div class="p-2">
+            <img [src]="detalleProfesor.foto || 'https://picsum.photos/260/160?random=1'" alt="{{ detalleProfesor.nombre }}" class="img-fluid rounded-4 shadow-sm mb-3" style="width: 100%; max-height: 240px; object-fit: cover;">
+            
+            <h4 class="fw-bold mb-1">{{ detalleProfesor.nombre }}</h4>
+            <span class="badge bg-primary-subtle text-primary mb-3 px-3 py-2" style="font-size: 0.9rem; border-radius: 20px;">{{ detalleProfesor.especialidad }}</span>
+            
+            <p class="text-muted text-start mt-2 px-2" style="line-height: 1.6; font-size: 0.95rem; white-space: pre-line;">
+                {{ detalleProfesor.descripcion || 'Sin descripción disponible.' }}
+            </p>
+
+            <!-- Redes sociales en el modal -->
+            <div *ngIf="props.mostrarRedes" class="d-flex justify-content-center gap-3 mt-4">
+                <a *ngIf="detalleProfesor.tiktok" [href]="detalleProfesor.tiktok" target="_blank" class="social-btn tiktok-btn">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a *ngIf="detalleProfesor.instagram" [href]="detalleProfesor.instagram" target="_blank" class="social-btn instagram-btn">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a *ngIf="detalleProfesor.facebook" [href]="detalleProfesor.facebook" target="_blank" class="social-btn facebook-btn">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a *ngIf="detalleProfesor.youtube" [href]="detalleProfesor.youtube" target="_blank" class="social-btn youtube-btn">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

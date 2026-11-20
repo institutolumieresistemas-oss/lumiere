@@ -1,0 +1,80 @@
+<div class="categorias-wrapper" [attr.data-diseno]="props.diseno">
+
+    <!-- TÍTULO -->
+    <div class="titulo text-center mb-2">
+        <h2 class="titulo-principal">{{ props.titulo }}</h2>
+    </div>
+
+    <!-- SUBTÍTULO -->
+    <div *ngIf="props.diseno !== 'original' && props.subtitulo" class="subtitulo text-center mb-4">
+        <p class="subtitulo-texto" [innerHTML]="getSubtituloHtml()"></p>
+    </div>
+
+    <!-- CONTENEDOR DE CUADROS SEGÚN DISEÑO -->
+
+    <!-- DISEÑO ORIGINAL -->
+    <div *ngIf="props.diseno === 'original'" class="cuadros-container d-flex flex-wrap justify-content-center gap-3">
+        <div *ngFor="let c of props.cuadros" class="cuadro-item">
+            <ng-container *ngIf="c.tipoEnlace === 'interna'; else originalLink">
+                <a [routerLink]="'/' + getCleanSlug(c.enlace)" class="cuadro-link">
+                    <img [src]="c.imagen" alt="Categoría" class="cuadro-img">
+                </a>
+            </ng-container>
+            <ng-template #originalLink>
+                <a [href]="c.enlace || 'javascript:void(0)'" class="cuadro-link">
+                    <img [src]="c.imagen" alt="Categoría" class="cuadro-img">
+                </a>
+            </ng-template>
+        </div>
+    </div>
+
+    <!-- DISEÑOS ESTUDIANTILES (stickerbook, polaroid, notepad) -->
+    <div *ngIf="props.diseno !== 'original'" class="cuadros-estudiantiles">
+        <div *ngFor="let c of props.cuadros"
+             class="cuadro-item-estudiantil"
+             [style.transform]="props.diseno === 'stickerbook' ? 'rotate(' + (c.inclinacion || 0) + 'deg)' : 'none'"
+             [style.--marker-color]="c.colorSplash || '#fef08a'">
+
+            <ng-container *ngIf="c.tipoEnlace === 'interna'; else studentLink">
+                <a [routerLink]="'/' + getCleanSlug(c.enlace)" class="cuadro-link-estudiantil">
+                    <!-- Área de espiral si es Libreta -->
+                    <div *ngIf="props.diseno === 'notepad'" class="notepad-spiral">
+                        <span class="spiral-ring"></span>
+                        <span class="spiral-ring"></span>
+                        <span class="spiral-ring"></span>
+                    </div>
+                    <!-- Imagen principal -->
+                    <div class="cuadro-img-container">
+                        <img [src]="c.imagen" alt="Categoría" class="cuadro-img-estudiantil">
+                    </div>
+                    <!-- Etiqueta manuscrita o destacada -->
+                    <div class="cuadro-label-container">
+                        <span *ngIf="c.etiqueta" class="cuadro-etiqueta-text">
+                            {{ c.etiqueta }}
+                        </span>
+                    </div>
+                </a>
+            </ng-container>
+            <ng-template #studentLink>
+                <a [href]="c.enlace || 'javascript:void(0)'" class="cuadro-link-estudiantil">
+                    <!-- Área de espiral si es Libreta -->
+                    <div *ngIf="props.diseno === 'notepad'" class="notepad-spiral">
+                        <span class="spiral-ring"></span>
+                        <span class="spiral-ring"></span>
+                        <span class="spiral-ring"></span>
+                    </div>
+                    <!-- Imagen principal -->
+                    <div class="cuadro-img-container">
+                        <img [src]="c.imagen" alt="Categoría" class="cuadro-img-estudiantil">
+                    </div>
+                    <!-- Etiqueta manuscrita o destacada -->
+                    <div class="cuadro-label-container">
+                        <span *ngIf="c.etiqueta" class="cuadro-etiqueta-text">
+                            {{ c.etiqueta }}
+                        </span>
+                    </div>
+                </a>
+            </ng-template>
+        </div>
+    </div>
+</div>

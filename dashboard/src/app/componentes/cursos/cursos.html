@@ -1,0 +1,302 @@
+@if (props().cursos?.length) {
+    <section class="cursos-section">
+
+        <h4 class="mb-3">Cursos</h4>
+
+        <div class="component-actions d-flex gap-2 align-items-center">
+            <select class="form-select form-select-sm w-auto d-inline-block" [ngModel]="props().layout || 'carousel'" (ngModelChange)="actualizarLayout($event)">
+                <option value="carousel">Carrusel Clásico</option>
+                <option value="bento">Bento Grid (Notion/Tech)</option>
+                <option value="stories">Story Cards (TikTok/Stories)</option>
+                <option value="flashcard">Fichas de Estudio (Flashcards)</option>
+                <option value="workspace">Tablero Estudiantil (Workspace)</option>
+            </select>
+            <button class="btn btn-sm btn-success" (click)="agregarCurso()">＋ Agregar Curso</button>
+            <button class="btn btn-sm btn-danger" (click)="eliminarElemento.emit()">✖ Eliminar Sección</button>
+        </div>
+
+        <div [ngSwitch]="props().layout || 'carousel'">
+
+            <!-- 1. CARRUSEL CLÁSICO -->
+            <div *ngSwitchCase="'carousel'">
+                <swiper-container slides-per-view="4" space-between="20" navigation="true" pagination="true" loop="false" breakpoints='{
+                "0": { "slidesPerView": 1 },
+                "768": { "slidesPerView": 2 },
+                "1024": { "slidesPerView": 3 },
+                "1400": { "slidesPerView": 4 }
+              }'>
+                    @for (curso of props().cursos; track i; let i = $index) {
+                        <swiper-slide>
+                            <div class="curso-wrapper">
+                                <div class="curso-actions">
+                                    <button class="btn btn-sm btn-primary" (click)="abrirConfig(curso, i)">⚙</button>
+                                    <button class="btn btn-sm btn-danger" (click)="eliminarCurso(i)">✖</button>
+                                </div>
+                                <app-curso [data]="curso"></app-curso>
+                            </div>
+                        </swiper-slide>
+                    }
+                </swiper-container>
+            </div>
+
+            <!-- 2. BENTO GRID -->
+            <div *ngSwitchCase="'bento'" class="bento-grid-container mt-4">
+                <div class="bento-grid">
+                    <div class="bento-item" *ngFor="let curso of props().cursos; let i = index">
+                        <div class="curso-wrapper">
+                            <div class="curso-actions">
+                                <button class="btn btn-sm btn-primary" (click)="abrirConfig(curso, i)">⚙</button>
+                                <button class="btn btn-sm btn-danger" (click)="eliminarCurso(i)">✖</button>
+                            </div>
+                            <app-curso [data]="curso"></app-curso>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. STORY CARDS -->
+            <div *ngSwitchCase="'stories'" class="stories-container mt-4">
+                <div class="stories-row">
+                    <div class="story-card-wrapper" *ngFor="let curso of props().cursos; let i = index">
+                        <div class="curso-wrapper">
+                            <div class="curso-actions">
+                                <button class="btn btn-sm btn-primary" (click)="abrirConfig(curso, i)">⚙</button>
+                                <button class="btn btn-sm btn-danger" (click)="eliminarCurso(i)">✖</button>
+                            </div>
+                            <app-curso [data]="curso"></app-curso>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. FICHAS DE ESTUDIO (FLASHCARDS) -->
+            <div *ngSwitchCase="'flashcard'" class="flashcard-container mt-4">
+                <div class="flashcard-grid">
+                    <div class="flashcard-card-wrapper" *ngFor="let curso of props().cursos; let i = index">
+                        <div class="curso-wrapper">
+                            <div class="curso-actions">
+                                <button class="btn btn-sm btn-primary" (click)="abrirConfig(curso, i)">⚙</button>
+                                <button class="btn btn-sm btn-danger" (click)="eliminarCurso(i)">✖</button>
+                            </div>
+                            <app-curso [data]="curso"></app-curso>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. WORKSPACE TABLERO ESTUDIANTIL -->
+            <div *ngSwitchCase="'workspace'" class="workspace-container mt-4">
+                <div class="workspace-layout">
+                    <div class="workspace-sidebar shadow-sm">
+                        <div class="workspace-title">📂 Cursos Disponibles</div>
+                        <button *ngFor="let curso of props().cursos; let idx = index" 
+                                class="workspace-tab" 
+                                [class.active]="idx === activeWorkspaceIndex"
+                                (click)="activeWorkspaceIndex = idx">
+                            {{ curso.titulo }}
+                        </button>
+                    </div>
+                    <div class="workspace-content">
+                        <div *ngIf="props().cursos && props().cursos![activeWorkspaceIndex]" class="curso-wrapper w-100">
+                            <div class="curso-actions">
+                                <button class="btn btn-sm btn-primary" (click)="abrirConfig(props().cursos![activeWorkspaceIndex], activeWorkspaceIndex)">⚙</button>
+                                <button class="btn btn-sm btn-danger" (click)="eliminarCurso(activeWorkspaceIndex)">✖</button>
+                            </div>
+                            <app-curso [data]="props().cursos![activeWorkspaceIndex]"></app-curso>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+}
+
+<!-- MODAL (SIN CAMBIOS) -->
+@if (configOpen()) {
+    <div class="modal-config" (click)="cerrarConfig()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+
+            <h5 class="mb-3">Configurar Curso</h5>
+
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="tab() === 'curso'" (click)="tab.set('curso')">Curso</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="tab() === 'config'" (click)="tab.set('config')">Configuración</button>
+                </li>
+            </ul>
+
+            @if (tab() === 'curso') {
+                <div>
+                    <label class="fw-bold mb-1">1. Selecciona el Calendario</label>
+                    <select class="form-select mb-3" [ngModel]="calendarioSeleccionado()" (ngModelChange)="onCalendarioChange($event)">
+                        <option value="" disabled selected>-- Elige un Calendario --</option>
+                        @for (cal of calendariosDisponibles; track cal) {
+                            <option [value]="cal">
+                                {{ cal }}
+                            </option>
+                        }
+                    </select>
+
+                    <label class="fw-bold mb-1" *ngIf="calendarioSeleccionado()">2. Selecciona el Curso</label>
+                    <select *ngIf="calendarioSeleccionado()" class="form-select mb-3" [ngModel]="cursoSeleccionadoBackend()" (ngModelChange)="onCursoBackendChange($event)">
+                        <option value="null" disabled selected>-- Selecciona un curso --</option>
+                        @for (c of cursosFiltradosPorCalendario(); track c.id) {
+                            <option [ngValue]="c">
+                                {{ c.curso_nombre }} - {{ c.modalidad_nombre }}
+                            </option>
+                        }
+                    </select>
+                </div>
+            }
+
+            @if (tab() === 'config') {
+                @if (cursoSeleccionado(); as seleccionado) {
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fw-bold text-muted small">Vínculo activo con base de datos</span>
+                            <button class="btn btn-outline-primary btn-sm" (click)="actualizarDesdeDb()">
+                                🔄 Actualizar desde DB
+                            </button>
+                        </div>
+
+                        <!-- ===== IMAGEN ===== -->
+                        <div class="imagen-editor mb-3">
+                            <label class="form-label fw-bold">🖼 Imagen del curso</label>
+
+                            <!-- Preview -->
+                            <div class="imagen-preview-wrapper mb-2"
+                                 (click)="fileInputCurso.click()"
+                                 title="Clic para cambiar imagen">
+                                <img
+                                    [src]="seleccionado.imagen || 'https://placehold.co/400x220?text=Sin+imagen'"
+                                    alt="Preview"
+                                    class="imagen-preview"
+                                    #imgPreview>
+                                <div class="imagen-overlay">
+                                    <span>📂 Cambiar imagen</span>
+                                </div>
+                            </div>
+
+                            <!-- Input file oculto -->
+                            <input
+                                type="file"
+                                accept="image/*"
+                                class="d-none"
+                                #fileInputCurso
+                                (change)="seleccionarImagenCurso($event)">
+
+                            <!-- Botón visible -->
+                            <button class="btn btn-outline-secondary btn-sm w-100"
+                                    (click)="fileInputCurso.click()">
+                                📁 Seleccionar imagen…
+                            </button>
+                            <div class="form-text">JPG, PNG o WebP. Se guarda como base64.</div>
+                        </div>
+
+                        <hr class="my-3">
+
+                        <!-- ===== DATOS ===== -->
+                        <label>Título del Curso</label>
+                        <input class="form-control mb-2" [ngModel]="seleccionado.titulo" (ngModelChange)="updateCursoProp('titulo', $event)">
+
+                        <label>Modalidad</label>
+                        <input class="form-control mb-2" [ngModel]="seleccionado.modalidad" (ngModelChange)="updateCursoProp('modalidad', $event)">
+
+                        <label>Precio Lista ($)</label>
+                        <input type="number" class="form-control mb-2" [ngModel]="seleccionado.precioLista" (ngModelChange)="updateCursoProp('precioLista', $event); recalcular()">
+
+                        <label>Fecha de Inicio</label>
+                        <input class="form-control mb-2" [ngModel]="seleccionado.inicio" (ngModelChange)="updateCursoProp('inicio', $event)">
+
+                        <label>Fecha de Fin</label>
+                        <input class="form-control mb-2" [ngModel]="seleccionado.termina" (ngModelChange)="updateCursoProp('termina', $event)">
+
+                        <label>Descuento (%)</label>
+                        <input type="number" class="form-control mb-2" [ngModel]="seleccionado.descuento" (ngModelChange)="updateCursoProp('descuento', $event); recalcular()">
+
+                        <label>Semanas</label>
+                        <input type="number" class="form-control mb-2" [ngModel]="seleccionado.duracionSemanas" (ngModelChange)="updateCursoProp('duracionSemanas', $event)">
+
+                        <label>Horas</label>
+                        <input type="number" class="form-control mb-2" [ngModel]="seleccionado.horas" (ngModelChange)="updateCursoProp('horas', $event)">
+
+                        <label>Simulacros</label>
+                        <input class="form-control mb-2" [ngModel]="seleccionado.simulacros" (ngModelChange)="updateCursoProp('simulacros', $event)">
+
+                        <label>Texto Liquidación (Ej: ¡Liquídalo antes de:)</label>
+                        <input class="form-control mb-2" [ngModel]="seleccionado.textoLiquidar" (ngModelChange)="updateCursoProp('textoLiquidar', $event)" placeholder="¡Liquídalo antes de:">
+
+                        <label>Fecha Límite (Ej: 31 de Enero 2026)</label>
+                        <input class="form-control mb-2" [ngModel]="seleccionado.limiteLiquidar" (ngModelChange)="updateCursoProp('limiteLiquidar', $event)" placeholder="31 de Enero 2026">
+
+                        <label>Texto Meses sin Intereses (Ej: Hasta 12 meses sin intereses)</label>
+                        <input class="form-control mb-2" [ngModel]="seleccionado.textoMeses" (ngModelChange)="updateCursoProp('textoMeses', $event)" placeholder="Hasta 12 meses sin intereses">
+
+                        <hr class="my-3">
+
+                        <!-- ===== BOTONES ===== -->
+                        <div class="botones-editor mb-3">
+                            <label class="form-label fw-bold">🛒 Botón Comprar</label>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text">🔗</span>
+                                <input type="url"
+                                       class="form-control form-control-sm"
+                                       placeholder="https://pago.lumiere.mx/comprar/..."
+                                       [ngModel]="seleccionado.urlComprar"
+                                       (ngModelChange)="updateCursoProp('urlComprar', $event)">
+                            </div>
+                            <div class="form-text mb-3">URL a la que redirige el botón COMPRAR.</div>
+
+                            <label class="form-label fw-bold">📌 Botón Apartar</label>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text">🔗</span>
+                                <input type="url"
+                                       class="form-control form-control-sm"
+                                       placeholder="https://pago.lumiere.mx/apartar/..."
+                                       [ngModel]="seleccionado.urlApartar"
+                                       (ngModelChange)="updateCursoProp('urlApartar', $event)">
+                            </div>
+                            <div class="form-text mb-2">URL a la que redirige el botón APARTAR.</div>
+
+                            <label class="form-label fw-semibold">💵 Monto de apartado ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number"
+                                       class="form-control form-control-sm"
+                                       placeholder="500"
+                                       [ngModel]="seleccionado.apartado"
+                                       (ngModelChange)="updateCursoProp('apartado', $event)">
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="text-center">
+                            <div>Precio lista:
+                                <strong>${{ seleccionado.precio }}</strong>
+                            </div>
+
+                            <div class="fs-5 text-danger">
+                                ${{ seleccionado.precioPromo }}
+                            </div>
+
+                            <small>
+                                Ahorro: ${{ seleccionado.ahorro }}
+                            </small>
+                        </div>
+                    </div>
+                }
+            }
+
+            <div class="text-end mt-3">
+                <button class="btn btn-success me-2" (click)="guardarConfig()">Guardar</button>
+                <button class="btn btn-outline-secondary" (click)="cerrarConfig()">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+}

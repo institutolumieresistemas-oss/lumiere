@@ -1,0 +1,158 @@
+.tabla-admitidos-section {
+    transition: all 0.3s ease;
+}
+
+/* Contenedor de scroll para PC (Vertical y Horizontal) */
+.table-scroll-container {
+    max-height: 420px; /* Altura fija para aprox 7-8 filas */
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    border-radius: 12px;
+    position: relative; /* Contexto de posicionamiento para el sticky */
+}
+
+.table-scroll-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* El comportamiento sticky de la cabecera solo se aplica en PC */
+@media (min-width: 768px) {
+    .table-scroll-container table {
+        border-collapse: collapse !important; /* Evita espacios vacíos entre celdas sticky */
+    }
+
+    .table-scroll-container thead {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+    }
+
+    .table-scroll-container thead tr {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+    }
+
+    .table-scroll-container thead th {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
+        background: #0074e4 !important; /* Color azul de cabecera fijo y opaco */
+        color: #ffffff !important;
+        border-bottom: 2px solid #0056b3 !important;
+    }
+}
+
+.custom-admitidos-table {
+    min-width: 600px; /* Asegura scroll horizontal en pantallas chicas */
+}
+
+.custom-admitidos-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.custom-admitidos-table tbody tr:nth-of-type(even) {
+    background-color: #f8fafc;
+}
+
+.custom-admitidos-table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.custom-admitidos-table tbody td {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.92rem;
+}
+
+.name-col {
+    color: #0b5ed7;
+    font-size: 0.95rem;
+}
+
+.score-col {
+    color: #1e293b;
+    font-weight: 800;
+}
+
+.career-col, .course-col {
+    font-weight: 600;
+}
+
+.calendar-col {
+    color: #475569;
+}
+
+/* Scroll móvil: ~3 tarjetas visibles */
+.cards-scroll-wrapper {
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.cards-scroll-wrapper::-webkit-scrollbar {
+    width: 5px;
+}
+
+.cards-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+/* Mobile cards styling */
+.admitido-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.admitido-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+
+.admitido-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0b5ed7;
+}
+
+.admitido-calendar-badge {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.admitido-score-badge {
+    background-color: #0074e4;
+    color: white;
+    font-weight: 800;
+    font-size: 0.9rem;
+    padding: 4px 10px;
+    border-radius: 50px;
+    white-space: nowrap;
+}
+
+.admitido-details p {
+    font-size: 0.88rem;
+    color: #475569;
+    display: flex;
+    align-items: center;
+}

@@ -1,0 +1,67 @@
+<div class="whatsapp-wrapper position-relative">
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="whatsapp-actions">
+        <button class="btn btn-sm btn-danger" (click)="eliminar()">✕</button>
+        <button class="btn btn-sm btn-primary" (click)="abrirModal()">⚙</button>
+    </div>
+
+    <!-- BOTÓN WHATSAPP -->
+    <button class="whatsapp-btn" (click)="openWhatsApp()">
+        <i class="bi bi-whatsapp"></i>
+    </button>
+
+</div>
+
+<!-- ================= MODAL CONFIGURACIÓN ================= -->
+
+<div class="modal-backdrop-custom" *ngIf="mostrarModal">
+
+    <div class="modal-custom">
+
+        <div class="modal-header">
+            <h5 class="m-0">⚙ Configurar WhatsApp</h5>
+            <button class="btn-close" (click)="cerrarModal()"></button>
+        </div>
+
+        <div class="modal-body">
+
+            <!-- Número -->
+            <label class="form-label fw-semibold">📱 Número de WhatsApp</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">+</span>
+                <input type="text"
+                       class="form-control"
+                       placeholder="523335893912"
+                       [(ngModel)]="phone"
+                       (input)="onPropsChange()">
+            </div>
+
+            <!-- Mensaje -->
+            <label class="form-label fw-semibold">💬 Mensaje predeterminado</label>
+            <textarea class="form-control mb-3"
+                      rows="3"
+                      placeholder="Ej: Hola, me interesa información sobre sus cursos..."
+                      [(ngModel)]="message"
+                      (input)="onPropsChange()">
+            </textarea>
+
+            <!-- URL generada -->
+            <label class="form-label fw-semibold">🔗 URL generada</label>
+            <div class="url-preview">
+                <span class="url-text">{{ waUrl }}</span>
+            </div>
+
+            <!-- Botón copiar -->
+            <button class="btn btn-copy mt-2 w-100"
+                    [class.btn-copied]="urlCopiada"
+                    (click)="copiarUrl()">
+                <i class="bi" [class.bi-clipboard]="!urlCopiada" [class.bi-check-lg]="urlCopiada"></i>
+                {{ urlCopiada ? '¡URL copiada!' : 'Copiar URL' }}
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

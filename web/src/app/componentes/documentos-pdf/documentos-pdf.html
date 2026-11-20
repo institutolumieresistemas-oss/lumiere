@@ -1,0 +1,34 @@
+<section class="pdf-section py-5">
+
+    <div class="container text-center">
+        <h2 class="section-title mb-5 text-primary fw-bold">{{ props.tituloSeccion || 'Materiales y Guías de Estudio' }}</h2>
+        
+        <div class="row g-4 justify-content-center">
+            
+            <div class="col-12" 
+                 [class.col-md-6]="props.columnas === 2"
+                 [class.col-md-4]="props.columnas === 3"
+                 [class.col-md-3]="props.columnas === 4"
+                 *ngFor="let doc of props.documentos">
+                 
+                <div class="pdf-card p-4 h-100 d-flex flex-column justify-content-between rounded-4 shadow-sm" (click)="verPdf(doc.pdfUrl)">
+                    <div class="pdf-icon mb-3">
+                        <i class="fas fa-file-pdf text-danger display-4"></i>
+                    </div>
+                    <div class="pdf-info mb-3">
+                        <h5 class="fw-bold mb-2 text-dark">{{ doc.titulo || 'Nombre del Documento' }}</h5>
+                        <p class="text-muted small mb-0">{{ doc.descripcion || 'Descripción del archivo' }}</p>
+                    </div>
+                    <div class="pdf-button mt-auto">
+                        <button class="btn btn-outline-danger w-100 rounded-pill btn-sm">
+                            📖 Leer Documento
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+
+</section>

@@ -1,0 +1,309 @@
+<div class="preinscripcion-container py-5 px-3">
+    <div class="container my-4">
+        <div class="row">
+            <!-- Left Info Panel (Sticky on desktop) -->
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <div class="position-sticky" style="top: 2rem;">
+                    <span class="youth-badge mb-3">🚀 Admisiones Abiertas</span>
+                    <h1 class="font-weight-bold mb-3" style="color: #0F2042; font-size: 2.5rem;">
+                        ¡Inicia tu <span class="highlight-marker">Preinscripción</span>!
+                    </h1>
+                    <p class="text-muted mb-4" style="font-size: 1.05rem; line-height: 1.6;">
+                        Completa tus datos de manera sencilla. Este formulario enviará tus datos directamente al sistema escolar para registrar tu solicitud.
+                    </p>
+
+                    <!-- Sticky post-it note -->
+                    <div class="sticky-note-wrapper my-4">
+                        <div class="sticky-note">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="doodle-star">★</span>
+                                <h5 class="mb-0 font-weight-bold" style="font-family: 'Outfit'; color: #0F2042;">Importante</h5>
+                            </div>
+                            <p class="handwritten mb-0">
+                                Por favor, asegúrate de escribir correctamente tu número de WhatsApp y correo electrónico, ya que por estos medios te enviaremos tu confirmación y ficha de registro.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Form Panel -->
+            <div class="col-lg-8">
+                <div class="custom-card card">
+                    <div class="gradient-header text-white text-center py-4 px-3">
+                        <h3 class="mb-1 text-white font-weight-bold" style="font-size: 1.8rem;">Formulario Oficial de Preinscripción</h3>
+                        <p class="mb-0 text-white-50" style="font-size: 0.95rem;">Los campos marcados con (*) son obligatorios</p>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <div *ngIf="mensajeExito" class="alert alert-success text-center mb-4 p-3" style="border-radius: 12px;" role="alert">
+                            <strong>¡Éxito!</strong> {{ mensajeExito }}
+                        </div>
+                        <div *ngIf="mensajeError" class="alert alert-danger text-center mb-4 p-3" style="border-radius: 12px;" role="alert">
+                            <strong>Atención:</strong> {{ mensajeError }}
+                        </div>
+
+                        <form (submit)="enviar(); $event.preventDefault();">
+                            
+                            <!-- 1. DATOS PERSONALES -->
+                            <h5 class="font-weight-bold mb-3 pb-2 text-primary border-bottom">1. Datos Personales del Alumno</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="nombreAlumno" class="form-label">Nombres *</label>
+                                    <input type="text" class="form-control custom-input" id="nombreAlumno" [(ngModel)]="datos.nombreAlumno" (input)="onInputUpper('nombreAlumno')" name="nombreAlumno" required placeholder="Tus nombres">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="apellidoPaterno" class="form-label">Apellido Paterno *</label>
+                                    <input type="text" class="form-control custom-input" id="apellidoPaterno" [(ngModel)]="datos.apellidoPaterno" (input)="onInputUpper('apellidoPaterno')" name="apellidoPaterno" required placeholder="Apellido paterno">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="apellidoMaterno" class="form-label">Apellido Materno *</label>
+                                    <input type="text" class="form-control custom-input" id="apellidoMaterno" [(ngModel)]="datos.apellidoMaterno" (input)="onInputUpper('apellidoMaterno')" name="apellidoMaterno" required placeholder="Apellido materno">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="celularAlumno" class="form-label">Teléfono Celular / WhatsApp *</label>
+                                    <input type="tel" class="form-control custom-input" id="celularAlumno" [(ngModel)]="datos.celularAlumno" name="celularAlumno" required placeholder="10 dígitos">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento *</label>
+                                    <input type="date" class="form-control custom-input" id="fechaNacimiento" [(ngModel)]="datos.fechaNacimiento" name="fechaNacimiento" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="correo" class="form-label">Correo Electrónico *</label>
+                                <input type="email" class="form-control custom-input" id="correo" [(ngModel)]="datos.correo" (input)="onInputUpper('correo')" name="correo" required placeholder="correo@ejemplo.com">
+                            </div>
+
+                            <!-- 2. PLANTEL DE ELECCIÓN -->
+                            <h5 class="font-weight-bold mb-3 pb-2 text-primary border-bottom">2. Plantel de Elección *</h5>
+                            <p class="text-muted small">Selecciona el plantel o sede donde deseas tomar tu curso:</p>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 col-lg-4 mb-3" *ngFor="let suc of sucursales">
+                                    <div class="plantel-card h-100" [class.selected-plantel]="datos.plantelEleccion === suc.nombre" (click)="datos.plantelEleccion = suc.nombre">
+                                        <img [src]="suc.imagen" class="card-img-top" style="height: 120px; object-fit: cover;" alt="{{suc.nombre}}">
+                                        <div class="card-body text-center p-2">
+                                            <span class="font-weight-bold small text-dark d-block">{{suc.nombre}}</span>
+                                            <span class="text-muted small text-decoration-none" style="font-size: 0.75rem;">{{suc.telefono}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="sucursales.length === 0" class="col-12 text-center text-muted py-2">
+                                    Cargando sucursales disponibles...
+                                </div>
+                            </div>
+
+                            <!-- 3. DOMICILIO -->
+                            <h5 class="font-weight-bold mb-3 pb-2 text-primary border-bottom">3. Domicilio del Alumno</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="calle" class="form-label">Calle</label>
+                                    <input type="text" class="form-control custom-input" id="calle" [(ngModel)]="datos.calle" (input)="onInputUpper('calle')" name="calle" placeholder="Calle">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="numero" class="form-label">Número de Domicilio</label>
+                                    <input type="text" class="form-control custom-input" id="numero" [(ngModel)]="datos.numero" (input)="onInputUpper('numero')" name="numero" placeholder="Num. Int/Ext">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="colonia" class="form-label">Colonia</label>
+                                    <input type="text" class="form-control custom-input" id="colonia" [(ngModel)]="datos.colonia" (input)="onInputUpper('colonia')" name="colonia" placeholder="Nombre de colonia">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="codigoPostal" class="form-label">Código Postal</label>
+                                    <input type="text" class="form-control custom-input" id="codigoPostal" [(ngModel)]="datos.codigoPostal" (input)="onInputUpper('codigoPostal')" name="codigoPostal" placeholder="5 dígitos">
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="estadoAlumno" class="form-label">Estado</label>
+                                    <select class="form-select custom-select" id="estadoAlumno" [(ngModel)]="datos.estadoAlumno" name="estadoAlumno" (ngModelChange)="onEstadoAlumnoChange($event)">
+                                        <option value="">Selecciona tu estado</option>
+                                        <option *ngFor="let est of estados" [value]="est.nombre">{{est.nombre}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="municipioAlumno" class="form-label">Ciudad / Municipio</label>
+                                    <select class="form-select custom-select" id="municipioAlumno" [(ngModel)]="datos.municipioAlumno" name="municipioAlumno" [disabled]="!datos.estadoAlumno">
+                                        <option value="">Selecciona tu municipio</option>
+                                        <option *ngFor="let mun of municipiosAlumno" [value]="mun.nombre">{{mun.nombre}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 4. PADRE O TUTOR -->
+                            <h5 class="font-weight-bold mb-3 pb-2 text-primary border-bottom">4. Datos del Padre o Tutor</h5>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="padreTutor" class="form-label">Nombre del Padre o Tutor *</label>
+                                    <input type="text" class="form-control custom-input" id="padreTutor" [(ngModel)]="datos.padreTutor" (input)="onInputUpper('padreTutor')" name="padreTutor" required placeholder="Nombre completo">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="celularPadreTutor" class="form-label">Celular de Padre o Tutor *</label>
+                                    <input type="tel" class="form-control custom-input" id="celularPadreTutor" [(ngModel)]="datos.celularPadreTutor" name="celularPadreTutor" maxlength="10" required placeholder="10 dígitos">
+                                </div>
+                            </div>
+
+                            <!-- 5. ESCUELA DE PROCEDENCIA -->
+                            <h5 class="font-weight-bold mb-3 pb-2 text-primary border-bottom">5. Escuela de Procedencia</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="nivelProcedencia" class="form-label">Nivel de Procedencia</label>
+                                    <select class="form-select custom-select" id="nivelProcedencia" [(ngModel)]="datos.nivelProcedencia" (ngModelChange)="onNivelProcedenciaChange($event)" name="nivelProcedencia">
+                                        <option value="">Selecciona Secundaria o Prepa</option>
+                                        <option value="Secundaria">Secundaria</option>
+                                        <option value="Preparatoria">Preparatoria</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <label for="escuelaProcedencia" class="form-label">Nombre de Escuela de Procedencia</label>
+                                    <select class="form-select custom-select" id="escuelaProcedencia" [(ngModel)]="datos.escuelaProcedencia" name="escuelaProcedencia" [disabled]="!datos.nivelProcedencia">
+                                        <option value="">{{ datos.nivelProcedencia ? 'Selecciona tu escuela' : 'Primero selecciona el nivel' }}</option>
+                                        <option *ngFor="let esc of escuelasFiltradas" [value]="esc.nombre">{{esc.nombre}}</option>
+                                        <option value="NO VIENE EN LA LISTA">NO VIENE EN LA LISTA</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="promedio" class="form-label">Promedio <small class="text-muted font-weight-normal">(Ej. 80.00, 89.30)</small></label>
+                                    <input type="text" class="form-control custom-input" id="promedio" [(ngModel)]="datos.promedio" (input)="onInputPromedio($event)" (blur)="formatearPromedio()" name="promedio" placeholder="Ej. 85.00" maxlength="6">
+                                </div>
+                            </div>
+
+                            <!-- Si su escuela no viene en la lista -->
+                            <div class="row" *ngIf="datos.escuelaProcedencia === 'NO VIENE EN LA LISTA'">
+                                <div class="col-12 mb-3">
+                                    <div class="alert alert-light border shadow-sm p-3 mb-0 rounded-3">
+                                        <label for="otraEscuela" class="form-label font-weight-bold text-primary mb-1">
+                                            <i class="fas fa-school mr-1"></i> Escribe el nombre de tu escuela <small class="text-muted font-weight-normal">(si no viene en la lista)</small>
+                                        </label>
+                                        <input type="text" class="form-control custom-input" id="otraEscuela" [(ngModel)]="datos.otraEscuela" (input)="onInputUpper('otraEscuela')" name="otraEscuela" placeholder="Ej. Colegio / Escuela...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="estadoEscuela" class="form-label">Estado de la Escuela</label>
+                                    <select class="form-select custom-select" id="estadoEscuela" [(ngModel)]="datos.estadoEscuela" name="estadoEscuela" (ngModelChange)="onEstadoEscuelaChange($event)">
+                                        <option value="">Selecciona estado</option>
+                                        <option *ngFor="let est of estados" [value]="est.nombre">{{est.nombre}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ciudadEscuela" class="form-label">Ciudad de la Escuela</label>
+                                    <select class="form-select custom-select" id="ciudadEscuela" [(ngModel)]="datos.ciudadEscuela" name="ciudadEscuela" [disabled]="!datos.estadoEscuela">
+                                        <option value="">Selecciona ciudad</option>
+                                        <option *ngFor="let mun of municipiosEscuela" [value]="mun.nombre">{{mun.nombre}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 6. ASPIRACIÓN -->
+                            <h5 class="font-weight-bold mb-3 pb-2 text-primary border-bottom">6. Aspiración Universitaria</h5>
+                            <p class="text-muted small">Filtra por Universidad, Centro Universitario y Calendario para consultar las carreras disponibles:</p>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="universidadAspiracion" class="form-label">Universidad</label>
+                                    <select class="form-select custom-select" id="universidadAspiracion" [(ngModel)]="datos.universidadAspiracion" name="universidadAspiracion" (ngModelChange)="onUniversidadChange($event)">
+                                        <option value="">Selecciona Universidad</option>
+                                        <option *ngFor="let uni of universidades" [value]="uni.nombre">
+                                            {{ uni.siglas ? uni.nombre + ' (' + uni.siglas + ')' : uni.nombre }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="centroAspiracion" class="form-label">Centro Universitario</label>
+                                    <select class="form-select custom-select" id="centroAspiracion" [(ngModel)]="datos.centroAspiracion" name="centroAspiracion" [disabled]="!datos.universidadAspiracion" (ngModelChange)="onCentroChange($event)">
+                                        <option value="">{{ datos.universidadAspiracion ? 'Selecciona Centro Universitario' : 'Primero selecciona una Universidad' }}</option>
+                                        <option *ngFor="let cen of centrosFiltrados" [value]="cen.nombre">
+                                            {{ cen.siglas ? cen.nombre + ' (' + cen.siglas + ')' : cen.nombre }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="calendarioAspiracion" class="form-label">Calendario</label>
+                                    <select class="form-select custom-select" id="calendarioAspiracion" [(ngModel)]="datos.calendarioAspiracion" name="calendarioAspiracion" [disabled]="!datos.centroAspiracion" (ngModelChange)="onCalendarioChange($event)">
+                                        <option value="">{{ datos.centroAspiracion ? 'Selecciona Calendario' : 'Primero selecciona un Centro' }}</option>
+                                        <option *ngFor="let cal of calendariosFiltrados" [value]="cal.nombre">{{cal.nombre}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="carrera" class="form-label">Carrera de Aspiración</label>
+                                    <select class="form-select custom-select" id="carrera" [(ngModel)]="datos.carrera" name="carrera" [disabled]="!datos.calendarioAspiracion">
+                                        <option value="">{{ datos.calendarioAspiracion ? 'Selecciona tu carrera' : 'Primero selecciona un Calendario' }}</option>
+                                        <option *ngFor="let car of carrerasFiltradas" [value]="car.nombre">{{car.nombre}}</option>
+                                    </select>
+                                    <small *ngIf="datos.centroAspiracion && datos.calendarioAspiracion && carrerasFiltradas.length === 0" class="text-danger mt-1 d-block">
+                                        No se encontraron carreras disponibles para este centro y calendario.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- 7. PREGUNTAS ADICIONALES -->
+                            <h5 class="font-weight-bold mb-3 pb-2 text-primary border-bottom">7. Preguntas Adicionales</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="vecesExamen" class="form-label">¿Cuántas veces has presentado examen de admisión?</label>
+                                    <select class="form-select custom-select" id="vecesExamen" [(ngModel)]="datos.vecesExamen" name="vecesExamen">
+                                        <option value="">Selecciona una opción</option>
+                                        <option value="Ninguna (Es mi primera vez)">Ninguna (Es mi primera vez)</option>
+                                        <option value="1 vez">1 vez</option>
+                                        <option value="2 veces">2 veces</option>
+                                        <option value="3 o más veces">3 o más veces</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="tomadoCursoPrep" class="form-label">¿Has tomado ya un curso de preparación?</label>
+                                    <select class="form-select custom-select" id="tomadoCursoPrep" [(ngModel)]="datos.tomadoCursoPrep" name="tomadoCursoPrep">
+                                        <option value="">Selecciona una opción</option>
+                                        <option value="Sí">Sí</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                 <div class="col-md-6 mb-3">
+                                    <label for="dondeCursoPrep" class="form-label">En caso de haber respondido Sí, ¿Dónde?</label>
+                                    <select class="form-select custom-select" id="dondeCursoPrep" [(ngModel)]="datos.dondeCursoPrep" name="dondeCursoPrep" [disabled]="datos.tomadoCursoPrep !== 'Sí'">
+                                        <option value="">Selecciona la institución</option>
+                                        <option *ngFor="let emp of empresas" [value]="emp.nombre">{{emp.nombre}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="comoEnteraste" class="form-label">¿Cómo te enteraste de nosotros?</label>
+                                <select class="form-select custom-select" id="comoEnteraste" [(ngModel)]="datos.comoEnteraste" name="comoEnteraste">
+                                    <option value="">Selecciona una opción</option>
+                                    <option *ngFor="let med of mediosPublicitarios" [value]="med.nombre">{{med.nombre}}</option>
+                                </select>
+                            </div>
+
+                            <!-- SUBMIT BUTTON -->
+                            <div class="text-center d-grid mt-4">
+                                <button type="submit" class="btn btn-youth btn-lg font-weight-bold w-100" [disabled]="cargando">
+                                    <span *ngIf="cargando" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    🚀 Enviar Preinscripción Oficial
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

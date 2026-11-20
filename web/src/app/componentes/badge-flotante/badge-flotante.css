@@ -1,0 +1,70 @@
+/* Styles for floating badge social proof */
+
+
+.sticky-note-floating {
+  position: fixed;
+  padding: 10px 18px;
+  font-size: 1.35rem;
+  font-weight: bold;
+  z-index: 9999;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  font-family: 'Caveat', cursive;
+  pointer-events: auto;
+}
+
+.sticky-note-floating:hover {
+  transform: scale(1.05) !important;
+}
+
+/* Positions */
+.bottom-left {
+  bottom: 25px;
+  left: 25px;
+}
+
+.bottom-right {
+  bottom: 25px;
+  right: 25px;
+}
+
+.top-left {
+  top: 95px; /* underneath fixed header */
+  left: 25px;
+}
+
+.top-right {
+  top: 95px; /* underneath fixed header */
+  right: 25px;
+}
+
+/* Colors matching stickies */
+.sticky-blue {
+  background: #E0F2FE !important;
+  border: 2px solid #BAE6FD !important;
+  color: #0369A1 !important;
+}
+.sticky-yellow {
+  background: #FEF9C3 !important;
+  border: 2px solid #FEF08A !important;
+  color: #A16207 !important;
+}
+.sticky-pink {
+  background: #FCE7F3 !important;
+  border: 2px solid #FBCFE8 !important;
+  color: #BE185D !important;
+}
+.sticky-green {
+  background: #DCFCE7 !important;
+  border: 2px solid #BBF7D0 !important;
+  color: #15803D !important;
+}
+.sticky-orange {
+  background: #FFEDD5 !important;
+  border: 2px solid #FED7AA !important;
+  color: #C2410C !important;
+}

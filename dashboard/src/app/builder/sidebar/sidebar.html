@@ -1,0 +1,337 @@
+<div class="sidebar p-3 border-end">
+
+  <div class="sidebar-section mb-4">
+    <h6 class="section-title mb-2"><i class="fas fa-file-alt me-2"></i>Páginas</h6>
+    <select class="form-select page-selector mb-3" [(ngModel)]="selectedPageId" (change)="selectPage(selectedPageId)">
+      <option *ngFor="let page of pages" [value]="page.id">{{ page.name }}</option>
+    </select>
+  </div>
+
+  <div class="sidebar-section mb-4">
+    <h6 class="section-title mb-3"><i class="fas fa-cubes me-2"></i>Agregar Elementos</h6>
+    
+    <div class="elements-grid">
+      <!-- Hero UDG Card -->
+      <div class="element-banner banner-gradient-gold" (click)="addElement('hero')">
+        <div class="element-icon"><i class="fas fa-home"></i></div>
+        <div class="element-info">
+          <span class="element-name">Hero UDG</span>
+          <span class="element-desc">Cabecera principal con post-it</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Simulador Card -->
+      <div class="element-banner banner-gradient-cyan" (click)="addElement('simulador')">
+        <div class="element-icon"><i class="fas fa-calculator"></i></div>
+        <div class="element-info">
+          <span class="element-name">Simulador PAA</span>
+          <span class="element-desc">Calculadora de promedio y hacks</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Cursos UDG Card -->
+      <div class="element-banner banner-gradient-orange" (click)="addElement('cursos-udg')">
+        <div class="element-icon"><i class="fas fa-book-open"></i></div>
+        <div class="element-info">
+          <span class="element-name">Cursos UDG (Tabs)</span>
+          <span class="element-desc">Filtro por calendarios y tarjetas</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Muro de Opiniones Card -->
+      <div class="element-banner banner-gradient-yellow" (click)="addElement('muro-opiniones')">
+        <div class="element-icon"><i class="fas fa-comments"></i></div>
+        <div class="element-info">
+          <span class="element-name">Muro de Opiniones</span>
+          <span class="element-desc">Tablón de Post-its de alumnos</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Badge Flotante Card -->
+      <div class="element-banner banner-gradient-cyan" (click)="addElement('badge-flotante')">
+        <div class="element-icon"><i class="fas fa-certificate"></i></div>
+        <div class="element-info">
+          <span class="element-name">Badge Flotante</span>
+          <span class="element-desc">Etiqueta fija (Social Proof)</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Banner Card -->
+      <div class="element-banner banner-gradient-blue" (click)="addElement('banner')">
+        <div class="element-icon"><i class="fas fa-images"></i></div>
+        <div class="element-info">
+          <span class="element-name">Banner Principal</span>
+          <span class="element-desc">Slider de imágenes principales</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Cursos Card -->
+      <div class="element-banner banner-gradient-orange" (click)="addElement('cursos')">
+        <div class="element-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="element-info">
+          <span class="element-name">Listado de Cursos</span>
+          <span class="element-desc">Tarjetas de programas UDG</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Tabla Admitidos Card -->
+      <div class="element-banner banner-gradient-green" (click)="addElement('tabla-admitidos')">
+        <div class="element-icon"><i class="fas fa-list-ol"></i></div>
+        <div class="element-info">
+          <span class="element-name">Tabla Admitidos</span>
+          <span class="element-desc">Lista de puntajes históricos</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Profesores Card -->
+      <div class="element-banner banner-gradient-purple" (click)="addElement('profesores')">
+        <div class="element-icon"><i class="fas fa-user-tie"></i></div>
+        <div class="element-info">
+          <span class="element-name">Profesores</span>
+          <span class="element-desc">Nuestros coaches expertos</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Testimonios Card -->
+      <div class="element-banner banner-gradient-yellow" (click)="addElement('testimonios')">
+        <div class="element-icon"><i class="fas fa-comments"></i></div>
+        <div class="element-info">
+          <span class="element-name">Testimonios</span>
+          <span class="element-desc">Opiniones de alumnos</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Foto Planteles Card -->
+      <div class="element-banner banner-gradient-teal" (click)="addElement('foto-planteles')">
+        <div class="element-icon"><i class="fas fa-camera"></i></div>
+        <div class="element-info">
+          <span class="element-name">Carrusel Planteles</span>
+          <span class="element-desc">Galería de fotos de sedes</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Banner Descripcion Card -->
+      <div class="element-banner banner-gradient-gold" (click)="addElement('banner-descripcion')">
+        <div class="element-icon"><i class="fas fa-landmark"></i></div>
+        <div class="element-info">
+          <span class="element-name">Banner Plantel</span>
+          <span class="element-desc">Planteles (Foto + Info 2 cols)</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Streaming Card -->
+      <div class="element-banner banner-gradient-red" (click)="addElement('streaming')">
+        <div class="element-icon"><i class="fas fa-play-circle"></i></div>
+        <div class="element-info">
+          <span class="element-name">Streaming en Vivo</span>
+          <span class="element-desc">Reproductor de video HLS</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Whatsapp Card -->
+      <div class="element-banner banner-gradient-whatsapp" (click)="addElement('whatsapp')">
+        <div class="element-icon"><i class="fab fa-whatsapp"></i></div>
+        <div class="element-info">
+          <span class="element-name">WhatsApp</span>
+          <span class="element-desc">Botón flotante de contacto</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- FAQ Card -->
+      <div class="element-banner banner-gradient-dark" (click)="addElement('faq')">
+        <div class="element-icon"><i class="fas fa-question-circle"></i></div>
+        <div class="element-info">
+          <span class="element-name">FAQ</span>
+          <span class="element-desc">Preguntas Frecuentes</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Mensaje Card -->
+      <div class="element-banner banner-gradient-pink" (click)="addElement('mensaje')">
+        <div class="element-icon"><i class="fas fa-quote-left"></i></div>
+        <div class="element-info">
+          <span class="element-name">Mensaje Corto</span>
+          <span class="element-desc">Bloque de texto motivacional</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Numeros Card -->
+      <div class="element-banner banner-gradient-cyan" (click)="addElement('numeros')">
+        <div class="element-icon"><i class="fas fa-chart-bar"></i></div>
+        <div class="element-info">
+          <span class="element-name">Estadísticas</span>
+          <span class="element-desc">Cifras y logros Lumière</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Experiencia Evento Card -->
+      <div class="element-banner banner-gradient-gold" (click)="addElement('experiencia-evento')">
+        <div class="element-icon"><i class="fas fa-sparkles"></i></div>
+        <div class="element-info">
+          <span class="element-name">Experiencia Evento</span>
+          <span class="element-desc">Tarjetas de actividades</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Categorias Card -->
+      <div class="element-banner banner-gradient-blue" (click)="addElement('categorias')">
+        <div class="element-icon"><i class="fas fa-th-large"></i></div>
+        <div class="element-info">
+          <span class="element-name">Categorías</span>
+          <span class="element-desc">Cuadros con enlaces</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Modalidades Card -->
+      <div class="element-banner banner-gradient-purple" (click)="addElement('modalidades')">
+        <div class="element-icon"><i class="fas fa-book-reader"></i></div>
+        <div class="element-info">
+          <span class="element-name">Modalidades</span>
+          <span class="element-desc">Tipos de cursos</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Minibanner Card -->
+      <div class="element-banner banner-gradient-orange" (click)="addElement('minibanner')">
+        <div class="element-icon"><i class="fas fa-ad"></i></div>
+        <div class="element-info">
+          <span class="element-name">Mini Banner</span>
+          <span class="element-desc">Banner publicitario delgado</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Galeria Carrusel Card -->
+      <div class="element-banner banner-gradient-teal" (click)="addElement('galeria-carrusel')">
+        <div class="element-icon"><i class="fas fa-photo-video"></i></div>
+        <div class="element-info">
+          <span class="element-name">Galería Experiencias</span>
+          <span class="element-desc">Carrusel de fotos alumnos</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Video Texto Card -->
+      <div class="element-banner banner-gradient-red" (click)="addElement('video-texto')">
+        <div class="element-icon"><i class="fab fa-youtube"></i></div>
+        <div class="element-info">
+          <span class="element-name">Video + Texto</span>
+          <span class="element-desc">Presentación de metodología</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Kommo Form Card -->
+      <div class="element-banner banner-gradient-dark" (click)="addElement('kommo-form')">
+        <div class="element-icon"><i class="fas fa-wpforms"></i></div>
+        <div class="element-info">
+          <span class="element-name">Formulario Kommo</span>
+          <span class="element-desc">Integración CRM</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Imagen Card -->
+      <div class="element-banner banner-gradient-blue" (click)="addElement('imagen')">
+        <div class="element-icon"><i class="fas fa-image"></i></div>
+        <div class="element-info">
+          <span class="element-name">Imagen Completa</span>
+          <span class="element-desc">Imagen a lo ancho sin recortar</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Documentos PDF Card -->
+      <div class="element-banner banner-gradient-red" (click)="addElement('documentos-pdf')">
+        <div class="element-icon"><i class="fas fa-file-pdf"></i></div>
+        <div class="element-info">
+          <span class="element-name">Visor PDFs</span>
+          <span class="element-desc">Material en columnas + visor</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Tabla Carreras Card -->
+      <div class="element-banner banner-gradient-green" (click)="addElement('tabla-carreras')">
+        <div class="element-icon"><i class="fas fa-university"></i></div>
+        <div class="element-info">
+          <span class="element-name">Tabla Carreras</span>
+          <span class="element-desc">Puntajes por centro (Mobile cards)</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Formulario + Imagen Card -->
+      <div class="element-banner banner-gradient-gold" (click)="addElement('form-imagen')">
+        <div class="element-icon"><i class="fas fa-envelope-open-text"></i></div>
+        <div class="element-info">
+          <span class="element-name">Formulario + Imagen</span>
+          <span class="element-desc">Formulario con imagen al lado</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Espacio Menu Card -->
+      <div class="element-banner banner-gradient-cyan" (click)="addElement('espacio-menu')">
+        <div class="element-icon"><i class="fas fa-arrows-alt-v"></i></div>
+        <div class="element-info">
+          <span class="element-name">Espacio Menú</span>
+          <span class="element-desc">Espacio para compensar el menú fijo</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+
+      <!-- Examen Gratis Card -->
+      <div class="element-banner banner-gradient-green" (click)="addElement('examen-gratis')">
+        <div class="element-icon"><i class="fas fa-pencil-alt"></i></div>
+        <div class="element-info">
+          <span class="element-name">Examen Gratis</span>
+          <span class="element-desc">30 preguntas Español y Matemáticas</span>
+        </div>
+        <div class="element-action"><i class="fas fa-plus"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-3">
+
+  <div class="d-flex flex-column gap-2 mt-3">
+    <button class="btn btn-save w-100" (click)="guardarConfiguracion()">
+      <i class="fas fa-save me-2"></i>Guardar Configuración
+    </button>
+    <button class="btn btn-outline-primary w-100" (click)="descargarConfiguracion()">
+      <i class="fas fa-download me-2"></i>Descargar Configuración
+    </button>
+    <button class="btn btn-outline-warning w-100" (click)="fileInputConfig.click()">
+      <i class="fas fa-upload me-2"></i>Cargar Configuración
+    </button>
+    <input type="file" #fileInputConfig accept=".txt,.json" class="d-none" (change)="cargarConfiguracion($event)">
+    <button class="btn btn-reload w-100" (click)="recargarConfiguracion()">
+      <i class="fas fa-undo me-2"></i>Traer Configuración
+    </button>
+    <button class="btn btn-clear-page w-100" (click)="limpiarPagina()">
+      <i class="fas fa-trash-alt me-2"></i>Limpiar Página
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,148 @@
+<div class="numeros-cinta position-relative" [ngClass]="'layout-' + (props.layout || 'classic')">
+
+    <!-- BOTONES SOBREPUESTOS -->
+    <div class="numeros-actions d-flex gap-2 align-items-center">
+        <select class="form-select form-select-sm w-auto d-inline-block" [ngModel]="props.layout || 'classic'" (ngModelChange)="actualizarLayout($event)">
+            <option value="classic">Clásico (Tarjetas)</option>
+            <option value="chalkboard">Pizarrón de Tiza</option>
+            <option value="trophy">Vitrina de Trofeos</option>
+            <option value="dashboard">Dashboard Widgets</option>
+            <option value="flipcounter">Contador Flip</option>
+        </select>
+        <button class="btn btn-sm btn-primary" (click)="abrirConfig()">⚙</button>
+        <button class="btn btn-sm btn-danger" (click)="eliminarElemento.emit()">✖</button>
+    </div>
+
+    <div [ngSwitch]="props.layout || 'classic'" class="w-100">
+
+        <!-- 1. CLÁSICO -->
+        <div *ngSwitchCase="'classic'" class="contenido">
+            <h2 class="titulo">{{ props.titulo }}</h2>
+            <p class="subtitulo">{{ props.subtitulo }}</p>
+            <div class="estadisticas">
+                <div class="estadistica" *ngFor="let stat of props.stats">
+                    <div class="icono" [ngSwitch]="stat.tipo">
+                        <svg *ngSwitchCase="'graduados'" viewBox="0 0 64 64" class="trazo">
+                            <path d="M32 6L2 20l30 14 26-12v14h4V20L32 6z"/>
+                            <path d="M12 30v10c0 6 8 12 20 12s20-6 20-12V30l-20 9-20-9z"/>
+                        </svg>
+                        <svg *ngSwitchCase="'alumnos'" viewBox="0 0 64 64" class="usuario-grande logro">
+                            <g class="confetti"><circle cx="10" cy="10" r="2"/><circle cx="54" cy="14" r="2"/><circle cx="16" cy="40" r="2"/><circle cx="48" cy="44" r="2"/><circle cx="32" cy="6" r="2"/></g>
+                            <g class="birrete"><polygon points="32,6 14,14 32,22 50,14"/><line x1="50" y1="14" x2="50" y2="22"/></g>
+                            <circle cx="32" cy="26" r="9"/>
+                            <path class="sonrisa" d="M27 28c1.5 2 8.5 2 10 0"/>
+                            <path d="M16 56c0-12 8-18 16-18s16 6 16 18"/>
+                        </svg>
+                        <svg *ngSwitchCase="'anios'" viewBox="0 0 64 64" class="calendario">
+                            <rect x="8" y="12" width="48" height="44" rx="6"/>
+                            <rect x="18" y="6" width="6" height="12"/>
+                            <rect x="40" y="6" width="6" height="12"/>
+                            <text x="32" y="42" text-anchor="middle" class="fecha">{{ soloNumero(stat.valor) }}</text>
+                        </svg>
+                    </div>
+                    <div class="numero">{{ stat.valor }}</div>
+                    <div class="leyenda">{{ stat.texto }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. PIZARRÓN DE TIZA -->
+        <div *ngSwitchCase="'chalkboard'" class="chalk-contenido">
+            <div class="chalk-board">
+                <div class="chalk-wood-top"></div>
+                <div class="chalk-surface">
+                    <h2 class="chalk-titulo">{{ props.titulo }}</h2>
+                    <p class="chalk-subtitulo">{{ props.subtitulo }}</p>
+                    <div class="chalk-stats">
+                        <div class="chalk-stat" *ngFor="let stat of props.stats">
+                            <div class="chalk-numero">{{ stat.valor }}</div>
+                            <div class="chalk-leyenda">{{ stat.texto }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chalk-wood-bottom"></div>
+            </div>
+        </div>
+
+        <!-- 3. VITRINA DE TROFEOS -->
+        <div *ngSwitchCase="'trophy'" class="trophy-contenido">
+            <h2 class="trophy-titulo">{{ props.titulo }}</h2>
+            <p class="trophy-subtitulo">{{ props.subtitulo }}</p>
+            <div class="trophy-vitrina">
+                <div class="trophy-item" *ngFor="let stat of props.stats">
+                    <div class="trophy-icon">🏆</div>
+                    <div class="trophy-placa">
+                        <div class="trophy-numero">{{ stat.valor }}</div>
+                        <div class="trophy-leyenda">{{ stat.texto }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. DASHBOARD WIDGETS -->
+        <div *ngSwitchCase="'dashboard'" class="dash-contenido">
+            <h2 class="dash-titulo">{{ props.titulo }}</h2>
+            <p class="dash-subtitulo">{{ props.subtitulo }}</p>
+            <div class="dash-widgets">
+                <div class="dash-widget" *ngFor="let stat of props.stats; let i = index" [ngClass]="'accent-' + (i % 3)">
+                    <div class="dash-widget-header">
+                        <span class="dash-widget-icon" [ngSwitch]="stat.tipo">
+                            <span *ngSwitchCase="'graduados'">🎓</span>
+                            <span *ngSwitchCase="'alumnos'">👤</span>
+                            <span *ngSwitchCase="'anios'">📅</span>
+                            <span *ngSwitchDefault>📊</span>
+                        </span>
+                        <span class="dash-widget-label">{{ stat.texto }}</span>
+                    </div>
+                    <div class="dash-widget-value">{{ stat.valor }}</div>
+                    <div class="dash-progress-bar">
+                        <div class="dash-progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. CONTADOR FLIP -->
+        <div *ngSwitchCase="'flipcounter'" class="flip-contenido">
+            <h2 class="flip-titulo">{{ props.titulo }}</h2>
+            <p class="flip-subtitulo">{{ props.subtitulo }}</p>
+            <div class="flip-counters">
+                <div class="flip-counter-item" *ngFor="let stat of props.stats">
+                    <div class="flip-digits">
+                        <span class="flip-digit" *ngFor="let d of soloNumero(stat.valor).split('')">{{ d }}</span>
+                    </div>
+                    <div class="flip-label">{{ stat.texto }}</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL CONFIGURACIÓN -->
+<div *ngIf="configOpen" class="modal-backdrop" (click)="cerrar()">
+    <div class="modal-content p-3" (click)="$event.stopPropagation()">
+        <h5>Configurar Números Lumière</h5>
+
+        <div class="modal-body-scroll">
+            <label>Título</label>
+            <input type="text" [(ngModel)]="props.titulo" class="form-control mb-2">
+
+            <label>Subtítulo</label>
+            <input type="text" [(ngModel)]="props.subtitulo" class="form-control mb-2">
+
+            <div *ngFor="let stat of props.stats; let idx = index">
+                <label>Valor {{ idx + 1 }}</label>
+                <input type="text" [(ngModel)]="stat.valor" class="form-control mb-1">
+
+                <label>Texto {{ idx + 1 }}</label>
+                <input type="text" [(ngModel)]="stat.texto" class="form-control mb-2">
+            </div>
+        </div>
+
+        <div class="text-end mt-2">
+            <button class="btn btn-success me-2" (click)="guardar()">Guardar</button>
+            <button class="btn btn-outline-secondary" (click)="cerrar()">Cerrar</button>
+        </div>
+    </div>
+</div>

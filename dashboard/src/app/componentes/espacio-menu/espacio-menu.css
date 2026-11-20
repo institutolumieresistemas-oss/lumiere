@@ -1,0 +1,24 @@
+.espacio-menu-builder {
+  width: 100%;
+  height: 90px;
+  background: #f1f5f9;
+  border: 2px dashed #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  user-select: none;
+  position: relative;
+}
+
+.espacio-menu-actions {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 5px;
+  z-index: 10;
+}

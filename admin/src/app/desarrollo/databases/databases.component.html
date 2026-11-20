@@ -1,0 +1,266 @@
+<div class="card shadow border-0 mb-4">
+    <div class="card-header pb-0 bg-lumiere">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h5 class="mb-0 text-white"><i class="fas fa-database me-2"></i>Bases de Datos</h5>
+                <p class="text-white text-xs mb-0 opacity-8">Búsqueda, edición y eliminación de registros por ID en cualquier tabla del sistema</p>
+            </div>
+            <div>
+                <span class="badge bg-white text-primary" *ngIf="tablas.length > 0">
+                    <i class="fas fa-table me-1"></i> {{tablas.length}} tablas disponibles
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <!-- SELECCIÓN DE TABLA Y BÚSQUEDA POR ID -->
+        <div class="row g-3">
+            <!-- Selector de Tabla -->
+            <div class="col-lg-6 col-md-12">
+                <label class="form-label text-xs font-weight-bold text-uppercase text-secondary">
+                    1. Seleccionar Tabla
+                </label>
+                <div class="input-group mb-2">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-filter text-muted"></i>
+                    </span>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Filtrar tablas (ej. alumnos, fichas...)"
+                        [(ngModel)]="filtroTabla"
+                        (ngModelChange)="filtrarTablas()">
+                    <button class="btn btn-outline-secondary mb-0" type="button" *ngIf="filtroTabla" (click)="filtroTabla=''; filtrarTablas();">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <select 
+                    class="form-select form-control" 
+                    [ngModel]="tablaSeleccionada"
+                    (change)="onSeleccionarTabla($event)">
+                    <option value="">-- Elige una tabla ({{tablasFiltradas.length}}) --</option>
+                    <option *ngFor="let t of tablasFiltradas" [value]="t.nombre">
+                        {{t.nombre}} (aprox. {{t.filas}} filas)
+                    </option>
+                </select>
+            </div>
+
+            <!-- Búsqueda por ID -->
+            <div class="col-lg-6 col-md-12">
+                <label class="form-label text-xs font-weight-bold text-uppercase text-secondary">
+                    2. Buscar Registro por ID / Clave Primaria
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-key text-muted"></i>
+                    </span>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        [placeholder]="tablaSeleccionada ? 'ID (' + primaryKey + ') a buscar...' : 'Primero selecciona una tabla'"
+                        [disabled]="!tablaSeleccionada"
+                        [(ngModel)]="idBusqueda"
+                        (keyup.enter)="buscar()">
+                    <button 
+                        class="btn btn-primary mb-0 d-flex align-items-center" 
+                        type="button" 
+                        [disabled]="!tablaSeleccionada || !idBusqueda || cargando"
+                        (click)="buscar()">
+                        <i class="fas fa-search me-1"></i> Buscar
+                    </button>
+                </div>
+
+                <!-- Chips de Registros Recientes -->
+                <div class="mt-2" *ngIf="tablaSeleccionada">
+                    <span class="text-xxs font-weight-bold text-uppercase text-muted me-2">Recientes:</span>
+                    <span *ngIf="cargandoRecientes" class="text-xs text-muted">
+                        <i class="fas fa-spinner fa-spin"></i> Cargando...
+                    </span>
+                    <span *ngIf="!cargandoRecientes && recientes.length === 0" class="text-xs text-muted">
+                        Sin registros recientes
+                    </span>
+                    <span *ngFor="let rec of recientes" 
+                          (click)="cargarDesdeReciente(rec)"
+                          class="badge bg-gradient-light text-dark border me-1 cursor-pointer hover-chip"
+                          [class.border-primary]="registroOriginal && registroOriginal[primaryKey] === rec[primaryKey]"
+                          title="Clic para cargar ID {{rec[primaryKey]}}">
+                        <i class="fas fa-hashtag text-primary me-1"></i>{{rec[primaryKey]}}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje de error de búsqueda -->
+        <div class="alert alert-danger text-white text-sm mt-3 mb-0 d-flex align-items-center" *ngIf="errorBusqueda">
+            <i class="fas fa-exclamation-triangle me-2 fa-lg"></i>
+            <div>{{errorBusqueda}}</div>
+        </div>
+
+        <hr class="horizontal dark my-4">
+
+        <!-- DETALLE Y EDICIÓN DEL REGISTRO ENCONTRADO -->
+        <div *ngIf="registro">
+            <!-- Barra superior del Registro -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 bg-gray-100 p-3 border-radius-md">
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <span class="badge bg-gradient-success">
+                        <i class="fas fa-check-circle me-1"></i> Encontrado
+                    </span>
+                    <span class="badge bg-gradient-info">
+                        Tabla: <b>{{tablaSeleccionada}}</b>
+                    </span>
+                    <span class="badge bg-gradient-primary">
+                        {{primaryKey}}: <b>{{registroOriginal[primaryKey]}}</b>
+                    </span>
+                    <span class="badge bg-gradient-warning" *ngIf="hayCambios()">
+                        <i class="fas fa-edit me-1"></i> Hay cambios sin guardar
+                    </span>
+                    <span class="badge bg-secondary" *ngIf="tieneEliminado">
+                        Estado: {{registro['eliminado'] == 1 ? 'ELIMINADO LÓGICO' : 'ACTIVO'}}
+                    </span>
+                </div>
+
+                <!-- Botones de Acción Superiores -->
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-secondary mb-0" (click)="restablecerValores()" *ngIf="hayCambios()">
+                        <i class="fas fa-undo me-1"></i> Deshacer Cambios
+                    </button>
+                    <button class="btn btn-sm btn-success mb-0" (click)="guardarCambios()" [disabled]="guardando">
+                        <i class="fas fa-save me-1"></i> Guardar Modificaciones
+                    </button>
+                    <button class="btn btn-sm btn-danger mb-0" (click)="eliminar()" [disabled]="guardando">
+                        <i class="fas fa-trash me-1"></i> Eliminar
+                    </button>
+                    <button class="btn btn-sm btn-outline-dark mb-0" (click)="limpiar()">
+                        <i class="fas fa-times me-1"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Formulario dinámico con todos los campos -->
+            <div class="row g-3">
+                <div *ngFor="let col of columnas" 
+                     [ngClass]="esTipoLargo(col) ? 'col-12' : 'col-xl-3 col-lg-4 col-md-6 col-sm-12'">
+                    <div class="card h-100 border p-2" [class.border-warning]="esModificado(col.Field)" [class.bg-warning-light]="esModificado(col.Field)">
+                        
+                        <!-- Encabezado del Campo -->
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label text-xs font-weight-bolder mb-0 text-dark" [title]="col.Field">
+                                <i class="fas fa-key text-warning me-1" *ngIf="col.Key === 'PRI'"></i>
+                                {{col.Field}}
+                            </label>
+                            <span class="text-xxs badge bg-light text-secondary border font-monospace" [title]="col.Type">
+                                {{col.Type}}
+                            </span>
+                        </div>
+
+                        <!-- Opciones auxiliares si es nullable -->
+                        <div class="d-flex justify-content-between align-items-center mb-1" *ngIf="col.Null === 'YES'">
+                            <span class="text-xxs text-muted fst-italic">
+                                {{registro[col.Field] === null ? '(Es NULL)' : '(Valor actual)'}}
+                            </span>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" 
+                                        class="btn btn-xxs btn-outline-secondary py-0 px-1 mb-0" 
+                                        *ngIf="registro[col.Field] !== null" 
+                                        (click)="setNull(col.Field)" 
+                                        title="Establecer a NULL">
+                                    Set NULL
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-xxs btn-outline-primary py-0 px-1 mb-0" 
+                                        *ngIf="registro[col.Field] === null" 
+                                        (click)="setVacio(col.Field)" 
+                                        title="Establecer a texto vacío">
+                                    Quitar NULL
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Control según Tipo de Campo -->
+                        <!-- 1. Campo Primario (Readonly por seguridad) -->
+                        <div *ngIf="col.Key === 'PRI'" class="input-group input-group-sm">
+                            <input 
+                                type="text" 
+                                class="form-control form-control-sm bg-light" 
+                                [value]="registro[col.Field]" 
+                                readonly
+                                disabled>
+                            <span class="input-group-text bg-light text-muted" title="Clave Primaria">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+
+                        <!-- 2. Campo Booleano / Tinyint(1) -->
+                        <div *ngIf="col.Key !== 'PRI' && esTipoBooleano(col)">
+                            <select 
+                                class="form-select form-control form-control-sm"
+                                [(ngModel)]="registro[col.Field]"
+                                (ngModelChange)="marcarModificado(col.Field)">
+                                <option [ngValue]="1">1 - Sí / Activo</option>
+                                <option [ngValue]="0">0 - No / Inactivo</option>
+                                <option [ngValue]="null" *ngIf="col.Null === 'YES'">NULL</option>
+                            </select>
+                        </div>
+
+                        <!-- 3. Campo de Texto Largo (TEXT / JSON / BLOB) -->
+                        <div *ngIf="col.Key !== 'PRI' && !esTipoBooleano(col) && esTipoLargo(col)">
+                            <textarea 
+                                class="form-control form-control-sm font-monospace text-xs" 
+                                rows="4"
+                                [(ngModel)]="registro[col.Field]"
+                                (ngModelChange)="marcarModificado(col.Field)"
+                                [placeholder]="col.Null === 'YES' ? 'NULL' : ''"></textarea>
+                        </div>
+
+                        <!-- 4. Campo Estándar (VARCHAR, INT, DATE, etc.) -->
+                        <div *ngIf="col.Key !== 'PRI' && !esTipoBooleano(col) && !esTipoLargo(col)">
+                            <input 
+                                type="text" 
+                                class="form-control form-control-sm"
+                                [(ngModel)]="registro[col.Field]"
+                                (ngModelChange)="marcarModificado(col.Field)"
+                                [placeholder]="col.Null === 'YES' && registro[col.Field] === null ? 'NULL' : ''">
+                        </div>
+
+                        <!-- Indicador si ha cambiado -->
+                        <div *ngIf="esModificado(col.Field)" class="text-xxs text-warning mt-1 font-weight-bold">
+                            <i class="fas fa-asterisk me-1"></i> Original: "{{registroOriginal[col.Field] === null ? 'NULL' : registroOriginal[col.Field]}}"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción Inferiores -->
+            <div class="d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+                <button class="btn btn-outline-secondary mb-0" (click)="restablecerValores()" *ngIf="hayCambios()">
+                    <i class="fas fa-undo me-1"></i> Deshacer Cambios
+                </button>
+                <button class="btn btn-danger mb-0" (click)="eliminar()" [disabled]="guardando">
+                    <i class="fas fa-trash me-1"></i> Eliminar Registro
+                </button>
+                <button class="btn btn-success mb-0" (click)="guardarCambios()" [disabled]="guardando">
+                    <i class="fas fa-save me-1"></i> Guardar Modificaciones
+                </button>
+            </div>
+        </div>
+
+        <!-- Estado vacío cuando no hay registro cargado -->
+        <div class="text-center py-5 text-muted" *ngIf="!registro && !cargando">
+            <div *ngIf="!tablaSeleccionada">
+                <i class="fas fa-table fa-3x mb-3 text-secondary opacity-5"></i>
+                <h6 class="text-secondary font-weight-bold">Paso 1: Selecciona una tabla</h6>
+                <p class="text-xs mb-0">Usa el selector superior o filtra por nombre para elegir la tabla que deseas administrar.</p>
+            </div>
+            <div *ngIf="tablaSeleccionada">
+                <i class="fas fa-search fa-3x mb-3 text-primary opacity-6"></i>
+                <h6 class="text-dark font-weight-bold">Tabla seleccionada: {{tablaSeleccionada}}</h6>
+                <p class="text-xs mb-0">Ingresa el <b>ID</b> que deseas consultar o haz clic en alguno de los <b>registros recientes</b> arriba.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-cargando *ngIf="cargando"></app-cargando>

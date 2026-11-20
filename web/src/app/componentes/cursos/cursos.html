@@ -1,0 +1,80 @@
+<section class="cursos-section" [ngClass]="'layout-' + (props.layout || 'carousel')">
+
+    <h4 class="titulo-cursos mb-4">
+        Cursos que transforman tu futuro
+    </h4>
+
+    <div *ngIf="props.cursos && props.cursos.length > 0" [ngSwitch]="props.layout || 'carousel'">
+
+        <!-- 1. CARRUSEL CLÁSICO -->
+        <div *ngSwitchCase="'carousel'" class="cursos-container">
+            <!-- Botón Izquierdo -->
+            <button class="nav-btn left" (click)="prevSlide()" *ngIf="props.cursos.length > itemsPerPage">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <!-- Ventana del Carrusel -->
+            <div class="carousel-window">
+                <div class="carousel-track" [style.transform]="'translateX(-' + (currentIndex * (100 / itemsPerPage)) + '%)'">
+                    <div class="curso-item" *ngFor="let curso of props.cursos">
+                        <app-curso [data]="curso"></app-curso>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Derecho -->
+            <button class="nav-btn right" (click)="nextSlide()" *ngIf="props.cursos.length > itemsPerPage">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- 2. BENTO GRID -->
+        <div *ngSwitchCase="'bento'" class="bento-grid-container container">
+            <div class="bento-grid">
+                <div class="bento-item" *ngFor="let curso of props.cursos; let i = index" [ngClass]="'item-' + (i % 3)">
+                    <app-curso [data]="curso"></app-curso>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. STORY CARDS (TikTok/Stories) -->
+        <div *ngSwitchCase="'stories'" class="stories-container container">
+            <div class="stories-row">
+                <div class="story-card-wrapper" *ngFor="let curso of props.cursos">
+                    <app-curso [data]="curso"></app-curso>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. FICHAS DE ESTUDIO (FLASHCARDS) -->
+        <div *ngSwitchCase="'flashcard'" class="flashcard-container container">
+            <div class="flashcard-grid">
+                <div class="flashcard-card-wrapper" *ngFor="let curso of props.cursos">
+                    <app-curso [data]="curso"></app-curso>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. WORKSPACE TABLERO ESTUDIANTIL -->
+        <div *ngSwitchCase="'workspace'" class="workspace-container container">
+            <div class="workspace-layout">
+                <!-- Sidebar lateral -->
+                <div class="workspace-sidebar shadow-sm">
+                    <div class="workspace-title">📂 Cursos Disponibles</div>
+                    <button *ngFor="let curso of props.cursos; let idx = index" 
+                            class="workspace-tab" 
+                            [class.active]="idx === activeWorkspaceIndex"
+                            (click)="activeWorkspaceIndex = idx">
+                        <i class="bi bi-file-earmark-code me-2"></i>{{ curso.titulo }}
+                    </button>
+                </div>
+                <!-- Panel Central -->
+                <div class="workspace-content">
+                    <app-curso *ngIf="props.cursos[activeWorkspaceIndex]" [data]="props.cursos[activeWorkspaceIndex]"></app-curso>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>

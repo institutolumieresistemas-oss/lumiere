@@ -1,0 +1,130 @@
+<div class="examen-wrapper">
+
+  <!-- ===== FASE INICIO ===== -->
+  <div *ngIf="fase === 'inicio'" class="examen-inicio">
+    <div class="inicio-header">
+      <div class="inicio-icon">📝</div>
+      <h2 class="inicio-titulo">{{ props?.titulo || 'Examen de Diagnóstico Gratuito' }}</h2>
+      <p class="inicio-subtitulo">{{ props?.subtitulo || 'Pon a prueba tus conocimientos de Español y Matemáticas' }}</p>
+    </div>
+
+    <div class="inicio-materias">
+      <div class="materia-card materia-espanol">
+        <span class="materia-emoji">📚</span>
+        <h4>Español</h4>
+        <p>15 preguntas de comprensión lectora, gramática y vocabulario</p>
+      </div>
+      <div class="materia-card materia-mate">
+        <span class="materia-emoji">🔢</span>
+        <h4>Matemáticas</h4>
+        <p>15 preguntas de álgebra, geometría y aritmética</p>
+      </div>
+    </div>
+
+    <div class="inicio-info">
+      <span class="info-item">⏱️ Sin límite de tiempo</span>
+      <span class="info-item">❓ 30 preguntas</span>
+      <span class="info-item">✅ Resultado instantáneo</span>
+    </div>
+
+    <button class="btn-iniciar" (click)="iniciarExamen()">
+      ¡Comenzar Examen! 🚀
+    </button>
+  </div>
+
+  <!-- ===== FASE EXAMEN ===== -->
+  <div *ngIf="fase === 'examen'" class="examen-activo">
+
+    <!-- HEADER DEL EXAMEN -->
+    <div class="examen-header"
+         [class.header-espanol]="materiaActual === 'espanol'"
+         [class.header-mate]="materiaActual === 'matematicas'">
+      <div class="examen-materia-info">
+        <span class="materia-badge">{{ materiaActual === 'espanol' ? '📚 Español' : '🔢 Matemáticas' }}</span>
+        <span class="examen-progreso-texto">Pregunta {{ preguntaActualIndex + 1 }} de {{ preguntasActuales.length }}</span>
+      </div>
+      <div class="barra-progreso-container">
+        <div class="barra-progreso" [style.width.%]="progresoTotal"></div>
+      </div>
+    </div>
+
+    <!-- PREGUNTA -->
+    <div class="pregunta-container"
+         [class.feedback-correcto]="mostrandoFeedback && ultimaRespuestaCorrecta"
+         [class.feedback-incorrecto]="mostrandoFeedback && !ultimaRespuestaCorrecta">
+
+      <div class="pregunta-numero">Pregunta {{ preguntaActualIndex + 1 }}</div>
+      <h3 class="pregunta-texto">{{ preguntaActual.texto }}</h3>
+
+      <div class="opciones-grid">
+        <button
+          *ngFor="let opcion of preguntaActual.opciones; let i = index"
+          class="opcion-btn"
+          [class.opcion-seleccionada]="!mostrandoFeedback && esOpcionSeleccionada(i)"
+          [class.opcion-correcta]="mostrandoFeedback && esOpcionCorrecta(i)"
+          [class.opcion-incorrecta]="mostrandoFeedback && esOpcionSeleccionada(i) && !esOpcionCorrecta(i)"
+          [disabled]="mostrandoFeedback"
+          (click)="responder(i)">
+          <span class="opcion-letra">{{ letras[i] }}</span>
+          <span class="opcion-texto">{{ opcion }}</span>
+          <span *ngIf="mostrandoFeedback && esOpcionCorrecta(i)" class="opcion-check">✓</span>
+          <span *ngIf="mostrandoFeedback && esOpcionSeleccionada(i) && !esOpcionCorrecta(i)" class="opcion-check">✗</span>
+        </button>
+      </div>
+
+      <div *ngIf="mostrandoFeedback" class="feedback-mensaje" [class.correcto]="ultimaRespuestaCorrecta">
+        {{ ultimaRespuestaCorrecta ? '¡Correcto! 🎉' : 'Incorrecto 😕 — La respuesta correcta está resaltada en verde' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FASE RESULTADO ===== -->
+  <div *ngIf="fase === 'resultado'" class="examen-resultado">
+    <div class="resultado-header">
+      <div class="resultado-emoji">{{ nivel.emoji }}</div>
+      <h2 class="resultado-titulo">¡Examen Completado!</h2>
+      <p class="resultado-nivel" [style.color]="nivel.color">{{ nivel.texto }}</p>
+    </div>
+
+    <div class="resultado-score">
+      <div class="score-principal">
+        <span class="score-numero">{{ totalAciertos }}</span>
+        <span class="score-total">/30</span>
+      </div>
+      <div class="score-porcentaje">{{ calificacion }}% de aciertos</div>
+    </div>
+
+    <div class="resultado-desglose">
+      <div class="desglose-item desglose-espanol">
+        <span class="desglose-emoji">📚</span>
+        <div class="desglose-info">
+          <span class="desglose-materia">Español</span>
+        </div>
+        <span class="desglose-score">{{ aciertosEspanol }}/15</span>
+        <div class="desglose-barra">
+          <div class="desglose-barra-fill espanol-fill" [style.width.%]="(aciertosEspanol/15)*100"></div>
+        </div>
+      </div>
+      <div class="desglose-item desglose-mate">
+        <span class="desglose-emoji">🔢</span>
+        <div class="desglose-info">
+          <span class="desglose-materia">Matemáticas</span>
+        </div>
+        <span class="desglose-score">{{ aciertosMatematicas }}/15</span>
+        <div class="desglose-barra">
+          <div class="desglose-barra-fill mate-fill" [style.width.%]="(aciertosMatematicas/15)*100"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="resultado-mensaje" [style.borderColor]="nivel.color">
+      <p>{{ nivel.descripcion }}</p>
+      <p class="resultado-cta">¡Únete a Cursos Lumière y prepárate para triunfar en tu examen UDG! 🎓</p>
+    </div>
+
+    <div class="resultado-acciones">
+      <button class="btn-reiniciar" (click)="reiniciar()">🔄 Volver a intentar</button>
+    </div>
+  </div>
+
+</div>

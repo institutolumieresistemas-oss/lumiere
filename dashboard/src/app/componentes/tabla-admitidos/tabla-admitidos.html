@@ -1,0 +1,117 @@
+<section class="tabla-admitidos-section py-5" style="position: relative;">
+    <!-- Acciones del Componente -->
+    <div class="tabla-actions">
+        <button class="btn btn-sm btn-danger me-2" (click)="eliminarElemento.emit()" title="Eliminar Tabla">✖</button>
+        <button class="btn btn-sm btn-primary" (click)="abrirConfig()" title="Configurar Tabla">⚙</button>
+    </div>
+
+    <div class="container">
+        <!-- Título de la Sección -->
+        <h2 class="text-center fw-bold mb-4 text-slate-800">{{ props.titulo || 'Alumnos Admitidos' }}</h2>
+
+        <!-- Tabla Admitidos (Solo visible en Desktop) -->
+        <div class="table-scroll-container shadow-lg rounded-4 bg-white border d-none d-md-block">
+            <table class="table table-hover align-middle mb-0 custom-admitidos-table w-100">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Alumno</th>
+                        <th class="text-center">Puntaje</th>
+                        <th>Carrera</th>
+                        <th>Curso</th>
+                        <th class="text-center pe-4">Calendario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let fila of props.filas; let i = index">
+                        <td class="ps-4 fw-bold text-slate-700 name-col">{{ fila.alumno }}</td>
+                        <td class="text-center fw-bold score-col">{{ fila.puntaje }}</td>
+                        <td class="career-col text-slate-700">{{ fila.carrera }}</td>
+                        <td class="course-col text-slate-700">{{ fila.curso }}</td>
+                        <td class="text-center pe-4 fw-bold text-slate-500 calendar-col">{{ fila.calendario }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tarjetas Admitidos (Solo visible en Mobile) -->
+        <div class="d-block d-md-none">
+            <div class="cards-scroll-wrapper">
+                <div class="row g-3">
+                    <div class="col-12" *ngFor="let fila of props.filas">
+                        <div class="admitido-card p-3 border rounded-3 bg-white shadow-sm">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h4 class="admitido-name mb-0">{{ fila.alumno }}</h4>
+                                    <span class="admitido-calendar-badge mt-1 d-inline-block">{{ fila.calendario }}</span>
+                                </div>
+                                <div class="admitido-score-badge">{{ fila.puntaje }} pts</div>
+                            </div>
+                            <div class="admitido-details pt-2 border-top">
+                                <p class="mb-1"><i class="fas fa-graduation-cap me-2 text-primary"></i><strong>Carrera:</strong> {{ fila.carrera }}</p>
+                                <p class="mb-0"><i class="fas fa-book me-2 text-secondary"></i><strong>Curso:</strong> {{ fila.curso }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MODAL CONFIGURACIÓN -->
+<div *ngIf="configOpen" class="modal-config" (click)="cerrarConfig()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <h5 class="mb-3 fw-bold">Configurar Tabla de Admitidos</h5>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold">Título de la Sección</label>
+            <input type="text" [(ngModel)]="propsEdit.titulo" class="form-control" placeholder="Alumnos Admitidos">
+        </div>
+
+        <label class="form-label fw-bold d-block">Filas de la Tabla</label>
+        <div class="table-responsive-edit border rounded mb-3 bg-light p-2">
+            <table class="table table-sm align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Alumno</th>
+                        <th>Puntaje</th>
+                        <th>Carrera</th>
+                        <th>Curso</th>
+                        <th>Cal.</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let fila of propsEdit.filas; let idx = index">
+                        <td>
+                            <input type="text" class="form-control form-control-xs" [(ngModel)]="fila.alumno" placeholder="Alumno">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-xs" [(ngModel)]="fila.puntaje" placeholder="000.00" style="width: 70px;">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-xs" [(ngModel)]="fila.carrera" placeholder="Carrera">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-xs" [(ngModel)]="fila.curso" placeholder="Curso">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-xs" [(ngModel)]="fila.calendario" placeholder="2026A" style="width: 70px;">
+                        </td>
+                        <td>
+                            <button class="btn btn-xs btn-danger" (click)="eliminarFilaEdit(idx)">✖</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <button class="btn btn-sm btn-success" (click)="agregarFilaEdit()">＋ Agregar Fila</button>
+            <div>
+                <button class="btn btn-success me-2" (click)="guardarConfig()">Guardar</button>
+                <button class="btn btn-outline-secondary" (click)="cerrarConfig()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

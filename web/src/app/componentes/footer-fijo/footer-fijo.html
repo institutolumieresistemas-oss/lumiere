@@ -1,0 +1,81 @@
+<footer class="classic-footer" [class.simple-footer]="isLanding">
+  <!-- Línea decorativa con gradiente animado -->
+  <div class="footer-wave"></div>
+
+  <ng-container *ngIf="!isLanding">
+    <div class="footer-content">
+      <!-- Columna 1: Marca y descripción -->
+      <div class="footer-brand">
+        <h3 class="brand-title">Lumiere</h3>
+        <p class="brand-desc">
+          Tu plataforma de preparación para ingresar a la universidad. Aprende, practica y asegura tu futuro con herramientas dinámicas diseñadas por estudiantes para estudiantes.
+        </p>
+      </div>
+
+      <!-- Columna 2: Preparación -->
+      <div class="footer-links-col">
+        <span class="col-title">Prepárate</span>
+        <ul class="col-links">
+          <li><a routerLink="/licenciatura">Licenciaturas</a></li>
+          <li><a routerLink="/preparatoria">Preparatorias</a></li>
+          <li><a routerLink="/exani">Examen EXANI-II</a></li>
+          <li><a routerLink="/examenGratis">Simulador <span class="link-badge">Pro</span></a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Herramientas -->
+      <div class="footer-links-col">
+        <span class="col-title">Herramientas</span>
+        <ul class="col-links">
+          <li><a routerLink="/calculadora">Calculadora de Puntaje</a></li>
+          <li><a routerLink="/puntajes">Puntajes Mínimos</a></li>
+          <li><a routerLink="/material">Material de Estudio</a></li>
+          <li><a routerLink="/moduloExani">Módulos Específicos</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 4: Conecta / Comunidad -->
+      <div class="footer-action">
+        <span class="col-title">Comunidad</span>
+        <p class="action-text">Únete a nuestros grupos de estudio y entérate de todo antes que nadie.</p>
+        
+        <!-- Redes Sociales juveniles -->
+        <div class="social-icons">
+          <a href="https://www.tiktok.com/@institutolumiere?_r=1&amp;_t=ZS-98mLdbOxSYW" target="_blank" class="social-btn" aria-label="TikTok">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+            </svg>
+          </a>
+          <a href="https://www.instagram.com/cursoslumiere?igsh=Zm9oNm0zanJiNzht" target="_blank" class="social-btn" aria-label="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </a>
+          <a href="https://www.facebook.com/CursosLumiere" target="_blank" class="social-btn" aria-label="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra Inferior de Copyright -->
+    <div class="footer-bottom">
+      <div class="student-tag">
+        Hecho con <span>&hearts;</span> para el éxito de los estudiantes.
+      </div>
+      <div class="copyright">
+        &copy; 2026 Lumiere. Todos los derechos reservados.
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="isLanding">
+    <div class="footer-logo-only py-4 text-center">
+      <h3 class="brand-title mb-0" style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; color: #1e3a8a;">Lumiere</h3>
+    </div>
+  </ng-container>
+</footer>

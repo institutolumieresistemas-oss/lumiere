@@ -1,0 +1,78 @@
+.examen-gratis-wrapper {
+  position: relative;
+  border: 2px dashed #6366f1;
+  border-radius: 16px;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f0f4ff 0%, #fff0f0 100%);
+  margin: 1rem 0;
+}
+
+.examen-gratis-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: none;
+  gap: 6px;
+  z-index: 10;
+}
+
+.examen-gratis-wrapper:hover .examen-gratis-actions {
+  display: flex;
+}
+
+.examen-preview {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.examen-preview-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.examen-preview-titulo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.examen-preview-subtitulo {
+  color: #64748b;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.examen-preview-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.badge-materia {
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.badge-espanol {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 2px solid #93c5fd;
+}
+
+.badge-mate {
+  background: #dcfce7;
+  color: #166534;
+  border: 2px solid #86efac;
+}
+
+.examen-preview-nota {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 0;
+}

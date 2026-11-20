@@ -1,0 +1,103 @@
+<div class="foto-wrapper">
+
+    <div [ngSwitch]="layout || 'classic'" class="w-100">
+
+        <!-- 1. CLÁSICO -->
+        <div *ngSwitchCase="'classic'" class="carousel-container">
+            <div class="tablet-frame">
+                <div class="screen" [class.flash]="isFlashing">
+                    <img class="main-image" [src]="getImgUrl(images[currentIndex])" *ngIf="images.length" />
+                    <div class="thumbnail-row" *ngIf="images.length > 1">
+                        <div class="thumb" *ngFor="let img of images; let i = index" [class.active]="i === currentIndex" (click)="selectImage(i)">
+                            <img [src]="getImgUrl(img)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. POLAROID ROPE -->
+        <div *ngSwitchCase="'polaroid'" class="polaroid-rope-container my-4">
+            <div class="polaroid-rope"></div>
+            <swiper-container slides-per-view="4" space-between="30" navigation="true" pagination="true" loop="false" breakpoints='{
+                "0": { "slidesPerView": 1 },
+                "576": { "slidesPerView": 2 },
+                "768": { "slidesPerView": 3 },
+                "1024": { "slidesPerView": 4 }
+              }'>
+                <swiper-slide *ngFor="let img of images; let i = index">
+                    <div class="polaroid-rope-item mx-auto" style="max-width: 200px;">
+                        <div class="polaroid-clothespin"></div>
+                        <div class="polaroid-paper shadow-sm">
+                            <img [src]="getImgUrl(img)" />
+                            <p class="polaroid-label text-center">{{ getImgNombre(img, i) }}</p>
+                        </div>
+                    </div>
+                </swiper-slide>
+            </swiper-container>
+        </div>
+
+        <!-- 3. BENTO COLLAGE -->
+        <div *ngSwitchCase="'bento'" class="bento-grid-collage my-4">
+            <div class="bento-collage-grid">
+                <div class="bento-collage-item" *ngFor="let img of images; let i = index" [ngClass]="'item-' + (i % 4)">
+                    <img [src]="getImgUrl(img)" />
+                    <span class="bento-label">{{ getImgNombre(img, i) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. STORIES PHONES -->
+        <div *ngSwitchCase="'stories'" class="stories-showcase-container my-4">
+            <swiper-container slides-per-view="3" space-between="25" navigation="true" pagination="true" loop="false" breakpoints='{
+                "0": { "slidesPerView": 1 },
+                "768": { "slidesPerView": 2 },
+                "1024": { "slidesPerView": 3 }
+              }'>
+                <swiper-slide *ngFor="let img of images; let i = index">
+                    <div class="d-flex justify-content-center w-100 py-3">
+                        <div class="phone-mockup">
+                            <div class="phone-speaker"></div>
+                            <div class="phone-screen">
+                                <div class="phone-bar-progress">
+                                    <div class="phone-bar-fill"></div>
+                                </div>
+                                <img [src]="getImgUrl(img)" />
+                                <span class="phone-caption">{{ getImgNombre(img, i) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </swiper-slide>
+            </swiper-container>
+        </div>
+
+        <!-- 5. ID CARD ACCESO -->
+        <div *ngSwitchCase="'idcard'" class="idcard-layout-container my-4 text-start">
+            <div class="idcard-row d-flex flex-wrap gap-4 justify-content-center align-items-center">
+                <div class="idcard-nav d-flex flex-column gap-2">
+                    <button *ngFor="let img of images; let i = index" 
+                            class="btn btn-sm btn-outline-primary text-truncate"
+                            style="max-width: 150px;"
+                            [class.active]="i === currentIndex"
+                            (click)="selectImage(i)">
+                        🏫 {{ getImgNombre(img, i) }}
+                    </button>
+                </div>
+                <div class="idcard-card shadow-lg p-3" *ngIf="images.length">
+                    <div class="idcard-lanyard"></div>
+                    <div class="idcard-header text-center py-2 text-primary">
+                        <h6 class="fw-bold m-0">ACCESO ESTUDIANTE</h6>
+                        <span class="small text-muted">LUMIERE CAMPUS</span>
+                    </div>
+                    <div class="idcard-body text-center">
+                        <img [src]="getImgUrl(images[currentIndex])" class="idcard-photo" />
+                        <h6 class="mt-2 fw-bold text-dark">{{ getImgNombre(images[currentIndex], currentIndex) }}</h6>
+                        <div class="barcode mt-2">|||| | ||||| | ||</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

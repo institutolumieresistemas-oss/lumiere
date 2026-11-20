@@ -1,0 +1,157 @@
+<section class="carreras-section position-relative py-5">
+
+    <!-- ACCIONES DEL BUILDER -->
+    <div class="carreras-actions d-flex gap-2">
+        <button class="btn btn-sm btn-primary" (click)="abrirConfig()">⚙ Configurar</button>
+        <button class="btn btn-sm btn-danger" (click)="eliminarElemento.emit()">✖ Eliminar</button>
+    </div>
+
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="badge px-3 py-2 rounded-pill mb-2"
+                  [style.backgroundColor]="props.colorFondo || '#3b82f6'"
+                  [style.color]="props.colorLetra || '#ffffff'">
+                  🏫 {{ props.centroUniversitario || 'Centro' }}
+            </span>
+            <h2 class="fw-bold text-dark">{{ props.titulo || 'Puntajes de Admisión' }}</h2>
+        </div>
+
+        <!-- VISTA ESCRITORIO (TABLA) -->
+        <div class="table-scroll-container d-none d-md-block shadow-sm rounded-4 border">
+            <table class="table table-hover align-middle mb-0 w-100">
+                <thead [style.backgroundColor]="props.colorFondo || '#3b82f6'" [style.color]="props.colorLetra || '#ffffff'">
+                    <tr>
+                        <th class="py-3 px-4">Carrera</th>
+                        <th class="py-3 px-4 text-center">Puntaje Mínimo</th>
+                        <th class="py-3 px-4 text-center">Admitidos</th>
+                        <th class="py-3 px-4 text-center">Aspirantes</th>
+                        <th class="py-3 px-4 text-center">Calendario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of props.carreras">
+                        <td class="py-3 px-4 fw-semibold text-dark">{{ item.carrera }}</td>
+                        <td class="py-3 px-4 text-center fw-bold" [style.color]="props.colorFondo || '#3b82f6'">{{ item.puntaje }}</td>
+                        <td class="py-3 px-4 text-center text-muted">{{ item.cupos }}</td>
+                        <td class="py-3 px-4 text-center text-muted">{{ item.aspirantes || '-' }}</td>
+                        <td class="py-3 px-4 text-center"><span class="badge bg-light text-dark border">{{ item.calendario }}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VISTA MÓVIL (TARJETAS/CARDS) -->
+        <div class="d-block d-md-none">
+            <div class="cards-scroll-wrapper">
+                <div class="row g-3">
+                    <div class="col-12" *ngFor="let item of props.carreras">
+                        <div class="carrera-card p-3 rounded-3 shadow-sm border bg-white d-flex justify-content-between align-items-center">
+                            <div class="carrera-meta">
+                                <span class="text-muted d-block small mb-1">{{ props.centroUniversitario }} • {{ item.calendario }}</span>
+                                <h6 class="fw-bold mb-0 text-dark">{{ item.carrera }}</h6>
+                                <small class="text-muted" *ngIf="item.aspirantes">Aspirantes: {{ item.aspirantes }} • Admitidos: {{ item.cupos }}</small>
+                            </div>
+                            <div class="carrera-score text-end">
+                                <span class="d-block small text-muted mb-1">Mínimo</span>
+                                <span class="badge fs-6 fw-bold px-3 py-2 rounded-3"
+                                      [style.backgroundColor]="props.colorFondo || '#3b82f6'"
+                                      [style.color]="props.colorLetra || '#ffffff'">{{ item.puntaje }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- MODAL CONFIGURACIÓN -->
+<div *ngIf="configOpen" class="modal-config" (click)="cerrarConfig()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <h5 class="fw-bold mb-3">Configurar Tabla de Carreras</h5>
+
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <button class="nav-link" [class.active]="tabConfig === 'configuracion'" (click)="tabConfig = 'configuracion'">Configuración</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" [class.active]="tabConfig === 'carreras'" (click)="tabConfig = 'carreras'">Datos de la Tabla ({{ tempProps.carreras?.length }})</button>
+            </li>
+        </ul>
+
+        <div *ngIf="tabConfig === 'configuracion'">
+            <label class="form-label small fw-bold">Título del Componente</label>
+            <input type="text" class="form-control mb-3" [(ngModel)]="tempProps.titulo">
+
+            <label class="form-label small fw-bold">Centro Universitario</label>
+            <input type="text" class="form-control mb-3" [(ngModel)]="tempProps.centroUniversitario" placeholder="Ej: CUCEI, CUCEA">
+
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <label class="form-label small fw-bold">Color de Fondo (Tabla y Sticker)</label>
+                    <input type="color" class="form-control form-control-color w-100" [(ngModel)]="tempProps.colorFondo">
+                </div>
+                <div class="col-6">
+                    <label class="form-label small fw-bold">Color de Letra (Tabla y Sticker)</label>
+                    <input type="color" class="form-control form-control-color w-100" [(ngModel)]="tempProps.colorLetra">
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="tabConfig === 'carreras'">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0 text-start">Lista de Carreras</h6>
+                
+                <!-- IMPORTAR EXCEL -->
+                <div>
+                    <input
+                        type="file"
+                        accept=".xlsx, .xls"
+                        class="d-none"
+                        #fileInputExcel
+                        (change)="importarExcel($event)">
+                    <button class="btn btn-sm btn-outline-success" (click)="fileInputExcel.click()">
+                        📥 Cargar Puntajes desde Excel (.xlsx)
+                    </button>
+                </div>
+            </div>
+
+            <div class="carreras-list border rounded p-3 mb-3 bg-light" style="max-height: 400px; overflow-y: auto;">
+                <div *ngFor="let item of tempProps.carreras; let idx = index; trackBy: trackByFn" class="border-bottom pb-3 mb-3 text-start position-relative">
+                    <button class="btn btn-sm btn-danger position-absolute top-0 end-0" (click)="eliminarCarrera(idx)">Eliminar</button>
+                    
+                    <label class="small text-muted mt-2 d-block mb-1">Nombre de la Carrera</label>
+                    <input class="form-control form-control-sm mb-2" [(ngModel)]="item.carrera">
+
+                    <div class="row g-2">
+                        <div class="col-3">
+                            <label class="small text-muted d-block mb-1">Puntaje</label>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.puntaje">
+                        </div>
+                        <div class="col-3">
+                            <label class="small text-muted d-block mb-1">Admitidos</label>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.cupos">
+                        </div>
+                        <div class="col-3">
+                            <label class="small text-muted d-block mb-1">Aspirantes</label>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.aspirantes">
+                        </div>
+                        <div class="col-3">
+                            <label class="small text-muted d-block mb-1">Ciclo</label>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.calendario">
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-sm w-100" (click)="agregarCarrera()">+ Agregar Carrera</button>
+            </div>
+        </div>
+
+        <div class="text-end mt-4">
+            <button class="btn btn-success me-2" (click)="guardarConfig()">Guardar</button>
+            <button class="btn btn-outline-secondary" (click)="cerrarConfig()">Cerrar</button>
+        </div>
+    </div>
+</div>

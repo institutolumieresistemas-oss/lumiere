@@ -1,0 +1,41 @@
+<div class="minibanner-wrapper position-relative">
+
+    <!-- ACCIONES DEL CONSTRUCTOR -->
+    <div class="minibanner-actions">
+        <button class="btn btn-danger btn-sm" (click)="eliminar()" title="Eliminar Sección">✖</button>
+        <button class="btn btn-primary btn-sm" (click)="openModal()" title="Configurar Sección">⚙</button>
+    </div>
+
+    <!-- RENDER DEL MINIBANNER (CINTILLO) -->
+    <div class="minibanner-container">
+        <img [src]="props.imagen" alt="Cintillo Informativo" class="minibanner-img">
+    </div>
+
+    <!-- MODAL DE CONFIGURACIÓN -->
+    <div *ngIf="abrirConfigModal" class="minibanner-modal-overlay">
+        <div class="minibanner-modal-content">
+            <h5 class="mb-3 border-bottom pb-2">Configurar Cintillo (Mini Banner)</h5>
+
+            <!-- SELECCIONAR IMAGEN -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Imagen del Cintillo</label>
+                <div class="alert alert-info py-2 px-3 mb-2 small d-flex align-items-center gap-2">
+                    <span>📐</span>
+                    <span><strong>Tamaño recomendado:</strong> <code>1200 × 100 px</code> — Relación 12:1 · JPG o WebP · Máx. 200 KB</span>
+                </div>
+                <input type="file" accept="image/*" (change)="onImageUpload($event)" class="form-control mb-2">
+                
+                <!-- PREVIEW -->
+                <div class="text-center p-2 border rounded bg-light" *ngIf="propsTemp.imagen">
+                    <img [src]="propsTemp.imagen" alt="Preview" class="img-fluid" style="max-height: 80px; object-fit: contain;">
+                </div>
+            </div>
+
+            <!-- ACCIONES DEL MODAL -->
+            <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                <button class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+                <button class="btn btn-success" (click)="guardar()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>

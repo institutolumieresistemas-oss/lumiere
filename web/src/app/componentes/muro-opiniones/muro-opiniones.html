@@ -1,0 +1,105 @@
+<section class="section-padding grid-bg-accent opinions-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="badge">Comunidad</span>
+      <h2>{{ props.title }}</h2>
+      <p>{{ props.subtitle }}</p>
+    </div>
+
+    <div class="row g-5 align-items-start">
+      <!-- Zona Interactiva para Crear Comentario -->
+      <div class="col-lg-4">
+        <div class="sketch-border new-comment-zone" 
+             [ngClass]="{ 
+               'fold-airplane': folding, 
+               'fly-away': flying
+             }">
+          
+          <!-- Estado Inicial (Llamado a la acción) -->
+          <div *ngIf="!showForm && !showSuccess" (click)="showForm = true" class="placeholder-view">
+            <i class="fas fa-edit mb-3 edit-icon"></i>
+            <h4>¿Quieres dejar tu opinión?</h4>
+            <p class="text-muted small">Da click aquí para pegar tu propio Post-it</p>
+          </div>
+
+          <!-- Estado Formulario (Editable Note) -->
+          <form *ngIf="showForm" (submit)="onSubmitComment(); $event.preventDefault();" class="w-100 text-start">
+            <div class="sticky-note sticky-yellow shadow-form">
+              <p class="handwritten title-h">Dejar Comentario ✍️</p>
+              
+              <div class="form-group mb-2">
+                <textarea class="form-input handwritten text-area-c" [(ngModel)]="newCommentText" name="text" placeholder="Escribe tu mensaje aquí..." required></textarea>
+              </div>
+              
+              <div class="form-group mb-2">
+                <input type="text" class="form-input handwritten author-i" [(ngModel)]="newCommentAuthor" name="author" placeholder="Tu Nombre / Carrera" required>
+              </div>
+
+              <div class="form-group mb-3">
+                <label class="form-label-color">Elige color del Post-it:</label>
+                <select class="form-select select-color" [(ngModel)]="newCommentColor" name="color">
+                  <option value="sticky-yellow">Amarillo</option>
+                  <option value="sticky-pink">Rosa</option>
+                  <option value="sticky-blue">Azul</option>
+                  <option value="sticky-green">Verde</option>
+                  <option value="sticky-orange">Naranja</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-sm w-100 sketch-border">
+                Enviar Nota 📌
+              </button>
+            </div>
+          </form>
+
+          <!-- Estado Éxito (Revisión y Foto de Perfil) -->
+          <div *ngIf="showSuccess" class="w-100 text-start">
+            <div class="sticky-note sticky-green success-note">
+              <h4 class="handwritten title-success">¡Tu nota está volando! ✈️📝</h4>
+              <p class="handwritten text-success-desc">Hemos recibido tu comentario. Recuerda que no podemos publicar palabras inapropiadas para cuidar la vibra de la comunidad. 🚫 Bad vibes.</p>
+              
+              <div class="photo-upload-section">
+                <p class="handwritten title-photo">¡Dale más estilo a tu post-it! 📸</p>
+                <label class="btn btn-outline-success btn-sm w-100 sketch-border upload-btn">
+                  Subir Foto de Perfil (Opcional)
+                  <input type="file" (change)="onPhotoUploaded($event)" accept="image/*" style="display: none;">
+                </label>
+                <span class="handwritten photo-status-text" *ngIf="photoStatus">{{ photoStatus }}</span>
+              </div>
+              
+              <button type="button" (click)="resetForm()" class="btn btn-primary btn-sm w-100 sketch-border mt-3">
+                ¡Entendido! 👍
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Muro donde se van agregando los comentarios -->
+      <div class="col-lg-8">
+        <div class="row g-4">
+          <div class="col-md-6" *ngFor="let opinion of opinionesList">
+            <div class="sticky-note h-100 w-100 d-flex flex-column justify-content-between" [ngClass]="opinion.color">
+              <div class="comment-body">
+                <!-- Foto de perfil si existe -->
+                <div class="profile-header mb-3 d-flex align-items-center gap-2" *ngIf="opinion.foto">
+                  <img [src]="opinion.foto" alt="Avatar" class="avatar-img rounded-circle">
+                </div>
+                <p class="handwritten comment-text">
+                  "{{ opinion.texto }}"
+                </p>
+              </div>
+              <div class="comment-footer mt-3">
+                <p class="handwritten comment-author">
+                  — {{ opinion.autor }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

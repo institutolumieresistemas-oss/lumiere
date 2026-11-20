@@ -1,0 +1,365 @@
+/* ================================
+   CINTA NUMEROS LUMIERE
+================================ */
+
+.numeros-cinta {
+    width: 100%;
+    background: linear-gradient(135deg, #eaf2ff, #f6faff);
+    padding: 90px 20px;
+}
+
+.contenido {
+    max-width: 1200px;
+    margin: auto;
+    text-align: center;
+}
+
+
+/* ================================
+   TÍTULOS
+================================ */
+
+.titulo {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #0d6efd;
+}
+
+.subtitulo {
+    font-size: 1.2rem;
+    color: #3a6fcf;
+    margin-bottom: 70px;
+}
+
+
+/* ================================
+   ESTADÍSTICAS
+================================ */
+
+.estadisticas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 45px;
+}
+
+.estadistica {
+    background: white;
+    border-radius: 22px;
+    padding: 45px 25px;
+    box-shadow: 0 15px 35px rgba(13, 110, 253, .18);
+    transition: transform .35s ease;
+}
+
+.estadistica:hover {
+    transform: translateY(-12px);
+}
+
+
+/* ================================
+   ICONOS
+================================ */
+
+.icono {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 18px;
+}
+
+.usuario-grande {
+    width: 95px;
+    height: 95px;
+}
+
+.icono svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: #0d6efd;
+    stroke-width: 3;
+}
+
+
+/* ================================
+   ANIMACIONES GENERALES
+================================ */
+
+.animar {
+    animation: flotar 2.6s ease-in-out infinite;
+}
+
+@keyframes flotar {
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+
+/* Trazo animado */
+
+.trazo svg path {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: dibujar 3s infinite;
+}
+
+@keyframes dibujar {
+    50% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: -200;
+    }
+}
+
+
+/* ================================
+   BIRRETE USUARIO
+================================ */
+
+.birrete {
+    fill: #0d6efd;
+    animation: birreteOn 3.5s infinite;
+}
+
+@keyframes birreteOn {
+    0%,
+    40% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    60%,
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ================================
+   CONFETTI LOGRO → EXPLOSIÓN
+================================ */
+
+.confetti circle {
+    fill: #0d6efd;
+    opacity: 0;
+    transform-origin: center;
+    animation: confettiExplosion 3.5s infinite;
+}
+
+
+/* Desfase para explosión */
+
+.confetti circle:nth-child(1) {
+    animation-delay: .45s;
+}
+
+.confetti circle:nth-child(2) {
+    animation-delay: .55s;
+}
+
+.confetti circle:nth-child(3) {
+    animation-delay: .65s;
+}
+
+.confetti circle:nth-child(4) {
+    animation-delay: .75s;
+}
+
+.confetti circle:nth-child(5) {
+    animation-delay: .85s;
+}
+
+@keyframes confettiExplosion {
+    0%,
+    40% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.2);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.3);
+    }
+    75% {
+        opacity: 1;
+        transform: translateY(-18px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.6);
+    }
+}
+
+
+/* ================================
+   CALENDARIO PARPADEO
+================================ */
+
+.calendario .fecha {
+    fill: #0d6efd;
+    font-size: 22px;
+    font-weight: 900;
+    animation: parpadear 2.5s infinite;
+}
+
+@keyframes parpadear {
+    0%,
+    100% {
+        opacity: .3;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+
+/* ================================
+   TEXTO ESTADÍSTICO
+================================ */
+
+.numero {
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: #0d6efd;
+}
+
+.leyenda {
+    font-size: 1.05rem;
+    color: #4f6fdc;
+    font-weight: 600;
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 900px) {
+    .estadisticas {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ================================
+   SONRISA USUARIO
+================================ */
+
+.sonrisa {
+    fill: none;
+    stroke: #0d6efd;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    opacity: 0;
+    animation: sonrisaOn 3.5s infinite;
+}
+
+@keyframes sonrisaOn {
+    0%,
+    40% {
+        opacity: 0;
+        stroke-dashoffset: 30;
+    }
+    60% {
+        opacity: 1;
+        stroke-dashoffset: 0;
+    }
+    100% {
+        opacity: 1;
+        stroke-dashoffset: 0;
+    }
+}
+
+/* ================================
+   CHALKBOARD
+================================ */
+.layout-chalkboard.numeros-cinta { background: transparent !important; padding: 40px 20px; }
+.chalk-board { max-width: 900px; margin: 0 auto; border-radius: 6px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+.chalk-wood-top, .chalk-wood-bottom { height: 18px; background: linear-gradient(90deg, #8B6914, #a67c28, #8B6914); }
+.chalk-surface {
+    background: #2d5a27;
+    background-image: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.03) 0%, transparent 70%), radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.02) 0%, transparent 60%);
+    padding: 50px 40px; position: relative;
+}
+.chalk-titulo { font-family: 'Caveat', cursive, sans-serif; font-size: 2.5rem; color: #ffffffdd; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); text-align: center; }
+.chalk-subtitulo { font-family: 'Caveat', cursive, sans-serif; color: #ffffffaa; font-size: 1.1rem; margin-bottom: 40px; text-align: center; }
+.chalk-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.chalk-stat { text-align: center; padding: 20px; }
+.chalk-numero { font-family: 'Caveat', cursive, sans-serif; font-size: 3rem; font-weight: 700; color: #fef08a; text-shadow: 0 0 8px rgba(254,240,138,0.3); }
+.chalk-leyenda { font-family: 'Caveat', cursive, sans-serif; font-size: 1.1rem; color: #ffffffcc; margin-top: 5px; }
+
+/* ================================
+   TROPHY VITRINA
+================================ */
+.layout-trophy.numeros-cinta { background: linear-gradient(135deg, #1a1a2e, #16213e) !important; padding: 70px 20px; }
+.trophy-titulo { font-size: 2.5rem; font-weight: 900; color: #fbbf24; text-align: center; }
+.trophy-subtitulo { color: #94a3b8; text-align: center; margin-bottom: 50px; font-size: 1.1rem; }
+.trophy-vitrina { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; max-width: 900px; margin: 0 auto; }
+.trophy-item {
+    background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 16px; padding: 35px 20px; text-align: center; transition: transform 0.3s, box-shadow 0.3s;
+}
+.trophy-item:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(251,191,36,0.15); }
+.trophy-icon { font-size: 3rem; margin-bottom: 15px; animation: trophyGlow 2s ease-in-out infinite; }
+@keyframes trophyGlow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.3) drop-shadow(0 0 8px rgba(251,191,36,0.5)); }
+}
+.trophy-placa { border-top: 2px solid rgba(251,191,36,0.3); padding-top: 15px; margin-top: 10px; }
+.trophy-numero { font-size: 2.4rem; font-weight: 900; color: #fbbf24; }
+.trophy-leyenda { font-size: 1rem; color: #cbd5e1; font-weight: 500; margin-top: 5px; }
+
+/* ================================
+   DASHBOARD WIDGETS
+================================ */
+.layout-dashboard.numeros-cinta { background: #f1f5f9 !important; padding: 60px 20px; }
+.dash-titulo { font-size: 2.2rem; font-weight: 800; color: #1e293b; text-align: center; }
+.dash-subtitulo { color: #64748b; text-align: center; margin-bottom: 40px; }
+.dash-widgets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 900px; margin: 0 auto; }
+.dash-widget {
+    background: #fff; border-radius: 20px; padding: 30px 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06); transition: transform 0.25s;
+}
+.dash-widget:hover { transform: translateY(-6px); }
+.dash-widget-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+.dash-widget-icon { font-size: 1.5rem; }
+.dash-widget-label { font-size: 0.9rem; color: #64748b; font-weight: 600; }
+.dash-widget-value { font-size: 2.6rem; font-weight: 900; margin-bottom: 12px; }
+.accent-0 .dash-widget-value { color: #3b82f6; }
+.accent-1 .dash-widget-value { color: #10b981; }
+.accent-2 .dash-widget-value { color: #f59e0b; }
+.dash-progress-bar { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+.dash-progress-fill { height: 100%; border-radius: 3px; animation: dashFill 1.5s ease-out forwards; width: 0; }
+.accent-0 .dash-progress-fill { background: #3b82f6; }
+.accent-1 .dash-progress-fill { background: #10b981; }
+.accent-2 .dash-progress-fill { background: #f59e0b; }
+@keyframes dashFill { to { width: 75%; } }
+
+/* ================================
+   FLIP COUNTER
+================================ */
+.layout-flipcounter.numeros-cinta { background: #111827 !important; padding: 70px 20px; }
+.flip-titulo { font-size: 2.3rem; font-weight: 800; color: #f9fafb; text-align: center; }
+.flip-subtitulo { color: #9ca3af; text-align: center; margin-bottom: 50px; }
+.flip-counters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 35px; max-width: 900px; margin: 0 auto; }
+.flip-counter-item { text-align: center; }
+.flip-digits { display: flex; justify-content: center; gap: 4px; margin-bottom: 12px; }
+.flip-digit {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 48px; height: 64px; background: #1f2937; color: #f9fafb;
+    font-size: 2.2rem; font-weight: 900; border-radius: 8px; position: relative;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3); animation: flipIn 0.6s ease-out both;
+}
+.flip-digit::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(0,0,0,0.4); }
+.flip-digit:nth-child(1) { animation-delay: 0.1s; }
+.flip-digit:nth-child(2) { animation-delay: 0.2s; }
+.flip-digit:nth-child(3) { animation-delay: 0.3s; }
+.flip-digit:nth-child(4) { animation-delay: 0.4s; }
+.flip-digit:nth-child(5) { animation-delay: 0.5s; }
+@keyframes flipIn { from { opacity: 0; transform: rotateX(90deg); } to { opacity: 1; transform: rotateX(0); } }
+.flip-label { font-size: 1rem; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+@media (max-width: 900px) {
+    .chalk-stats, .trophy-vitrina, .dash-widgets, .flip-counters { grid-template-columns: 1fr; }
+}

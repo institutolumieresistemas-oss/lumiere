@@ -1,0 +1,259 @@
+<div class="banorte-overlay" *ngIf="visible()" (click)="cerrar()">
+  <div class="banorte-modal-card shadow-2xl" (click)="$event.stopPropagation()">
+    
+    <!-- HEADER -->
+    <div class="banorte-modal-header d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <div class="banorte-logo-pill">
+          <i class="fa-solid fa-shield-halved text-danger me-1"></i>
+          <strong>Banorte</strong> <span class="text-muted fw-normal">Payworks</span>
+        </div>
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small">
+          <i class="fa-solid fa-lock me-1"></i>Cifrado Bancario Seguro
+        </span>
+      </div>
+      <button type="button" class="btn-close-modal" (click)="cerrar()" [disabled]="estado() === 'cargando'">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- BODY -->
+    <div class="banorte-modal-body">
+
+      <!-- ================= 1. FORMULARIO ================= -->
+      <div *ngIf="estado() === 'formulario'">
+        <!-- Tarjeta Resumen del Curso -->
+        <div class="resumen-curso-card mb-4 p-3 rounded-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="badge bg-primary text-uppercase mb-1" *ngIf="solicitud?.tipo === 'apartar'">Apartado de Lugar</span>
+              <span class="badge bg-danger text-uppercase mb-1" *ngIf="solicitud?.tipo === 'comprar'">Inscripción Completa</span>
+              <h4 class="mb-0 fw-bold text-dark">{{ solicitud?.curso || 'Curso de Preparación' }}</h4>
+              <p class="text-muted small mb-0" *ngIf="solicitud?.modalidad">
+                <i class="fa-solid fa-chalkboard-user me-1"></i>{{ solicitud?.modalidad }}
+              </p>
+            </div>
+            <div class="text-end">
+              <span class="text-muted small d-block">Total a Pagar:</span>
+              <span class="precio-monto text-danger fw-extrabold">${{ solicitud?.monto | number:'1.2-2' }}</span>
+              <span class="text-muted small">MXN</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-danger py-2 px-3 small rounded-3" *ngIf="errorValidacion()">
+          <i class="fa-solid fa-circle-exclamation me-1"></i>{{ errorValidacion() }}
+        </div>
+
+        <!-- Formulario Datos del Alumno / Tarjetahabiente -->
+        <div class="form-section">
+          <h6 class="fw-bold text-secondary mb-3 text-uppercase tracking-wider small">
+            <i class="fa-solid fa-user-pen me-1 text-primary"></i>Datos para tu Comprobante
+          </h6>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-dark mb-1">Nombre Completo del Alumno *</label>
+            <input type="text"
+                   class="form-control modern-input"
+                   placeholder="Ej. Juan Carlos Pérez Gómez"
+                   [(ngModel)]="cliente.nombre"
+                   required>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-7">
+              <label class="form-label small fw-semibold text-dark mb-1">Correo Electrónico *</label>
+              <input type="email"
+                     class="form-control modern-input"
+                     placeholder="ejemplo@correo.com"
+                     [(ngModel)]="cliente.correo"
+                     required>
+              <span class="text-muted extra-small">Aquí te enviaremos tu comprobante oficial</span>
+            </div>
+            <div class="col-md-5">
+              <label class="form-label small fw-semibold text-dark mb-1">Celular (WhatsApp) *</label>
+              <input type="tel"
+                     class="form-control modern-input"
+                     placeholder="10 dígitos"
+                     maxlength="10"
+                     [(ngModel)]="cliente.telefono"
+                     required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjetas Aceptadas -->
+        <div class="tarjetas-info d-flex align-items-center justify-content-between p-2 mb-4 rounded-2 bg-light border">
+          <div class="d-flex align-items-center gap-2">
+            <span class="small text-muted fw-semibold">Tarjetas aceptadas:</span>
+            <i class="fa-brands fa-cc-visa fs-5 text-primary" title="Visa"></i>
+            <i class="fa-brands fa-cc-mastercard fs-5 text-warning" title="Mastercard"></i>
+            <span class="badge bg-secondary-subtle text-secondary small">Carnet</span>
+          </div>
+          <span class="extra-small text-muted">
+            <i class="fa-solid fa-lock text-success me-1"></i>3D Secure
+          </span>
+        </div>
+
+        <!-- Botón de Pago -->
+        <button type="button"
+                class="btn btn-banorte-pay w-100 py-3 fw-bold rounded-3 shadow-sm d-flex justify-content-center align-items-center gap-2"
+                (click)="procesarPago()">
+          <span>Pagar ${{ solicitud?.monto | number:'1.2-2' }} MXN con Tarjeta</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <p class="text-center text-muted extra-small mt-2 mb-0">
+          Al continuar, serás dirigido a la pasarela bancaria oficial y encriptada de <strong>Banorte</strong>.
+        </p>
+      </div>
+
+      <!-- ================= 2. CARGANDO ================= -->
+      <div *ngIf="estado() === 'cargando'" class="text-center py-5">
+        <div class="spinner-grow text-danger mb-3" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <h5 class="fw-bold text-dark">Conectando con Banorte Payworks...</h5>
+        <p class="text-muted small mb-0">Cifrando tus datos de transacción de forma segura con protocolo TLS 1.2+.</p>
+      </div>
+
+      <!-- ================= 3. LIGHTBOX ACTIVO ================= -->
+      <div *ngIf="estado() === 'lightbox'" class="text-center py-4">
+        <div class="lightbox-icon-wrapper mb-3">
+          <i class="fa-solid fa-credit-card text-primary pulse-animation fs-1"></i>
+        </div>
+        <h5 class="fw-bold text-dark">Pasarela Segura Banorte en Curso</h5>
+        <p class="text-muted small">
+          Por favor ingresa los datos de tu tarjeta en la ventana emergente de Banorte.<br>
+          No cierres ni recargues esta página hasta completar la transacción.
+        </p>
+        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill mt-2" (click)="estado.set('formulario')">
+          Volver a datos del alumno
+        </button>
+      </div>
+
+      <!-- ================= 4. PAGO APROBADO ================= -->
+      <div *ngIf="estado() === 'aprobado' && comprobante()" class="comprobante-container text-center py-3">
+        <div class="success-icon-wrapper mb-2">
+          <i class="fa-solid fa-circle-check text-success display-4"></i>
+        </div>
+        <h3 class="fw-extrabold text-success mb-1">¡Pago Aprobado con Éxito!</h3>
+        <p class="text-muted small mb-3">Tu transacción ha sido autorizada por el banco y tu registro está asegurado.</p>
+
+        <!-- Ticket Comprobante -->
+        <div class="ticket-box p-3 rounded-3 text-start bg-light border mb-3">
+          <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+            <span class="text-muted small">Comercio:</span>
+            <span class="fw-bold text-dark small">INSTITUTO LUMIERE</span>
+          </div>
+          <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+            <span class="text-muted small">Alumno:</span>
+            <span class="fw-bold text-dark small">{{ comprobante()?.nombre }}</span>
+          </div>
+          <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+            <span class="text-muted small">Concepto:</span>
+            <span class="fw-bold text-dark small">{{ comprobante()?.concepto }}</span>
+          </div>
+          <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+            <span class="text-muted small">No. de Control:</span>
+            <span class="fw-mono text-primary small">{{ comprobante()?.numeroControl }}</span>
+          </div>
+          <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+            <span class="text-muted small">Código Autorización:</span>
+            <span class="fw-bold text-success small">{{ comprobante()?.codigoAutorizacion }}</span>
+          </div>
+          <div class="d-flex justify-content-between border-bottom pb-2 mb-2" *ngIf="comprobante()?.referencia !== 'N/A'">
+            <span class="text-muted small">Referencia Bancaria:</span>
+            <span class="fw-mono text-dark small">{{ comprobante()?.referencia }}</span>
+          </div>
+          <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+            <span class="text-muted small">Fecha y Hora:</span>
+            <span class="text-dark small">{{ comprobante()?.fecha }}</span>
+          </div>
+          <div class="d-flex justify-content-between pt-1">
+            <span class="fw-bold text-dark">Monto Pagado:</span>
+            <span class="fw-extrabold text-danger fs-5">${{ comprobante()?.monto | number:'1.2-2' }} MXN</span>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline-dark w-50 py-2 rounded-3 fw-bold small" (click)="imprimirComprobante()">
+            <i class="fa-solid fa-print me-1"></i>Imprimir Recibo
+          </button>
+          <button type="button" class="btn btn-primary w-50 py-2 rounded-3 fw-bold small" (click)="cerrar()">
+            <i class="fa-solid fa-check me-1"></i>Finalizar
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= 5. ERROR O RECHAZO ================= -->
+      <div *ngIf="estado() === 'error'" class="text-center py-3">
+        <div class="error-icon-wrapper mb-2">
+          <i class="fa-solid fa-circle-xmark text-danger display-4"></i>
+        </div>
+        <h4 class="fw-bold text-danger mb-1">No pudimos procesar tu pago</h4>
+        <p class="text-muted small mb-3">La pasarela de pagos o el banco emisor no autorizó la operación.</p>
+
+        <!-- Mensaje Principal -->
+        <div class="alert alert-danger py-2 px-3 small rounded-3 mb-3 text-start d-flex align-items-start gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-danger mt-1"></i>
+          <div>
+            <strong>Motivo:</strong> {{ mensajeError() }}
+          </div>
+        </div>
+
+        <!-- Ficha Técnica de Detalles del Error Banorte -->
+        <div class="error-card-detalles p-3 rounded-3 text-start bg-light border mb-3" *ngIf="errorDetalles()">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2" *ngIf="errorDetalles()?.codigoError">
+            <span class="text-muted small">Código de Error / Respuesta:</span>
+            <span class="badge bg-danger font-monospace px-2 py-1">
+              {{ errorDetalles()?.codigoError }}
+            </span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2" *ngIf="errorDetalles()?.resultadoPayw">
+            <span class="text-muted small">Resultado Payworks:</span>
+            <span class="badge bg-secondary font-monospace">
+              {{ errorDetalles()?.resultadoPayw }} ({{ obtenerSignificadoResultado(errorDetalles()?.resultadoPayw) }})
+            </span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2" *ngIf="errorDetalles()?.resultadoTexto">
+            <span class="text-muted small">Texto del Banco:</span>
+            <strong class="text-dark small font-monospace">{{ errorDetalles()?.resultadoTexto }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2" *ngIf="errorDetalles()?.numeroControl">
+            <span class="text-muted small">No. de Control:</span>
+            <span class="fw-mono text-primary small">{{ errorDetalles()?.numeroControl }}</span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center" *ngIf="errorDetalles()?.referencia">
+            <span class="text-muted small">Referencia Bancaria:</span>
+            <span class="fw-mono text-dark small">{{ errorDetalles()?.referencia }}</span>
+          </div>
+
+          <!-- Botón para ver datos técnicos / JSON -->
+          <div class="mt-2 pt-2 border-top text-end" *ngIf="errorDetalles()?.detallesTecnicos">
+            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-muted extra-small" (click)="toggleDetallesTecnicos()">
+              <i class="fa-solid fa-code me-1"></i>
+              {{ mostrarDetallesTecnicos() ? 'Ocultar datos técnicos' : 'Ver datos técnicos (desarrollador)' }}
+            </button>
+            <div class="mt-2 text-start" *ngIf="mostrarDetallesTecnicos()">
+              <pre class="bg-dark text-warning p-2 rounded small mb-0" style="max-height: 140px; overflow-y: auto; font-size: 0.75rem;">{{ errorDetalles()?.detallesTecnicos | json }}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-center">
+          <button type="button" class="btn btn-primary py-2 px-4 rounded-3 fw-bold" (click)="estado.set('formulario')">
+            <i class="fa-solid fa-rotate-left me-1"></i>Intentar de Nuevo
+          </button>
+          <button type="button" class="btn btn-outline-secondary py-2 px-3 rounded-3" (click)="cerrar()">
+            Cerrar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

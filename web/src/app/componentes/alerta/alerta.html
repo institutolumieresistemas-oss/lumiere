@@ -1,0 +1,20 @@
+<div class="alerta-overlay" *ngIf="visible" (click)="cerrar()">
+  <div class="alerta-card" [ngClass]="config.tipo" (click)="$event.stopPropagation()">
+    <!-- Clip de libreta decorativo -->
+    <div class="paper-clip"></div>
+
+    <!-- Icono tipo sticker -->
+    <div class="alerta-icon-wrapper">
+      <i class="alerta-icon" [ngClass]="getIconClass()"></i>
+    </div>
+
+    <!-- Título y Mensaje -->
+    <h3 class="alerta-titulo">{{ config.titulo }}</h3>
+    <p class="alerta-mensaje">{{ config.mensaje }}</p>
+
+    <!-- Botón brutalista de aceptación -->
+    <button class="alerta-btn" [ngClass]="'btn-' + config.tipo" (click)="cerrar()">
+      {{ config.botonTexto || '¡Entendido! 🚀' }}
+    </button>
+  </div>
+</div>

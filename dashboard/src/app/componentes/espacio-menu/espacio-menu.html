@@ -1,0 +1,25 @@
+<div class="espacio-menu-builder" [style.height.px]="props?.altura || 90">
+  <div class="espacio-menu-actions">
+    <button class="btn btn-sm btn-danger me-2" (click)="eliminarElemento.emit()" title="Eliminar Espacio">✖</button>
+    <button class="btn btn-sm btn-primary" (click)="abrirConfig()" title="Configurar Espacio">⚙</button>
+  </div>
+  <span>📏 Espacio Compensador de Menú ({{ props?.altura || 90 }}px)</span>
+</div>
+
+<!-- MODAL CONFIGURACIÓN -->
+<div *ngIf="configOpen" class="modal-config" (click)="cerrarConfig()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+      <h5 class="mb-4 fw-bold">Configurar Espacio Menú</h5>
+
+      <div class="mb-3">
+          <label class="form-label fw-bold">Altura del espacio (en píxeles)</label>
+          <input type="number" [(ngModel)]="propsEdit.altura" class="form-control" placeholder="Ej: 90" min="10" max="400">
+          <small class="text-muted">Por defecto el menú mide 90px en desktop.</small>
+      </div>
+
+      <div class="text-end mt-4">
+          <button class="btn btn-success me-2" (click)="guardarConfig()">Guardar</button>
+          <button class="btn btn-outline-secondary" (click)="cerrarConfig()">Cerrar</button>
+      </div>
+  </div>
+</div>

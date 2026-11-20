@@ -1,0 +1,70 @@
+<div class="badge-wrapper position-relative">
+
+    <!-- BOTONES DE ACCIÓN (Estilo WhatsApp/Builder) -->
+    <div class="badge-actions">
+        <button class="btn btn-sm btn-danger" (click)="eliminar()">✕</button>
+        <button class="btn btn-sm btn-primary" (click)="abrirModal()">⚙</button>
+    </div>
+
+    <!-- VISTA INLINE (Representación visual en el Canvas) -->
+    <div class="badge-preview-box">
+        <div class="small-label"><i class="fas fa-certificate me-1"></i>Badge Flotante (Social Proof)</div>
+        <div class="sticky-note-inline handwritten" [ngClass]="props.color || 'sticky-pink'">
+            {{ props.text || '+12k Admitidos UDG! 🎓🔥' }}
+        </div>
+        <div class="config-desc">
+            Posición: <strong>{{ props.position || 'bottom-left' }}</strong> | 
+            Rotación: <strong>{{ props.rotation || -4 }}°</strong>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= MODAL DE CONFIGURACIÓN (Mismo estilo que WhatsApp) ================= -->
+<div class="modal-backdrop-custom" *ngIf="mostrarModal">
+
+    <div class="modal-custom">
+
+        <div class="modal-header">
+            <h5 class="m-0"><i class="fas fa-cog me-2"></i>Configurar Badge Flotante</h5>
+            <button class="btn-close" (click)="cerrarModal()"></button>
+        </div>
+
+        <div class="modal-body">
+            <div class="mb-3">
+                <label class="form-label">Texto del Badge</label>
+                <input type="text" class="form-control" [(ngModel)]="props.text" (input)="actualizarProps.emit(props)">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Color de la nota</label>
+                <select class="form-select" [(ngModel)]="props.color" (change)="actualizarProps.emit(props)">
+                    <option value="sticky-pink">Rosa</option>
+                    <option value="sticky-yellow">Amarillo</option>
+                    <option value="sticky-blue">Azul</option>
+                    <option value="sticky-green">Verde</option>
+                    <option value="sticky-orange">Naranja</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Posición en la Web</label>
+                <select class="form-select" [(ngModel)]="props.position" (change)="actualizarProps.emit(props)">
+                    <option value="bottom-left">Abajo Izquierda</option>
+                    <option value="bottom-right">Abajo Derecha</option>
+                    <option value="top-left">Arriba Izquierda</option>
+                    <option value="top-right">Arriba Derecha</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Rotación (Grados)</label>
+                <input type="number" class="form-control" [(ngModel)]="props.rotation" (input)="actualizarProps.emit(props)">
+            </div>
+            
+            <button type="button" class="btn btn-secondary w-100 mt-2" (click)="guardar()">Guardar Configuración</button>
+        </div>
+
+    </div>
+
+</div>

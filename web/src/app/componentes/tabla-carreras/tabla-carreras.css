@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+
+.carreras-section {
+  font-family: 'Outfit', sans-serif;
+  background-color: #fafbfe;
+  border-radius: 24px;
+  margin: 15px 0;
+}
+
+/* Contenedor de scroll para PC (Vertical y Horizontal) */
+.table-scroll-container {
+  max-height: 420px; /* Altura fija para aprox 7-8 filas */
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  border-radius: 12px;
+  position: relative;
+}
+
+.table-scroll-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* thead sticky dentro del contenedor de scroll solo en PC */
+@media (min-width: 768px) {
+  .table-scroll-container table {
+    border-collapse: collapse !important;
+  }
+
+  .table-scroll-container thead {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+  }
+
+  .table-scroll-container thead tr {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background-color: inherit !important; /* Hereda color dinámico */
+  }
+
+  .table-scroll-container thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background-color: inherit !important; /* Hereda color dinámico */
+    color: inherit !important;
+    border-bottom: 2px solid rgba(0,0,0,0.15) !important;
+  }
+}
+
+/* Table overrides */
+.table, .table tr, .table td {
+  background-color: transparent !important;
+}
+
+.table {
+  min-width: 600px; /* Asegura scroll horizontal en pantallas chicos */
+}
+
+.table thead th {
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+/* Tarjeta Móvil */
+.carrera-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 12px !important;
+  border: 1px solid #e2e8f0;
+}
+
+.carrera-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+.carrera-score .badge {
+  font-size: 0.95rem !important;
+}
+
+/* Scroll móvil: ~3 tarjetas visibles */
+.cards-scroll-wrapper {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.cards-scroll-wrapper::-webkit-scrollbar {
+  width: 5px;
+}
+
+.cards-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}

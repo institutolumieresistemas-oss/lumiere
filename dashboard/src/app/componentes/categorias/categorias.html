@@ -1,0 +1,178 @@
+<div class="categorias-wrapper position-relative" [attr.data-diseno]="props.diseno">
+
+    <!-- ACCIONES DEL CONSTRUCTOR -->
+    <div class="categorias-actions d-flex align-items-center gap-2">
+        <select [ngModel]="props.diseno" (ngModelChange)="onDisenoChange($event)" class="form-select form-select-sm select-diseno-rapido">
+            <option value="original">Estilo Original</option>
+            <option value="stickerbook">Cuaderno de Stickers 🏷️</option>
+            <option value="polaroid">Fotos Polaroid 📸</option>
+            <option value="notepad">Libreta de Apuntes 📝</option>
+        </select>
+        <button class="btn btn-primary btn-sm" (click)="openModal()" title="Configurar Sección">⚙</button>
+        <button class="btn btn-danger btn-sm" (click)="eliminar()" title="Eliminar Sección">✖</button>
+    </div>
+
+    <!-- TÍTULO -->
+    <div class="titulo text-center mb-2">
+        <h2 class="titulo-principal">{{ props.titulo }}</h2>
+    </div>
+
+    <!-- SUBTÍTULO -->
+    <div *ngIf="props.diseno !== 'original' && props.subtitulo" class="subtitulo text-center mb-4">
+        <p class="subtitulo-texto" [innerHTML]="getSubtituloHtml()"></p>
+    </div>
+
+    <!-- CONTENEDOR DE CUADROS SEGÚN DISEÑO -->
+
+    <!-- DISEÑO ORIGINAL -->
+    <div *ngIf="props.diseno === 'original'" class="cuadros-container d-flex flex-wrap justify-content-center gap-3">
+        <div *ngFor="let c of props.cuadros; let i = index" class="cuadro-item">
+            <a [href]="c.enlace || 'javascript:void(0)'" class="cuadro-link">
+                <img [src]="c.imagen" alt="Categoría" class="cuadro-img">
+            </a>
+        </div>
+    </div>
+
+    <!-- DISEÑOS ESTUDIANTILES (stickerbook, polaroid, notepad) -->
+    <div *ngIf="props.diseno !== 'original'" class="cuadros-estudiantiles">
+        <div *ngFor="let c of props.cuadros; let i = index"
+             class="cuadro-item-estudiantil"
+             [style.transform]="props.diseno === 'stickerbook' ? 'rotate(' + (c.inclinacion || 0) + 'deg)' : 'none'"
+             [style.--marker-color]="c.colorSplash || '#fef08a'">
+
+            <a [href]="c.enlace || 'javascript:void(0)'" class="cuadro-link-estudiantil">
+                
+                <!-- Área de espiral si es Libreta -->
+                <div *ngIf="props.diseno === 'notepad'" class="notepad-spiral">
+                    <span class="spiral-ring"></span>
+                    <span class="spiral-ring"></span>
+                    <span class="spiral-ring"></span>
+                </div>
+
+                <!-- Imagen principal -->
+                <div class="cuadro-img-container">
+                    <img [src]="c.imagen" alt="Categoría" class="cuadro-img-estudiantil">
+                </div>
+
+                <!-- Etiqueta manuscrita o destacada -->
+                <div class="cuadro-label-container">
+                    <span *ngIf="c.etiqueta" class="cuadro-etiqueta-text">
+                        {{ c.etiqueta }}
+                    </span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIGURACIÓN -->
+    <div *ngIf="abrirConfigModal" class="categorias-modal-overlay">
+        <div class="categorias-modal-content">
+            <h5 class="mb-3 border-bottom pb-2">Configurar Sección</h5>
+
+            <!-- TÍTULO DE LA SECCIÓN -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Título de la Sección</label>
+                <input type="text" [(ngModel)]="propsTemp.titulo" class="form-control">
+            </div>
+
+            <!-- SUBTÍTULO GLOBAL (Habilitado para todos los diseños estudiantiles) -->
+            <div *ngIf="propsTemp.diseno !== 'original'" class="mb-3 p-3 rounded option-block option-highlight">
+                <p class="option-label">✍️ Subtítulo Estudiantil</p>
+                <div class="mb-2">
+                    <label class="form-label small mb-1">Texto del subtítulo</label>
+                    <input type="text" [(ngModel)]="propsTemp.subtitulo" class="form-control form-control-sm"
+                           placeholder="Ej: Elige tu camino perfecto">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small mb-1">Palabra a resaltar con marcador</label>
+                    <input type="text" [(ngModel)]="propsTemp.subtituloResaltado" class="form-control form-control-sm"
+                           placeholder="Ej: camino">
+                </div>
+                <div>
+                    <label class="form-label small mb-1">Color del Marcador</label>
+                    <input type="color" [(ngModel)]="propsTemp.colorResalte" class="form-control form-control-color form-control-sm">
+                </div>
+            </div>
+
+            <!-- CUADROS -->
+            <div class="cuadros-list mb-3">
+                <label class="form-label fw-bold">Cuadros (Categorías)</label>
+                <div *ngFor="let c of propsTemp.cuadros; let i = index" class="cuadro-edit-item p-3 mb-3 border rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-secondary">Cuadro #{{ i + 1 }}</span>
+                        <button class="btn btn-sm btn-outline-danger" (click)="eliminarCuadro(i)">Eliminar</button>
+                    </div>
+
+                    <!-- IMAGEN -->
+                    <div class="mb-2">
+                        <label class="form-label small mb-1">Seleccionar Imagen (Archivo)</label>
+                        <div class="alert alert-info py-1 px-2 mb-1 small d-flex align-items-center gap-1">
+                            <span>📐</span><span><strong>Recomendado:</strong> <code>250 × 80 px</code> — Rectangular · PNG/WebP · Máx. 100 KB</span>
+                        </div>
+                        <input type="file" accept="image/*" (change)="onImageUpload($event, i)" class="form-control form-control-sm">
+                    </div>
+
+                    <div class="mb-2 text-center" *ngIf="c.imagen">
+                        <img [src]="c.imagen" alt="Preview" class="img-thumbnail" style="max-height: 50px;">
+                    </div>
+
+                    <!-- OPCIONES EXTRA ESTUDIANTILES -->
+                    <div *ngIf="propsTemp.diseno !== 'original'">
+                        
+                        <!-- Etiqueta -->
+                        <div class="mb-2 p-2 bg-white rounded border">
+                            <label class="form-label small fw-bold mb-1">Texto de la Tarjeta</label>
+                            <input type="text" [(ngModel)]="c.etiqueta" class="form-control form-control-sm" placeholder="Ej: Preparatoria">
+                        </div>
+
+                        <!-- Color de resaltador para Notepad -->
+                        <div *ngIf="propsTemp.diseno === 'notepad'" class="mb-2 p-2 bg-white rounded border">
+                            <label class="form-label small fw-bold mb-1">Color del Marcador Resaltador</label>
+                            <input type="color" [(ngModel)]="c.colorSplash" class="form-control form-control-color form-control-sm">
+                        </div>
+
+                        <!-- Inclinación para Stickerbook -->
+                        <div *ngIf="propsTemp.diseno === 'stickerbook'" class="mb-2 p-2 bg-white rounded border">
+                            <label class="form-label small fw-bold mb-1">Ángulo de inclinación del sticker</label>
+                            <input type="number" [(ngModel)]="c.inclinacion" class="form-control form-control-sm" min="-15" max="15">
+                            <span class="small text-muted">Valores entre -5 y 5 recomendados</span>
+                        </div>
+
+                    </div>
+
+                    <!-- ENLACES -->
+                    <div class="mb-2">
+                        <label class="form-label small mb-1">Tipo de Enlace</label>
+                        <select [(ngModel)]="c.tipoEnlace" class="form-select form-select-sm">
+                            <option value="externa">URL Externa o ruta manual</option>
+                            <option value="interna">Página del sitio (Interna)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="form-label small mb-1">Destino (Enlace)</label>
+                        <select *ngIf="c.tipoEnlace === 'interna'" [(ngModel)]="c.enlace" class="form-select form-select-sm">
+                            <option value="">Selecciona una página...</option>
+                            <option *ngFor="let pag of paginas" [value]="'/' + pag.slug">{{ pag.name }} (/{{ pag.slug }})</option>
+                        </select>
+                        <input *ngIf="c.tipoEnlace !== 'interna'" type="text" [(ngModel)]="c.enlace"
+                               class="form-control form-control-sm" placeholder="https://ejemplo.com o /ruta-manual">
+                    </div>
+                </div>
+            </div>
+
+            <!-- AGREGAR CUADRO -->
+            <div class="mb-4">
+                <button class="btn btn-outline-primary w-100" (click)="agregarCuadro()">
+                    ＋ Agregar Cuadro
+                </button>
+            </div>
+
+            <!-- ACCIONES DEL MODAL -->
+            <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                <button class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+                <button class="btn btn-success" (click)="guardar()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>

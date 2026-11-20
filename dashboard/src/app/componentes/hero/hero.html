@@ -1,0 +1,237 @@
+<section class="hero position-relative">
+  <!-- Acciones del Elemento (Eliminar y Editar) -->
+  <div class="element-actions position-absolute top-0 end-0 m-3 z-3 d-flex gap-2">
+    <button class="btn btn-primary btn-sm" (click)="editar = !editar">
+      <i class="fas" [ngClass]="editar ? 'fa-eye' : 'fa-cog'"></i> {{ editar ? 'Ver Previsualización' : 'Configurar Sección' }}
+    </button>
+    <button class="btn btn-danger btn-sm" (click)="eliminarElemento.emit()">
+      <i class="fas fa-trash-alt"></i> Eliminar
+    </button>
+  </div>
+
+  <!-- Formulario de Edición -->
+  <div *ngIf="editar" class="container edit-panel mb-4 p-4 border rounded shadow-sm bg-dark text-white">
+    <h5 class="mb-3 text-warning"><i class="fas fa-edit me-2"></i>Editar Configuración del Hero</h5>
+    
+    <div class="row g-3">
+      <!-- Título principal en partes -->
+      <div class="col-md-4">
+        <label class="form-label small text-muted">Título (Inicio)</label>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="props.titleStart">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small text-muted">Título Resaltador (Marcador)</label>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="props.titleHighlight">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small text-muted">Título (Medio)</label>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="props.titleMiddle">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small text-muted">Título Círculo (Lápiz)</label>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="props.titleCircle">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small text-muted">Insignia (Badge)</label>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="props.badge">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small text-muted">Cargar Imagen (Local)</label>
+        <div class="alert alert-info py-1 px-2 mb-1 small d-flex align-items-center gap-1">
+          <span>📐</span><span><strong>Recomendado:</strong> <code>800 × 600 px</code> — JPG/WebP · Máx. 300 KB</span>
+        </div>
+        <input type="file" class="form-control form-control-sm" accept="image/*" (change)="onFileChange($event)">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small text-muted">O pegar URL de Imagen</label>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="props.heroImage">
+      </div>
+      
+      <!-- Descripción -->
+      <div class="col-12">
+        <label class="form-label small text-muted">Descripción Corta</label>
+        <textarea class="form-control form-control-sm" rows="3" [(ngModel)]="props.description"></textarea>
+      </div>
+
+      <!-- Nota Adhesiva (Post-It) -->
+      <div class="col-md-6 border-end border-secondary">
+        <h6 class="text-info small mb-2"><i class="fas fa-sticky-note me-1"></i>Nota Adhesiva (Post-it)</h6>
+        <div class="mb-2">
+          <label class="form-label small text-muted">Título de la nota</label>
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="props.stickyNoteTitle">
+        </div>
+        <div>
+          <label class="form-label small text-muted">Contenido de la nota</label>
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="props.stickyNoteText">
+        </div>
+      </div>
+
+      <!-- Tarjeta Flotante (Calendario) -->
+      <div class="col-md-6">
+        <h6 class="text-info small mb-2"><i class="fas fa-id-card me-1"></i>Tarjeta Informativa Flotante</h6>
+        <div class="row g-2">
+          <div class="col-md-3">
+            <label class="form-label small text-muted">Avatar</label>
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="props.floatingAvatar">
+          </div>
+          <div class="col-md-9">
+            <label class="form-label small text-muted">Título principal</label>
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="props.floatingTitle">
+          </div>
+          <div class="col-12">
+            <label class="form-label small text-muted">Subtítulo secundario</label>
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="props.floatingSubtitle">
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones del Hero -->
+      <div class="col-12 border-top border-secondary pt-3">
+        <h6 class="text-info small mb-2"><i class="fas fa-link me-1"></i>Configuración de Botones</h6>
+        <div class="row g-3">
+          <!-- Botón 1 -->
+          <div class="col-md-6 border-end border-secondary">
+            <div class="fw-bold text-light mb-2 small">Botón 1 (Principal)</div>
+            <div class="mb-2">
+              <label class="form-label small text-muted">Texto del Botón</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="props.btn1Text">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small text-muted">Tipo de Enlace</label>
+              <select class="form-select form-select-sm" [(ngModel)]="props.btn1LinkType">
+                <option value="url">Dirección URL Externa</option>
+                <option value="page">Página del Sitio</option>
+              </select>
+            </div>
+            <div class="mb-2" *ngIf="props.btn1LinkType === 'url'">
+              <label class="form-label small text-muted">URL de Redirección</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="props.btn1Url" placeholder="Ej: https://google.com">
+            </div>
+            <div class="mb-2" *ngIf="props.btn1LinkType === 'page'">
+              <label class="form-label small text-muted">Seleccionar Página</label>
+              <select class="form-select form-select-sm" [(ngModel)]="props.btn1PageSlug">
+                <option value="">-- Selecciona una página --</option>
+                <option *ngFor="let p of pagesList" [value]="p.slug">{{ p.name }} ({{ p.slug }})</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Botón 2 -->
+          <div class="col-md-6">
+            <div class="fw-bold text-light mb-2 small">Botón 2 (Secundario)</div>
+            <div class="mb-2">
+              <label class="form-label small text-muted">Texto del Botón</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="props.btn2Text">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small text-muted">Tipo de Enlace</label>
+              <select class="form-select form-select-sm" [(ngModel)]="props.btn2LinkType">
+                <option value="url">Dirección URL Externa</option>
+                <option value="page">Página del Sitio</option>
+              </select>
+            </div>
+            <div class="mb-2" *ngIf="props.btn2LinkType === 'url'">
+              <label class="form-label small text-muted">URL de Redirección</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="props.btn2Url" placeholder="Ej: https://google.com">
+            </div>
+            <div class="mb-2" *ngIf="props.btn2LinkType === 'page'">
+              <label class="form-label small text-muted">Seleccionar Página</label>
+              <select class="form-select form-select-sm" [(ngModel)]="props.btn2PageSlug">
+                <option value="">-- Selecciona una página --</option>
+                <option *ngFor="let p of pagesList" [value]="p.slug">{{ p.name }} ({{ p.slug }})</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="col-12">
+        <h6 class="text-info small mb-2"><i class="fas fa-chart-line me-1"></i>Métricas / Estadísticas (3 ítems)</h6>
+        <div class="row g-2">
+          <div *ngFor="let stat of props.stats; let idx = index" class="col-md-4 p-2 bg-secondary bg-opacity-25 rounded border border-secondary">
+            <label class="form-label small text-muted">Métrica {{ idx + 1 }} - Valor</label>
+            <input type="text" class="form-control form-control-sm mb-2" [(ngModel)]="stat.value">
+            
+            <label class="form-label small text-muted">Métrica {{ idx + 1 }} - Leyenda</label>
+            <input type="text" class="form-control form-control-sm mb-2" [(ngModel)]="stat.label">
+
+            <label class="form-label small text-muted">Métrica {{ idx + 1 }} - Comentario (Opcional)</label>
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="stat.tag">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 d-flex justify-content-end">
+      <button class="btn btn-success btn-sm px-4" (click)="guardar()">
+        <i class="fas fa-save me-1"></i> Guardar Cambios
+      </button>
+    </div>
+  </div>
+
+  <!-- Vista Previa / Estructura Visual del Hero -->
+  <div class="container" [ngClass]="{ 'opacity-50': editar }">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6 hero-content doodle-container">
+        <!-- Doodle de estrella o rayón -->
+        <div class="doodle doodle-star" style="top: -20px; left: -10px;"><i class="fas fa-star"></i></div>
+        <div class="doodle-circle" style="width: 170px; height: 36px; top: 12px; left: 16px;"></div>
+        
+        <span class="badge">{{ props.badge }}</span>
+        <h1 class="hero-title">
+          {{ props.titleStart }} <span class="highlight-marker">{{ props.titleHighlight }}</span> {{ props.titleMiddle }} <span class="pencil-circle pencil-circle-blue">{{ props.titleCircle }}</span>.
+        </h1>
+        <p class="hero-description">{{ props.description }}</p>
+        
+        <div class="hero-buttons">
+          <!-- Botón 1 -->
+          <ng-container *ngIf="props.btn1Text">
+            <a *ngIf="props.btn1LinkType === 'url'" [href]="props.btn1Url || '#'" target="_blank" class="btn btn-primary sketch-border">{{ props.btn1Text }}</a>
+            <a *ngIf="props.btn1LinkType === 'page'" [routerLink]="'/' + props.btn1PageSlug" class="btn btn-primary sketch-border">{{ props.btn1Text }}</a>
+          </ng-container>
+
+          <!-- Botón 2 -->
+          <ng-container *ngIf="props.btn2Text">
+            <a *ngIf="props.btn2LinkType === 'url'" [href]="props.btn2Url || '#'" target="_blank" class="btn btn-outline">{{ props.btn2Text }} <i class="fas fa-calculator"></i></a>
+            <a *ngIf="props.btn2LinkType === 'page'" [routerLink]="'/' + props.btn2PageSlug" class="btn btn-outline">{{ props.btn2Text }} <i class="fas fa-calculator"></i></a>
+          </ng-container>
+        </div>
+        
+        <div class="hero-stats">
+          @for (stat of props.stats; track stat.label) {
+            <div class="hero-stat-item" style="position: relative;">
+              @if (stat.tag) {
+                <span class="handwritten" style="position: absolute; top: -30px; left: 10px; font-size: 1.2rem; transform: rotate(-5deg); color: #000000;">
+                  {{ stat.tag }}
+                </span>
+              }
+              <h4>{{ stat.value }}</h4>
+              <p>{{ stat.label }}</p>
+            </div>
+          }
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="hero-image-wrapper sketch-border" style="position: relative;">
+          <img [src]="props.heroImage" alt="Estudiantes exitosos UDG" class="hero-image">
+          
+          <!-- Post-it estudiantil decorativo -->
+          <div class="sticky-note sticky-yellow" style="position: absolute; top: 20px; right: -20px; max-width: 180px; z-index: 20; transform: rotate(6deg);">
+            <p class="handwritten" style="color: #0F2042; font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">{{ props.stickyNoteTitle }}</p>
+            <p class="handwritten" style="font-size: 1rem; color: #B5901D;">{{ props.stickyNoteText }}</p>
+          </div>
+          
+          <div class="hero-card-floating float-anim">
+            <div class="floating-avatar">{{ props.floatingAvatar }}</div>
+            <div>
+              <h4 style="font-size: 1rem; color: var(--primary);">{{ props.floatingTitle }}</h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0;">{{ props.floatingSubtitle }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

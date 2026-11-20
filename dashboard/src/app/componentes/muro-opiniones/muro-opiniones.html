@@ -1,0 +1,173 @@
+<section class="section-padding grid-bg-accent opinions-section position-relative">
+  <!-- Acciones del Elemento (Eliminar y Editar) -->
+  <div class="element-actions position-absolute top-0 end-0 m-3 z-3 d-flex gap-2">
+    <button class="btn btn-primary btn-sm" (click)="editar = !editar">
+      <i class="fas" [ngClass]="editar ? 'fa-eye' : 'fa-cog'"></i> {{ editar ? 'Ver Previsualización' : 'Configurar Sección' }}
+    </button>
+    <button class="btn btn-danger btn-sm" (click)="eliminarElemento.emit()">
+      <i class="fas fa-trash-alt"></i> Eliminar
+    </button>
+  </div>
+
+  <!-- Formulario de Edición del Builder -->
+  <div *ngIf="editar" class="container edit-panel mb-4 p-4 border rounded shadow-sm bg-dark text-white">
+    <h5 class="mb-3 text-warning"><i class="fas fa-edit me-2"></i>Editar Muro de Opiniones</h5>
+    
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Título de la sección</label>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="props.title">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Subtítulo / Descripción</label>
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="props.subtitle">
+      </div>
+
+      <!-- Edición de Opiniones Individuales -->
+      <div class="col-12 border-top border-secondary pt-3 mt-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="text-info small mb-0"><i class="fas fa-comments me-1"></i>Listado de Testimonios del Muro</h6>
+          <button class="btn btn-outline-info btn-xs py-1 px-2" style="font-size: 0.75rem;" (click)="addOpinion()">
+            <i class="fas fa-plus me-1"></i> Agregar Opinión
+          </button>
+        </div>
+
+        <div class="row g-3">
+          <div *ngFor="let op of opinionesList; let i = index" class="col-12 p-3 bg-secondary bg-opacity-25 rounded border border-secondary position-relative mb-2">
+            <button class="btn btn-danger btn-xs position-absolute top-0 end-0 m-2" style="font-size: 0.7rem; padding: 2px 6px;" (click)="removeOpinion(i)">
+              <i class="fas fa-times"></i>
+            </button>
+
+            <div class="row g-2">
+              <div class="col-md-3">
+                <label class="form-label small text-muted">Autor y Carrera</label>
+                <input type="text" class="form-control form-control-sm mb-2" [(ngModel)]="op.autor">
+                
+                <label class="form-label small text-muted">Color del Post-it</label>
+                <select class="form-select form-select-sm mb-2" [(ngModel)]="op.color" style="background-color: #0f172a; border-color: #334155; color: white;">
+                  <option value="sticky-yellow">Amarillo</option>
+                  <option value="sticky-pink">Rosa</option>
+                  <option value="sticky-blue">Azul</option>
+                  <option value="sticky-green">Verde</option>
+                  <option value="sticky-orange">Naranja</option>
+                </select>
+
+                <label class="form-label small text-muted">Foto del Alumno (Opcional)</label>
+                <div class="alert alert-info py-1 px-2 mb-1 small d-flex align-items-center gap-1">
+                    <span>📐</span><span><strong>Recomendado:</strong> <code>150 × 150 px</code> — Cuadrada · JPG/WebP · Máx. 100 KB</span>
+                </div>
+                <input type="file" class="form-control form-control-sm" accept="image/*" (change)="onOpinionPhotoUploaded($event, op)">
+              </div>
+              <div class="col-md-9">
+                <label class="form-label small text-muted">Comentario / Opinión</label>
+                <textarea class="form-control form-control-sm" rows="5" [(ngModel)]="op.texto"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 d-flex justify-content-end">
+      <button class="btn btn-success btn-sm px-4" (click)="guardar()">
+        <i class="fas fa-save me-1"></i> Guardar Cambios
+      </button>
+    </div>
+  </div>
+
+  <!-- Vista Previa -->
+  <div class="container" [ngClass]="{ 'opacity-50': editar }">
+    <div class="section-header text-center">
+      <span class="badge">Comunidad</span>
+      <h2>{{ props.title }}</h2>
+      <p>{{ props.subtitle }}</p>
+    </div>
+
+    <div class="row g-5 align-items-start">
+      <!-- Zona Interactiva para Crear Comentario -->
+      <div class="col-lg-4">
+        <div class="sketch-border new-comment-zone" 
+             [ngClass]="{ 
+               'fold-airplane': folding, 
+               'fly-away': flying
+             }">
+          
+          <!-- Estado Inicial -->
+          <div *ngIf="!showForm && !showSuccess" (click)="showForm = true" class="placeholder-view">
+            <i class="fas fa-edit mb-3 edit-icon"></i>
+            <h4>¿Quieres dejar tu opinión?</h4>
+            <p class="text-muted small">Da click aquí para pegar tu propio Post-it</p>
+          </div>
+
+          <!-- Estado Formulario -->
+          <form *ngIf="showForm" (submit)="onSubmitComment(); $event.preventDefault();" class="w-100 text-start">
+            <div class="sticky-note sticky-yellow shadow-form">
+              <p class="handwritten title-h">Dejar Comentario ✍️</p>
+              
+              <div class="form-group mb-2">
+                <textarea class="form-input handwritten text-area-c" [(ngModel)]="newCommentText" name="text" placeholder="Escribe tu mensaje aquí..." required></textarea>
+              </div>
+              
+              <div class="form-group mb-2">
+                <input type="text" class="form-input handwritten author-i" [(ngModel)]="newCommentAuthor" name="author" placeholder="Tu Nombre / Carrera" required>
+              </div>
+
+              <div class="form-group mb-3">
+                <label class="form-label-color">Elige color del Post-it:</label>
+                <select class="form-select select-color" [(ngModel)]="newCommentColor" name="color">
+                  <option value="sticky-yellow">Amarillo</option>
+                  <option value="sticky-pink">Rosa</option>
+                  <option value="sticky-blue">Azul</option>
+                  <option value="sticky-green">Verde</option>
+                  <option value="sticky-orange">Naranja</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-sm w-100 sketch-border">
+                Enviar Nota 📌
+              </button>
+            </div>
+          </form>
+
+          <!-- Estado Éxito -->
+          <div *ngIf="showSuccess" class="w-100 text-start">
+            <div class="sticky-note sticky-green success-note">
+              <h4 class="handwritten title-success">¡Tu nota está volando! ✈️📝</h4>
+              <p class="handwritten text-success-desc">Hemos recibido tu comentario. Recuerda que no podemos publicar palabras inapropiadas para cuidar la vibra de la comunidad. 🚫 Bad vibes.</p>
+              
+              <button type="button" (click)="resetForm()" class="btn btn-primary btn-sm w-100 sketch-border mt-3">
+                ¡Entendido! 👍
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Muro de Comentarios -->
+      <div class="col-lg-8">
+        <div class="row g-4">
+          <div class="col-md-6" *ngFor="let opinion of opinionesList">
+            <div class="sticky-note h-100 w-100 d-flex flex-column justify-content-between" [ngClass]="opinion.color">
+              <div class="comment-body">
+                <!-- Foto de perfil si existe -->
+                <div class="profile-header mb-3 d-flex align-items-center gap-2" *ngIf="opinion.foto">
+                  <img [src]="opinion.foto" alt="Avatar" class="avatar-img rounded-circle">
+                </div>
+                <p class="handwritten comment-text">
+                  "{{ opinion.texto }}"
+                </p>
+              </div>
+              <div class="comment-footer mt-3">
+                <p class="handwritten comment-author">
+                  — {{ opinion.autor }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

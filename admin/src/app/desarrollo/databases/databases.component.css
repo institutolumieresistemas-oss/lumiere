@@ -1,0 +1,28 @@
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.hover-chip {
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.55rem;
+}
+
+.hover-chip:hover {
+    background-color: #5e72e4 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+.bg-warning-light {
+    background-color: rgba(251, 99, 64, 0.06) !important;
+}
+
+.btn-xxs {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.35rem;
+}
+
+.text-xxs {
+    font-size: 0.7rem;
+}

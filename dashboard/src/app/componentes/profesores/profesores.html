@@ -1,0 +1,209 @@
+<section class="profesores-section">
+    <h2 class="titulo">Conoce a nuestros expertos</h2>
+
+    <!-- BOTONES DEL COMPONENTE -->
+    <div class="profesores-actions d-flex gap-2 align-items-center">
+        <select class="form-select form-select-sm w-auto d-inline-block" [ngModel]="props.layout || 'scroll'" (ngModelChange)="actualizarLayout($event)">
+            <option value="scroll">Carrusel Horizontal</option>
+            <option value="polaroid">Polaroid Flip (Colegio)</option>
+            <option value="stories">Stories Grid (Insta/TikTok)</option>
+            <option value="flashcard">Fichas de Estudio (Flashcards)</option>
+            <option value="deck">Swipe Deck (Tinder)</option>
+        </select>
+        <button class="btn btn-sm btn-success" (click)="agregarProfesor()">+ Agregar Profesor</button>
+        <button class="btn btn-sm btn-danger" (click)="eliminarElemento.emit()">✖ Eliminar Sección</button>
+    </div>
+
+    <div [ngSwitch]="props.layout || 'scroll'" class="mt-4">
+
+        <!-- 1. CARRUSEL HORIZONTAL -->
+        <div *ngSwitchCase="'scroll'" class="profesores-scroll">
+            <div class="profesor-card" *ngFor="let profesor of props.profesores; let i = index">
+                <div class="profesor-card-actions">
+                    <button class="btn btn-sm btn-primary" (click)="abrirConfig(profesor, i)">⚙</button>
+                    <button class="btn btn-sm btn-danger" (click)="eliminarProfesor(i)">✖</button>
+                </div>
+                <div class="imagen-wrapper" (click)="abrirModalDetalle(profesor)" style="cursor: pointer;">
+                    <img [src]="profesor.foto || 'https://picsum.photos/260/160?random=' + i" alt="{{ profesor.nombre }}">
+                </div>
+                <div class="contenido" (click)="abrirModalDetalle(profesor)" style="cursor: pointer;">
+                    <h3>{{ profesor.nombre }}</h3>
+                    <span class="especialidad">{{ profesor.especialidad }}</span>
+                    <div *ngIf="props.mostrarRedes" class="redes-sociales mt-2">
+                        <i class="fab fa-tiktok mx-1" *ngIf="profesor.tiktok"></i>
+                        <i class="fab fa-instagram mx-1" *ngIf="profesor.instagram"></i>
+                        <i class="fab fa-facebook mx-1" *ngIf="profesor.facebook"></i>
+                        <i class="fab fa-youtube mx-1" *ngIf="profesor.youtube"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. POLAROID FLIP -->
+        <div *ngSwitchCase="'polaroid'" class="polaroid-grid">
+            <div class="polaroid-card-wrapper" *ngFor="let profesor of props.profesores; let i = index">
+                <div class="profesor-card-actions">
+                    <button class="btn btn-sm btn-primary" (click)="abrirConfig(profesor, i)">⚙</button>
+                    <button class="btn btn-sm btn-danger" (click)="eliminarProfesor(i)">✖</button>
+                </div>
+                <div class="polaroid-inner" (click)="abrirModalDetalle(profesor)">
+                    <div class="polaroid-front">
+                        <img [src]="profesor.foto || 'https://picsum.photos/260/260?random=' + i" alt="{{ profesor.nombre }}">
+                        <div class="polaroid-caption">
+                            <h3>{{ profesor.nombre }}</h3>
+                            <p class="specialty-handwritten">{{ profesor.especialidad }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. STORIES GRID -->
+        <div *ngSwitchCase="'stories'" class="stories-grid-container">
+            <div class="story-bubble" *ngFor="let profesor of props.profesores; let i = index" (click)="abrirModalDetalle(profesor)">
+                <div class="profesor-card-actions">
+                    <button class="btn btn-sm btn-primary" (click)="abrirConfig(profesor, i)">⚙</button>
+                    <button class="btn btn-sm btn-danger" (click)="eliminarProfesor(i)">✖</button>
+                </div>
+                <div class="story-avatar-wrapper">
+                    <img [src]="profesor.foto || 'https://picsum.photos/120/120?random=' + i" alt="{{ profesor.nombre }}">
+                </div>
+                <h4>{{ profesor.nombre }}</h4>
+                <span>{{ profesor.especialidad }}</span>
+            </div>
+        </div>
+
+        <!-- 4. FICHAS DE ESTUDIO (FLASHCARDS) -->
+        <div *ngSwitchCase="'flashcard'" class="flashcard-grid">
+            <div class="flashcard-prof-card" *ngFor="let profesor of props.profesores; let i = index">
+                <div class="profesor-card-actions">
+                    <button class="btn btn-sm btn-primary" (click)="abrirConfig(profesor, i)">⚙</button>
+                    <button class="btn btn-sm btn-danger" (click)="eliminarProfesor(i)">✖</button>
+                </div>
+                <img [src]="profesor.foto || 'https://picsum.photos/260/180?random=' + i" alt="{{ profesor.nombre }}" (click)="abrirModalDetalle(profesor)">
+                <div class="p-3" (click)="abrirModalDetalle(profesor)">
+                    <h3>{{ profesor.nombre }}</h3>
+                    <span class="flashcard-badge">{{ profesor.especialidad }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. SWIPE DECK -->
+        <div *ngSwitchCase="'deck'" class="deck-container">
+            <div *ngIf="props.profesores.length > 0" class="deck-wrapper">
+                <div class="deck-card active">
+                    <div class="profesor-card-actions">
+                        <button class="btn btn-sm btn-primary" (click)="abrirConfig(props.profesores[activeDeckIndex], activeDeckIndex)">⚙</button>
+                        <button class="btn btn-sm btn-danger" (click)="eliminarProfesor(activeDeckIndex)">✖</button>
+                    </div>
+                    <img [src]="props.profesores[activeDeckIndex].foto || 'https://picsum.photos/400/300'" alt="{{ props.profesores[activeDeckIndex].nombre }}" (click)="abrirModalDetalle(props.profesores[activeDeckIndex])">
+                    <div class="deck-info" (click)="abrirModalDetalle(props.profesores[activeDeckIndex])">
+                        <h3>{{ props.profesores[activeDeckIndex].nombre }}</h3>
+                        <span class="badge bg-primary">{{ props.profesores[activeDeckIndex].especialidad }}</span>
+                    </div>
+                </div>
+                <div class="deck-controls mt-3 d-flex gap-2 justify-content-center">
+                    <button class="btn btn-outline-dark" (click)="activeDeckIndex = (activeDeckIndex - 1 + props.profesores.length) % props.profesores.length">⏮</button>
+                    <button class="btn btn-outline-dark" (click)="activeDeckIndex = (activeDeckIndex + 1) % props.profesores.length">⏭</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- MODAL CONFIG -->
+<div *ngIf="configOpen" class="modal-config" (click)="cerrarConfig()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <h5>Editar Profesor</h5>
+
+        <label>Nombre</label>
+        <input class="form-control mb-2" [(ngModel)]="profesorSeleccionado.nombre">
+
+        <label>Especialidad</label>
+        <input class="form-control mb-2" [(ngModel)]="profesorSeleccionado.especialidad">
+
+        <label>Descripción</label>
+        <textarea rows="3" class="form-control mb-2" [(ngModel)]="profesorSeleccionado.descripcion"></textarea>
+
+        <label class="mb-2">Foto</label>
+        <div class="alert alert-info py-1 px-2 mb-1 small d-flex align-items-center gap-1">
+            <span>📐</span><span><strong>Recomendado:</strong> <code>520 × 320 px</code> — Relación 13:8 · JPG/WebP · Máx. 250 KB (se recortará automáticamente)</span>
+        </div>
+        <input type="file" accept="image/*" (change)="fileChangeEvent($event)" class="form-control mb-3">
+
+        <!-- CROP -->
+        <image-cropper *ngIf="imageChangedEvent" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="13 / 8" [resizeToWidth]="520" format="png" (imageCropped)="imageCropped($event)">
+        </image-cropper>
+
+        <!-- PREVIEW -->
+        <div class="crop-preview mb-3" *ngIf="croppedImage">
+            <img [src]="croppedImage">
+        </div>
+
+        <!-- CONFIGURACIÓN DE REDES -->
+        <div class="form-check form-switch mb-3 mt-3">
+            <input class="form-check-input" type="checkbox" id="mostrarRedesCheck" [(ngModel)]="props.mostrarRedes" (ngModelChange)="actualizarProps.emit(props)">
+            <label class="form-check-label fw-bold" for="mostrarRedesCheck">Mostrar Redes Sociales</label>
+        </div>
+
+        <div *ngIf="props.mostrarRedes" class="border p-2 rounded mb-3 bg-light">
+            <h6 class="fw-bold mb-2 small text-secondary">Enlaces de Redes Sociales</h6>
+            
+            <label class="small text-muted">TikTok</label>
+            <input class="form-control form-control-sm mb-2" [(ngModel)]="profesorSeleccionado.tiktok" placeholder="https://tiktok.com/@...">
+
+            <label class="small text-muted">Instagram</label>
+            <input class="form-control form-control-sm mb-2" [(ngModel)]="profesorSeleccionado.instagram" placeholder="https://instagram.com/...">
+
+            <label class="small text-muted">Facebook</label>
+            <input class="form-control form-control-sm mb-2" [(ngModel)]="profesorSeleccionado.facebook" placeholder="https://facebook.com/...">
+
+            <label class="small text-muted">YouTube</label>
+            <input class="form-control form-control-sm mb-2" [(ngModel)]="profesorSeleccionado.youtube" placeholder="https://youtube.com/...">
+        </div>
+
+        <div class="text-end mt-3">
+            <button class="btn btn-success me-2" (click)="guardarConfig()">Guardar</button>
+            <button class="btn btn-outline-secondary" (click)="cerrarConfig()">Cerrar</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div *ngIf="detalleOpen" class="modal-config" (click)="cerrarModalDetalle()">
+    <div class="modal-content text-center" (click)="$event.stopPropagation()" style="max-width: 440px;">
+        <div class="text-end">
+            <button (click)="cerrarModalDetalle()" style="border: none; background: transparent; font-size: 1.6rem; cursor: pointer; line-height: 1;">&times;</button>
+        </div>
+        
+        <div class="p-2">
+            <img [src]="detalleProfesor.foto || 'https://picsum.photos/260/160?random=1'" alt="{{ detalleProfesor.nombre }}" class="img-fluid rounded-4 shadow-sm mb-3" style="width: 100%; max-height: 240px; object-fit: cover;">
+            
+            <h4 class="fw-bold mb-1">{{ detalleProfesor.nombre }}</h4>
+            <span class="badge bg-primary-subtle text-primary mb-3 px-3 py-2" style="font-size: 0.9rem; border-radius: 20px;">{{ detalleProfesor.especialidad }}</span>
+            
+            <p class="text-muted text-start mt-2 px-2" style="line-height: 1.6; font-size: 0.95rem; white-space: pre-line;">
+                {{ detalleProfesor.descripcion || 'Sin descripción disponible.' }}
+            </p>
+
+            <!-- Redes sociales en el modal -->
+            <div *ngIf="props.mostrarRedes" class="d-flex justify-content-center gap-3 mt-4">
+                <a *ngIf="detalleProfesor.tiktok" [href]="detalleProfesor.tiktok" target="_blank" class="social-btn tiktok-btn">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a *ngIf="detalleProfesor.instagram" [href]="detalleProfesor.instagram" target="_blank" class="social-btn instagram-btn">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a *ngIf="detalleProfesor.facebook" [href]="detalleProfesor.facebook" target="_blank" class="social-btn facebook-btn">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a *ngIf="detalleProfesor.youtube" [href]="detalleProfesor.youtube" target="_blank" class="social-btn youtube-btn">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

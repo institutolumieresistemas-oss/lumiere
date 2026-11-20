@@ -1,0 +1,56 @@
+<section class="imagen-section position-relative"
+         [style.margin-top.px]="props.marginTop"
+         [style.margin-bottom.px]="props.marginBottom"
+         [style.margin-left.px]="props.marginLeft"
+         [style.margin-right.px]="props.marginRight">
+
+    <!-- ACCIONES DEL BUILDER -->
+    <div class="imagen-actions d-flex gap-2">
+        <button class="btn btn-sm btn-primary" (click)="abrirConfig()">⚙ Configurar</button>
+        <button class="btn btn-sm btn-danger" (click)="eliminarElemento.emit()">✖ Eliminar</button>
+    </div>
+
+    <div class="image-container">
+        <img [src]="props.imageUrl || 'https://placehold.co/1200x500?text=Selecciona+una+imagen'" alt="Imagen de sección" class="full-width-image">
+    </div>
+
+</section>
+
+<!-- MODAL CONFIGURACIÓN -->
+<div *ngIf="configOpen" class="modal-config" (click)="cerrarConfig()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <h5 class="fw-bold mb-3">Configurar Imagen</h5>
+
+        <label class="form-label small fw-bold">Imagen</label>
+        <div class="alert alert-info py-2 px-3 mb-2 small d-flex align-items-center gap-2">
+            <span>📐</span>
+            <span><strong>Recomendado:</strong> <code>1200 × 500 px</code> — Relación horizontal · JPG, PNG o WebP · Máx. 300 KB</span>
+        </div>
+        <input type="file" accept="image/*" class="form-control mb-3" (change)="seleccionarImagen($event)">
+
+        <label class="form-label small fw-bold">Configuración de Márgenes (px)</label>
+        <div class="row g-2 mb-3">
+            <div class="col-6 mb-2">
+                <label class="small text-muted d-block mb-1">Margen Superior</label>
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="tempProps.marginTop" placeholder="0">
+            </div>
+            <div class="col-6 mb-2">
+                <label class="small text-muted d-block mb-1">Margen Inferior</label>
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="tempProps.marginBottom" placeholder="0">
+            </div>
+            <div class="col-6">
+                <label class="small text-muted d-block mb-1">Margen Izquierdo</label>
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="tempProps.marginLeft" placeholder="0">
+            </div>
+            <div class="col-6">
+                <label class="small text-muted d-block mb-1">Margen Derecho</label>
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="tempProps.marginRight" placeholder="0">
+            </div>
+        </div>
+
+        <div class="text-end mt-4">
+            <button class="btn btn-success me-2" (click)="guardarConfig()">Guardar</button>
+            <button class="btn btn-outline-secondary" (click)="cerrarConfig()">Cerrar</button>
+        </div>
+    </div>
+</div>

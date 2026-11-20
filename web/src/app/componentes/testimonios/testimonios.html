@@ -1,0 +1,110 @@
+<div class="container py-5" [ngClass]="'layout-' + (props.layout || 'classic')">
+
+    <h2 class="mb-5" [ngClass]="{
+        'titulo-animado': !props.layout || props.layout === 'classic',
+        'chat-title': props.layout === 'chat',
+        'notebook-title': props.layout === 'notebook',
+        'report-title': props.layout === 'report'
+    }">
+        <span *ngIf="props.layout === 'chat'" class="text-muted">#</span>
+        {{ props.titulo }}
+    </h2>
+
+    <div [ngSwitch]="props.layout || 'classic'">
+
+        <!-- 1. CLÁSICO -->
+        <div *ngSwitchCase="'classic'" class="row g-4 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4" *ngFor="let t of props.testimonios; let i = index">
+                <div class="testimonio-wrapper">
+                    <!-- Chispas -->
+                    <div class="spark-container"></div>
+                    <div class="testimonio-card shadow-lg p-4 h-100">
+                        <div class="d-flex align-items-center mb-3 gap-3">
+                            <img [src]="t.imagen || 'https://i.pravatar.cc/150?img=' + (i + 1)" class="avatar">
+                            <div>
+                                <h5 class="fw-bold m-0 text-primary">
+                                    {{ t.nombre }}
+                                </h5>
+                                <div class="estrellas">
+                                    <span *ngFor="let star of [1,2,3,4,5]" class="star" [class.filled]="star <= t.calificacion">
+                                        ★
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="texto">
+                            {{ t.texto }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DISCORD CHAT -->
+        <div *ngSwitchCase="'chat'" class="chat-container">
+            <div class="chat-wrapper p-4 rounded-4 shadow-sm bg-dark text-white">
+                <div class="chat-message mb-3 d-flex gap-3" *ngFor="let t of props.testimonios; let i = index">
+                    <img [src]="t.imagen || 'https://i.pravatar.cc/150?img=' + (i + 1)" class="chat-avatar rounded-circle">
+                    <div class="chat-content flex-grow-1 text-start">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="chat-author fw-bold text-info">{{ t.nombre }}</span>
+                            <span class="chat-time text-muted small">hoy a las 11:15 AM</span>
+                        </div>
+                        <p class="chat-text m-0 text-light mt-1">{{ t.texto }}</p>
+                        <div class="chat-reactions d-flex gap-2 mt-2">
+                            <span class="chat-reaction badge bg-secondary">🔥 {{ 5 + i }}</span>
+                            <span class="chat-reaction badge bg-secondary">🎉 {{ 2 + i }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. CUADERNO APUNTES -->
+        <div *ngSwitchCase="'notebook'" class="row g-4 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4" *ngFor="let t of props.testimonios; let i = index">
+                <div class="testimonio-wrapper">
+                    <div class="notebook-card p-4 h-100 shadow-sm text-start">
+                        <div class="notebook-spiral"></div>
+                        <div class="d-flex align-items-center mb-3 gap-3">
+                            <img [src]="t.imagen || 'https://i.pravatar.cc/150?img=' + (i + 1)" class="avatar">
+                            <div>
+                                <h5 class="fw-bold m-0 notebook-author">{{ t.nombre }}</h5>
+                                <div class="notebook-stars">
+                                    <span *ngFor="let star of [1,2,3,4,5]" class="notebook-star" [class.filled]="star <= t.calificacion">★</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="notebook-text">{{ t.texto }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. DICTAMEN BOLETA -->
+        <div *ngSwitchCase="'report'" class="row g-4 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4" *ngFor="let t of props.testimonios; let i = index">
+                <div class="testimonio-wrapper">
+                    <div class="report-card p-4 h-100 shadow-lg border text-start">
+                        <div class="report-watermark">ADMITIDO</div>
+                        <div class="d-flex align-items-center mb-3 gap-3">
+                            <img [src]="t.imagen || 'https://i.pravatar.cc/150?img=' + (i + 1)" class="avatar">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold m-0 text-success">{{ t.nombre }}</h5>
+                                    <span class="report-stamp-text">UDG</span>
+                                </div>
+                                <div class="estrellas">
+                                    <span *ngFor="let star of [1,2,3,4,5]" class="star" [class.filled]="star <= t.calificacion">★</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="report-text mt-3">{{ t.texto }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

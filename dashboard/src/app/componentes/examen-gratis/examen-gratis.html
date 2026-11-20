@@ -1,0 +1,18 @@
+<div class="examen-gratis-wrapper position-relative">
+  <!-- ACCIONES DEL CONSTRUCTOR -->
+  <div class="examen-gratis-actions">
+    <button class="btn btn-danger btn-sm" (click)="eliminar()" title="Eliminar Sección">✖</button>
+  </div>
+
+  <!-- PREVIEW EN EL BUILDER -->
+  <div class="examen-preview">
+    <div class="examen-preview-icon">📝</div>
+    <h4 class="examen-preview-titulo">{{ props.titulo || 'Examen de Diagnóstico Gratuito' }}</h4>
+    <p class="examen-preview-subtitulo">{{ props.subtitulo || 'Pon a prueba tus conocimientos de Español y Matemáticas' }}</p>
+    <div class="examen-preview-badges">
+      <span class="badge-materia badge-espanol">📚 15 preguntas de Español</span>
+      <span class="badge-materia badge-mate">🔢 15 preguntas de Matemáticas</span>
+    </div>
+    <p class="examen-preview-nota">⚙️ Este componente se renderiza de forma interactiva en la web pública.</p>
+  </div>
+</div>

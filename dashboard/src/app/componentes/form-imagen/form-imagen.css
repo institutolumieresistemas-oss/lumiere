@@ -1,0 +1,272 @@
+.form-imagen-section {
+  background-color: #f8f9fa;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  border: 1px dashed transparent;
+  transition: all 0.3s ease;
+}
+
+.form-imagen-section:hover {
+  border: 1px dashed #0d6efd;
+  background-color: rgba(13, 110, 253, 0.02);
+}
+
+.form-imagen-actions {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 12px;
+  border-radius: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: none;
+  align-items: center;
+}
+
+.form-imagen-section:hover .form-imagen-actions {
+  display: flex;
+}
+
+.form-imagen-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 1.25rem !important;
+}
+
+.image-wrapper {
+  overflow: hidden;
+  position: relative;
+  min-height: 100%;
+}
+
+.side-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* On mobile, stack layout: image on top, shorter, with rounded corners */
+@media (max-width: 575.98px) {
+  .image-wrapper {
+    height: 220px;
+    min-height: auto;
+  }
+  
+  .side-img {
+    height: 220px;
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+}
+
+@media (min-width: 576px) {
+  .image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.form-control, .form-select {
+  border: 1.5px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #1e293b;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+  background-color: #ffffff;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+  transform: translateY(-1px);
+}
+
+/* ================= 2. STYLE: OVERLAY ================= */
+.overlay-card {
+  background-size: cover;
+  background-position: center;
+  min-height: 550px;
+  position: relative;
+  z-index: 1;
+}
+
+.overlay-form-container {
+  max-width: 480px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ================= 3. STYLE: NOTEBOOK ================= */
+.notebook-container {
+  max-width: 700px;
+  background-color: #f1f5f9;
+  border-radius: 1.5rem;
+  padding-left: 2rem !important; /* Espacio para el espiral */
+  position: relative;
+  border: 1px solid #cbd5e1;
+}
+
+/* Espiral en el lateral izquierdo */
+.notebook-spiral {
+  position: absolute;
+  left: 12px;
+  top: 10%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  z-index: 10;
+}
+
+.spiral-ring {
+  width: 28px;
+  height: 12px;
+  background: linear-gradient(to bottom, #94a3b8, #475569, #94a3b8);
+  border-radius: 6px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 12px;
+}
+
+.notebook-sheet {
+  background-color: #fdfdf7; /* Papel color crema */
+  background-image: linear-gradient(#e2e8f0 1.5px, transparent 1.5px);
+  background-size: 100% 2.8rem; /* Líneas del cuaderno */
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  min-height: 500px;
+  padding: 2rem 1.5rem;
+  position: relative;
+}
+
+/* Línea roja del margen izquierdo */
+.notebook-margin-line {
+  position: absolute;
+  left: 3rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: rgba(239, 68, 68, 0.4); /* Rojo suave */
+}
+
+.notebook-content {
+  font-family: 'Kalam', 'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive, sans-serif;
+  line-height: 2.8rem;
+}
+
+.notebook-title {
+  color: #1e3a8a !important;
+  font-size: 1.85rem;
+  margin-top: 0.5rem;
+}
+
+.notebook-subtitle {
+  font-family: sans-serif;
+}
+
+.notebook-field-group {
+  display: flex;
+  flex-direction: column;
+  line-height: 2.4rem;
+}
+
+.notebook-label {
+  font-size: 1.15rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.notebook-input {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 1.4rem;
+  color: #0f172a;
+  padding: 0 0.5rem;
+  margin-top: -0.2rem;
+  height: 2.6rem;
+  outline: none !important;
+}
+
+.notebook-input::placeholder {
+  color: #94a3b8;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+/* Icono del lápiz animado */
+.pencil-icon {
+  position: absolute;
+  right: 15px;
+  bottom: 10px;
+  font-size: 1.5rem;
+  pointer-events: none;
+  transition: transform 0.1s ease;
+}
+
+.pencil-icon.typing {
+  animation: wiggle 0.15s infinite alternate ease-in-out;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+  100% {
+    transform: rotate(25deg) translate(-3px, -3px);
+  }
+}
+
+.btn-notebook-submit {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+  transition: all 0.2s ease;
+  font-family: sans-serif;
+}
+
+.btn-notebook-submit:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
+}
+
+/* Modal Config */
+.modal-config {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: none;
+}

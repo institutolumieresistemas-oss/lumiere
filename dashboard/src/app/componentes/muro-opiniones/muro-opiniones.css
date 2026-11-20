@@ -1,0 +1,331 @@
+/* Styles for MuroOpiniones Component */
+
+
+:host {
+  display: block;
+  --primary: #0F2042;
+  --primary-light: #1E40AF;
+  --secondary: #3B82F6;
+  --secondary-hover: #1D4ED8;
+  --accent: #0284C7;
+  --accent-light: #E0F2FE;
+  --text-main: #000000;
+  --text-muted: #1F2937;
+  --text-white: #FFFFFF;
+  --border-color: #E2E8F0;
+  
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 30px rgba(15, 32, 66, 0.08);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+h2, h3, h4 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.section-padding {
+  padding: 80px 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background-color: rgba(30, 64, 175, 0.1);
+  color: #1E40AF;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 50px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+  font-size: 0.95rem;
+  gap: 8px;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--text-white);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Edit Panel for Builder */
+.edit-panel {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+  border-radius: 12px;
+}
+
+.edit-panel .form-label {
+  color: #94a3b8 !important;
+  font-weight: 600;
+}
+
+.edit-panel .form-control {
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  color: #f8fafc;
+}
+
+.edit-panel .form-control:focus {
+  border-color: #6366f1;
+  background-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+}
+
+/* Section Header */
+.section-header {
+  max-width: 600px;
+  margin: 0 auto 50px auto;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+.section-header p {
+  color: var(--text-muted);
+}
+
+/* Interactive comment creation zone */
+.new-comment-zone {
+  border: 2px dashed #94A3B8 !important;
+  padding: 30px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  cursor: pointer;
+  background: #FFFFFF;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.placeholder-view .edit-icon {
+  font-size: 2.2rem;
+  color: var(--secondary);
+}
+
+.placeholder-view h4 {
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+}
+
+/* Post-it / Sticky Note */
+.sticky-note {
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.06);
+  padding: 24px;
+  position: relative;
+  transform: rotate(2deg);
+  transition: var(--transition);
+  border-radius: 2px;
+}
+
+.sticky-blue {
+  background: #E0F2FE !important;
+  border: 1px solid #BAE6FD !important;
+}
+.sticky-yellow {
+  background: #FEF9C3 !important;
+  border: 1px solid #FEF08A !important;
+}
+.sticky-pink {
+  background: #FCE7F3 !important;
+  border: 1px solid #FBCFE8 !important;
+}
+.sticky-green {
+  background: #DCFCE7 !important;
+  border: 1px solid #BBF7D0 !important;
+}
+.sticky-orange {
+  background: #FFEDD5 !important;
+  border: 1px solid #FED7AA !important;
+}
+
+.sticky-note::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 40%;
+  width: 90px;
+  height: 25px;
+  background: rgba(255, 255, 255, 0.4);
+  transform: rotate(-3deg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.sticky-note:hover {
+  transform: rotate(-1deg) scale(1.02);
+  box-shadow: 8px 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Handwritten / Student Fonts */
+.handwritten {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45rem;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.title-h {
+  font-size: 1.15rem;
+  color: #0F2042;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.text-area-c {
+  color: #000000;
+  border: 1px dashed rgba(0,0,0,0.2);
+  background: none;
+  font-size: 1.1rem;
+  height: 100px;
+  resize: none;
+  padding: 8px;
+  width: 100%;
+  outline: none;
+}
+
+.author-i {
+  color: #000000;
+  border: 1px dashed rgba(0,0,0,0.2);
+  background: none;
+  font-size: 1.1rem;
+  padding: 6px;
+  width: 100%;
+  outline: none;
+}
+
+.form-label-color {
+  font-size: 0.8rem;
+  color: #4B5563;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.select-color {
+  color: #000;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: #FFF;
+  font-size: 0.85rem;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.title-success {
+  font-size: 1.35rem;
+  color: #065F46;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.text-success-desc {
+  font-size: 1.05rem;
+  color: #1F2937;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+
+.sketch-border {
+  border: 2px solid #0F2042 !important;
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px !important;
+}
+
+/* Avatars */
+.avatar-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: var(--shadow-sm);
+}
+
+.comment-text {
+  font-size: 1.35rem;
+  color: #1F2937;
+  text-align: left;
+}
+
+.comment-author {
+  font-size: 1.15rem;
+  color: #4b5563;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Grid background */
+.grid-bg-accent {
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(15, 32, 66, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 32, 66, 0.03) 1px, transparent 1px);
+  background-color: #F1F5F9;
+}
+
+/* Paper Airplane Animations */
+.fold-airplane {
+  transition: clip-path 0.4s ease-in-out, background-color 0.4s, transform 0.4s, opacity 0.4s;
+  clip-path: polygon(50% 0%, 0% 100%, 50% 75%, 100% 100%) !important;
+  background: #E2E8F0 !important;
+  border: none !important;
+  transform: rotate(45deg) scale(0.6) !important;
+}
+
+.fold-airplane::after {
+  opacity: 0 !important;
+}
+
+.fold-airplane form, 
+.fold-airplane .placeholder-view, 
+.fold-airplane div {
+  opacity: 0 !important;
+  transition: opacity 0.2s;
+}
+
+.fly-away {
+  animation: fly-airplane-away 0.8s forwards cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes fly-airplane-away {
+  0% {
+    transform: translate(0, 0) rotate(45deg) scale(0.6);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(40px, 30px) rotate(35deg) scale(0.55);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(600px, -500px) rotate(15deg) scale(0.05);
+    opacity: 0;
+  }
+}

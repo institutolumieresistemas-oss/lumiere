@@ -1,0 +1,65 @@
+<div class="kommo-wrapper">
+
+    <!-- ── Botones superiores ──────────────────────── -->
+    <div class="kommo-actions">
+        <button class="btn btn-sm btn-danger" (click)="eliminar()">✕</button>
+        @if (!modoEdicion) {
+            <button class="btn btn-sm btn-secondary" (click)="editar()">✏ Editar</button>
+        }
+    </div>
+
+    <!-- ── Modo edición: pegar URL ─────────────────── -->
+    @if (modoEdicion) {
+        <div class="kommo-editor">
+            <div class="kommo-editor-header">
+                <span class="kommo-icon">🔗</span>
+                <div>
+                    <h5 class="mb-0">Formulario Kommo CRM</h5>
+                    <small class="text-muted">
+                        Pega la URL del formulario de Kommo
+                    </small>
+                </div>
+            </div>
+
+            <label class="form-label fw-semibold mt-2">URL del formulario</label>
+            <input
+                type="url"
+                class="form-control kommo-input"
+                [(ngModel)]="urlTemp"
+                placeholder="https://forms.amocrm.com/forms/html/form_XXXXX_HASH.html"
+            />
+
+            <label class="form-label fw-semibold mt-3">Altura del iframe (px)</label>
+            <input
+                type="number"
+                class="form-control kommo-input"
+                [(ngModel)]="alturaTemp"
+                min="200"
+                max="1200"
+                step="50"
+            />
+
+            <button
+                class="btn btn-kommo w-100 mt-3"
+                [disabled]="!urlTemp.trim()"
+                (click)="guardar()">
+                Guardar y mostrar formulario
+            </button>
+        </div>
+    }
+
+    <!-- ── Modo render: iframe ─────────────────────── -->
+    @if (!modoEdicion && iframeSrc) {
+        <div class="kommo-render">
+            <iframe
+                [src]="iframeSrc"
+                [style.height.px]="alturaTemp"
+                width="100%"
+                frameborder="0"
+                scrolling="no"
+                allowtransparency="true">
+            </iframe>
+        </div>
+    }
+
+</div>

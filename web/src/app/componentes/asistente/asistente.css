@@ -1,0 +1,30 @@
+.asistente-wrapper {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 135px;
+  height: 135px;
+  z-index: 9999;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 8px;
+  box-sizing: border-box;
+  filter: drop-shadow(0 8px 24px rgba(0, 198, 255, 0.25));
+  transition: transform 0.3s ease, background 0.3s ease, filter 0.3s ease;
+}
+
+.asistente-wrapper:hover {
+  transform: scale(1.1) translateY(-5px);
+  background: rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 12px 30px rgba(0, 198, 255, 0.45));
+}
+
+.pet-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

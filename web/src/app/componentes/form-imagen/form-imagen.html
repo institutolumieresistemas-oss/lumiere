@@ -1,0 +1,170 @@
+<section class="form-imagen-section py-5" [ngClass]="'style-' + (props.estilo || 'split')">
+  <div class="container">
+    
+    <!-- 1. ESTILO: SPLIT (IMAGEN A UN LADO) -->
+    @if ((props.estilo || 'split') === 'split') {
+      <div class="form-imagen-card overflow-hidden shadow-lg border-0 rounded-4 bg-white">
+        <div class="row g-0" [class.flex-row-reverse]="props.imagenDerecha">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-sm-6 position-relative">
+            <div class="image-wrapper h-100">
+              <img [src]="props.imagenUrl || 'https://picsum.photos/800/600?random=44'" alt="Imagen del formulario" class="side-img">
+            </div>
+          </div>
+          <!-- Columna del Formulario -->
+          <div class="col-12 col-sm-6 d-flex flex-column justify-content-center p-4 p-md-5">
+            <div class="form-content">
+              <h3 class="fw-bold mb-2 text-dark">{{ props.titulo || 'Regístrate hoy' }}</h3>
+              <p class="text-muted mb-4">{{ props.subtitulo || 'Completa la información.' }}</p>
+              
+              <form (submit)="enviarFormulario($event)">
+                <div class="mb-3">
+                  <label class="form-label text-dark fw-semibold small">Nombre completo</label>
+                  <input type="text" class="form-control form-control-lg rounded-3" name="nombre" [(ngModel)]="formNombre" required placeholder="Ingresa tu nombre">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label text-dark fw-semibold small">Celular</label>
+                  <input type="tel" class="form-control form-control-lg rounded-3" name="celular" [(ngModel)]="formCelular" required placeholder="Tu número de celular">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label text-dark fw-semibold small">Promedio de Preparatoria</label>
+                  <input type="number" step="0.01" min="0" max="100" class="form-control form-control-lg rounded-3" name="promedio" [(ngModel)]="formPromedio" required placeholder="Ej. 85.50">
+                </div>
+                <div class="mb-4">
+                  <label class="form-label text-dark fw-semibold small">Carrera de Interés</label>
+                  <input type="text" class="form-control form-control-lg rounded-3" name="carrera" [(ngModel)]="formCarrera" required placeholder="Ej. Ingeniería en Computación">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3 fw-bold text-uppercase py-2.5 transition-all shadow-sm">
+                  Enviar Registro
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- 2. ESTILO: OVERLAY (IMAGEN DETRÁS DEL FORMULARIO) -->
+    @if (props.estilo === 'overlay') {
+      <div class="overlay-card rounded-4 shadow-lg overflow-hidden position-relative p-4 p-md-5 d-flex align-items-center justify-content-center justify-content-md-start"
+           [style.background-image]="'linear-gradient(to right, rgba(15, 23, 42, 0.85) 40%, rgba(15, 23, 42, 0.4)), url(' + (props.imagenUrl || 'https://picsum.photos/1200/800?random=44') + ')'">
+        
+        <div class="overlay-form-container bg-white p-4 p-md-5 rounded-4 shadow z-3">
+          <h3 class="fw-bold mb-2 text-dark">{{ props.titulo || 'Regístrate hoy' }}</h3>
+          <p class="text-muted mb-4 small">{{ props.subtitulo || 'Completa la información.' }}</p>
+          
+          <form (submit)="enviarFormulario($event)">
+            <div class="mb-3">
+              <input type="text" class="form-control rounded-3" name="nombre" [(ngModel)]="formNombre" required placeholder="Nombre completo">
+            </div>
+            <div class="mb-3">
+              <input type="tel" class="form-control rounded-3" name="celular" [(ngModel)]="formCelular" required placeholder="Celular">
+            </div>
+            <div class="mb-3">
+              <input type="number" step="0.01" min="0" max="100" class="form-control rounded-3" name="promedio" [(ngModel)]="formPromedio" required placeholder="Promedio de Preparatoria">
+            </div>
+            <div class="mb-4">
+              <input type="text" class="form-control rounded-3" name="carrera" [(ngModel)]="formCarrera" required placeholder="Carrera de Interés">
+            </div>
+            <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold text-uppercase py-2.5 shadow-sm">
+              Enviar Registro
+            </button>
+          </form>
+        </div>
+      </div>
+    }
+
+    <!-- 3. ESTILO: NOTEBOOK (CUADERNO CON ANIMACIÓN DE LÁPIZ) -->
+    @if (props.estilo === 'notebook') {
+      <div class="notebook-container shadow-lg rounded-4 p-4 p-md-5 mx-auto">
+        <!-- Espiral del Cuaderno -->
+        <div class="notebook-spiral">
+          <div class="spiral-ring" *ngFor="let ring of [1,2,3,4,5,6,7,8,9,10]"></div>
+        </div>
+
+        <div class="notebook-sheet">
+          <div class="notebook-margin-line"></div>
+          
+          <div class="notebook-content ps-4 ps-md-5">
+            <h3 class="notebook-title mb-2 text-primary fw-bold">{{ props.titulo || 'Apuntes & Registro' }}</h3>
+            <p class="notebook-subtitle text-muted mb-4 fs-6">{{ props.subtitulo || 'Escribe tus datos en la hoja:' }}</p>
+
+            <form (submit)="enviarFormulario($event)" class="position-relative">
+              
+              <!-- Campo: Nombre -->
+              <div class="notebook-field-group mb-4 position-relative">
+                <span class="notebook-label">Mi nombre es:</span>
+                <input type="text" 
+                       class="notebook-input w-100" 
+                       name="nombre" 
+                       [(ngModel)]="formNombre" 
+                       required 
+                       placeholder="________________________________________"
+                       (focus)="onFocus('nombre')" 
+                       (blur)="onBlur()"
+                       (input)="onTyping()">
+                <span class="pencil-icon" *ngIf="focusedField === 'nombre'" [class.typing]="isTyping">✏️</span>
+              </div>
+
+              <!-- Campo: Celular -->
+              <div class="notebook-field-group mb-4 position-relative">
+                <span class="notebook-label">Mi celular es:</span>
+                <input type="tel" 
+                       class="notebook-input w-100" 
+                       name="celular" 
+                       [(ngModel)]="formCelular" 
+                       required 
+                       placeholder="________________________________________"
+                       (focus)="onFocus('celular')" 
+                       (blur)="onBlur()"
+                       (input)="onTyping()">
+                <span class="pencil-icon" *ngIf="focusedField === 'celular'" [class.typing]="isTyping">✏️</span>
+              </div>
+
+              <!-- Campo: Promedio -->
+              <div class="notebook-field-group mb-4 position-relative">
+                <span class="notebook-label">Mi promedio de preparatoria es:</span>
+                <input type="number" 
+                       step="0.01"
+                       min="0"
+                       max="100"
+                       class="notebook-input w-100" 
+                       name="promedio" 
+                       [(ngModel)]="formPromedio" 
+                       required 
+                       placeholder="________________________________________"
+                       (focus)="onFocus('promedio')" 
+                       (blur)="onBlur()"
+                       (input)="onTyping()">
+                <span class="pencil-icon" *ngIf="focusedField === 'promedio'" [class.typing]="isTyping">✏️</span>
+              </div>
+
+              <!-- Campo: Carrera -->
+              <div class="notebook-field-group mb-5 position-relative">
+                <span class="notebook-label">Quiero estudiar la carrera de:</span>
+                <input type="text" 
+                       class="notebook-input w-100" 
+                       name="carrera" 
+                       [(ngModel)]="formCarrera" 
+                       required 
+                       placeholder="________________________________________"
+                       (focus)="onFocus('carrera')" 
+                       (blur)="onBlur()"
+                       (input)="onTyping()">
+                <span class="pencil-icon" *ngIf="focusedField === 'carrera'" [class.typing]="isTyping">✏️</span>
+              </div>
+
+              <div class="text-end">
+                <button type="submit" class="btn btn-notebook-submit px-4 py-2 fw-bold text-uppercase rounded-3">
+                  Guardar Apuntes 📑
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</section>

@@ -1,0 +1,11 @@
+.espacio-menu-container {
+  width: 100%;
+  height: 90px; /* Alto por defecto para desktop */
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+  .espacio-menu-container {
+    height: 70px; /* Alto para móviles */
+  }
+}

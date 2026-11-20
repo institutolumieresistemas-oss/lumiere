@@ -1,0 +1,99 @@
+<section class="video-texto-section py-5" style="position: relative;">
+    <!-- Acciones del Componente -->
+    <div class="video-texto-actions">
+        <button class="btn btn-sm btn-danger me-2" (click)="eliminarElemento.emit()" title="Eliminar Sección">✖</button>
+        <button class="btn btn-sm btn-primary" (click)="abrirConfig()" title="Configurar Sección">⚙</button>
+    </div>
+
+    <div class="container">
+        <div class="row align-items-center" [class.flex-row-reverse]="props.videoDerecha">
+            
+            <!-- Columna del Video -->
+            <div class="col-12 col-md-6 mb-4 mb-md-0">
+                <div class="video-container shadow-lg rounded-4 overflow-hidden bg-dark position-relative">
+                    <div class="ratio ratio-16x9" *ngIf="safeUrl">
+                        <iframe [src]="safeUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; live" allowfullscreen></iframe>
+                    </div>
+                    <div class="ratio ratio-16x9 d-flex flex-column align-items-center justify-content-center text-white p-4 text-center" *ngIf="!safeUrl">
+                        <i class="bi bi-youtube text-danger fs-1 mb-2"></i>
+                        <p class="m-0">Configura una URL de YouTube válida en los ajustes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna del Texto -->
+            <div class="col-12 col-md-6 px-lg-5">
+                <div class="text-content">
+                    <h2 class="fw-bold mb-3 section-title">{{ props.titulo }}</h2>
+                    <p class="text-muted mb-4 section-desc">{{ props.descripcion }}</p>
+                    
+                    <a *ngIf="props.botonTexto" [href]="props.botonEnlace || '#'" class="btn btn-primary btn-cta px-4 py-2.5 fw-bold rounded-3">
+                        {{ props.botonTexto }}
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- MODAL CONFIGURACIÓN -->
+<div *ngIf="configOpen" class="modal-config" (click)="cerrarConfig()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <h5 class="mb-4 fw-bold">Configurar Sección Video + Texto</h5>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">URL de YouTube</label>
+            <input type="text" [(ngModel)]="propsEdit.youtubeUrl" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Título</label>
+            <input type="text" [(ngModel)]="propsEdit.titulo" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Descripción</label>
+            <textarea rows="4" [(ngModel)]="propsEdit.descripcion" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Alineación del Video</label>
+            <select class="form-select" [(ngModel)]="propsEdit.videoDerecha">
+                <option [ngValue]="false">Izquierda (Video a la izquierda, Texto a la derecha)</option>
+                <option [ngValue]="true">Derecha (Texto a la izquierda, Video a la derecha)</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Texto del Botón</label>
+            <input type="text" [(ngModel)]="propsEdit.botonTexto" class="form-control" placeholder="MÁS INFORMACIÓN (dejar vacío para ocultar)">
+        </div>
+
+        <div class="mb-3" *ngIf="propsEdit.botonTexto">
+            <label class="form-label fw-bold">Tipo de Enlace</label>
+            <select class="form-select" [(ngModel)]="propsEdit.botonLinkType">
+                <option value="url">Dirección URL Externa</option>
+                <option value="page">Redirigir a Página del Sitio</option>
+            </select>
+        </div>
+
+        <div class="mb-3" *ngIf="propsEdit.botonTexto && propsEdit.botonLinkType === 'url'">
+            <label class="form-label fw-bold">URL de Redirección</label>
+            <input type="text" [(ngModel)]="propsEdit.botonEnlace" class="form-control" placeholder="https://...">
+        </div>
+
+        <div class="mb-3" *ngIf="propsEdit.botonTexto && propsEdit.botonLinkType === 'page'">
+            <label class="form-label fw-bold">Seleccionar Página</label>
+            <select class="form-select" [(ngModel)]="propsEdit.botonPageSlug">
+                <option value="">-- Selecciona una página --</option>
+                <option *ngFor="let p of pagesList" [value]="p.slug">{{ p.name }} ({{ p.slug }})</option>
+            </select>
+        </div>
+
+        <div class="text-end mt-4">
+            <button class="btn btn-success me-2" (click)="guardarConfig()">Guardar</button>
+            <button class="btn btn-outline-secondary" (click)="cerrarConfig()">Cerrar</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.tar.gz
+*.zip
+
+# Angular Frontends (admin / web / dashboard)
+admin/node_modules/
+admin/dist/
+admin/.angular/
+admin/tmp/
+admin/out-tsc/
+
+web/node_modules/
+web/dist/
+web/.angular/
+web/compiler/
+web/tmp/
+web/out-tsc/
+
+dashboard/node_modules/
+dashboard/dist/
+dashboard/.angular/
+dashboard/compiler/
+dashboard/tmp/
+dashboard/out-tsc/
+
+# Lumen / PHP (api)
+api/vendor/
+api/node_modules/
+api/.env
+api/.env.backup
+api/.env.production
+api/cls
+api/storage/*.key
+api/storage/logs/*.log
+!api/storage/logs/.gitignore
+api/.phpunit.cache/
+api/.phpunit.result.cache

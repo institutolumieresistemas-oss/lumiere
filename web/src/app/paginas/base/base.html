@@ -1,0 +1,153 @@
+<app-menu></app-menu>
+<!-- <app-asistente></app-asistente> -->
+
+<div class="row g-0">
+<ng-container *ngFor="let el of elements">
+    <!-- col-12 en movil y col-md-X adaptativo para PC -->
+    <div [class]="'col-12 col-md-' + (el.col || 12)">
+
+    <app-banner *ngIf="el.type === 'banner'" 
+                [images]="el.props.images"
+                [styleType]="el.props.styleType"
+                [title]="el.props.title"
+                [subtitle]="el.props.subtitle"
+                [description]="el.props.description"
+                [highlightText]="el.props.highlightText"
+                [buttonText]="el.props.buttonText"
+                [infoText]="el.props.infoText"
+                [linkType]="el.props.linkType"
+                [linkPageSlug]="el.props.linkPageSlug"
+                [linkUrl]="el.props.linkUrl"
+                [button2Text]="el.props.button2Text"
+                [link2Type]="el.props.link2Type"
+                [link2PageSlug]="el.props.link2PageSlug"
+                [link2Url]="el.props.link2Url"
+                [sendUrl]="el.props.sendUrl"
+                [sendToken]="el.props.sendToken"
+                [pipelineId]="el.props.pipelineId">
+    </app-banner>
+
+    <app-hero *ngIf="el.type === 'hero'" 
+              [badge]="el.props.badge" 
+              [titleStart]="el.props.titleStart" 
+              [titleHighlight]="el.props.titleHighlight" 
+              [titleMiddle]="el.props.titleMiddle" 
+              [titleCircle]="el.props.titleCircle" 
+              [description]="el.props.description" 
+              [stats]="el.props.stats" 
+              [stickyNoteTitle]="el.props.stickyNoteTitle" 
+              [stickyNoteText]="el.props.stickyNoteText" 
+              [floatingTitle]="el.props.floatingTitle" 
+              [floatingSubtitle]="el.props.floatingSubtitle" 
+              [floatingAvatar]="el.props.floatingAvatar" 
+              [heroImage]="el.props.heroImage"
+              [btn1Text]="el.props.btn1Text"
+              [btn1LinkType]="el.props.btn1LinkType"
+              [btn1Url]="el.props.btn1Url"
+              [btn1PageSlug]="el.props.btn1PageSlug"
+              [btn2Text]="el.props.btn2Text"
+              [btn2LinkType]="el.props.btn2LinkType"
+              [btn2Url]="el.props.btn2Url"
+              [btn2PageSlug]="el.props.btn2PageSlug">
+    </app-hero>
+
+    <app-simulador *ngIf="el.type === 'simulador'"
+                   [props]="el.props">
+    </app-simulador>
+
+    <app-cursos-udg *ngIf="el.type === 'cursos-udg'"
+                    [props]="el.props">
+    </app-cursos-udg>
+
+    <app-muro-opiniones *ngIf="el.type === 'muro-opiniones'"
+                        [props]="el.props">
+    </app-muro-opiniones>
+
+    <app-badge-flotante *ngIf="el.type === 'badge-flotante'"
+                        [props]="el.props">
+    </app-badge-flotante>
+
+    <app-mensaje *ngIf="el.type === 'mensaje'" [props]="el.props">
+    </app-mensaje>
+
+    <app-numeros *ngIf="el.type === 'numeros'" [props]="el.props">
+    </app-numeros>
+
+    <app-profesores *ngIf="el.type === 'profesores'" [props]="el.props">
+    </app-profesores>
+
+    <app-foto-planteles *ngIf="el.type === 'foto-planteles'" [images]="el.props.images" [layout]="el.props.layout">
+    </app-foto-planteles>
+
+    <app-whatsapp *ngIf="el.type === 'whatsapp'" [phone]="el.props.phone" [message]="el.props.message">
+    </app-whatsapp>
+
+    <app-testimonios *ngIf="el.type === 'testimonios'" [props]="el.props">
+    </app-testimonios>
+
+    <app-cursos *ngIf="el.type === 'cursos'" [props]="el.props">
+    </app-cursos>
+
+    <app-chat *ngIf="el.type === 'chat'" [props]="el.props">
+    </app-chat>
+
+    <app-curso *ngIf="el.type === 'curso'" [data]="el.props">
+    </app-curso>
+
+    <app-datos-planteles *ngIf="el.type === 'datos-planteles'" [props]="el.props">
+    </app-datos-planteles>
+
+    <app-faq *ngIf="el.type === 'faq'" [props]="el.props">
+    </app-faq>
+
+    <app-video-texto *ngIf="el.type === 'video-texto'" [props]="el.props">
+    </app-video-texto>
+
+    <app-categorias *ngIf="el.type === 'categorias'" [props]="el.props">
+    </app-categorias>
+
+    <app-experiencia-evento *ngIf="el.type === 'experiencia-evento'" [props]="el.props">
+    </app-experiencia-evento>
+
+    <app-galeria-carrusel *ngIf="el.type === 'galeria-carrusel'" [props]="el.props">
+    </app-galeria-carrusel>
+
+    <app-minibanner *ngIf="el.type === 'minibanner'" [props]="el.props">
+    </app-minibanner>
+
+    <app-modalidades *ngIf="el.type === 'modalidades'" [props]="el.props">
+    </app-modalidades>
+
+    <app-streaming *ngIf="el.type === 'streaming'" [props]="el.props">
+    </app-streaming>
+
+    <app-tabla-admitidos *ngIf="el.type === 'tabla-admitidos'" [props]="el.props">
+    </app-tabla-admitidos>
+
+    <app-kommo-form *ngIf="el.type === 'kommo-form'" [props]="el.props">
+    </app-kommo-form>
+
+    <app-banner-descripcion *ngIf="el.type === 'banner-descripcion'" [props]="el.props">
+    </app-banner-descripcion>
+
+    <app-imagen *ngIf="el.type === 'imagen'" [props]="el.props">
+    </app-imagen>
+
+    <app-documentos-pdf *ngIf="el.type === 'documentos-pdf'" [props]="el.props">
+    </app-documentos-pdf>
+
+    <app-tabla-carreras *ngIf="el.type === 'tabla-carreras'" [props]="el.props">
+    </app-tabla-carreras>
+
+    <app-form-imagen *ngIf="el.type === 'form-imagen'" [props]="el.props">
+    </app-form-imagen>
+
+    <app-espacio-menu *ngIf="el.type === 'espacio-menu'" [props]="el.props">
+    </app-espacio-menu>
+
+    <app-examen-gratis *ngIf="el.type === 'examen-gratis'" [props]="el.props">
+    </app-examen-gratis>
+
+    </div>
+</ng-container>
+</div>

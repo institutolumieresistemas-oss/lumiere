@@ -1,0 +1,370 @@
+/* Import Google Fonts para fuentes divertidas y escolares */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Gochi+Hand&family=Outfit:wght@400;600;800&display=swap');
+
+/* ============================
+   WRAPPER PRINCIPAL
+   ============================ */
+.categorias-wrapper {
+  padding: 30px;
+  background-color: #fafbfe;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px dashed transparent;
+  transition: all 0.3s ease;
+  font-family: 'Outfit', sans-serif;
+}
+
+.categorias-wrapper:hover {
+  border-color: #c5cffd;
+}
+
+/* Acciones del Constructor */
+.categorias-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: none;
+  gap: 6px;
+  z-index: 10;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.categorias-wrapper:hover .categorias-actions {
+  display: flex;
+}
+
+.select-diseno-rapido {
+  width: 175px;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+/* ============================
+   TÍTULO Y SUBTÍTULO
+   ============================ */
+.titulo-principal {
+  font-weight: 800;
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+  color: #111111;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.subtitulo-texto {
+  font-size: 1.25rem;
+  color: #4a5568;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Resaltado estilo marcador de texto */
+.subtitulo-highlight {
+  background-color: var(--highlight-color, #fef08a);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  color: #1a202c;
+  display: inline-block;
+  transform: rotate(-1deg);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================
+   CUADROS BASE ORIGINALES
+   ============================ */
+.cuadros-container {
+  padding: 1.5rem 0;
+}
+
+.cuadros-container .cuadro-item {
+  border: 1px solid #c5cffd;
+  border-radius: 8px;
+  padding: 12px 24px;
+  width: 260px;
+  min-height: 100px;
+  background: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cuadros-container .cuadro-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(197, 207, 253, 0.4);
+  border-color: #7b94ff;
+}
+
+.cuadros-container .cuadro-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.cuadros-container .cuadro-img {
+  max-width: 100%;
+  max-height: 75px;
+  object-fit: contain;
+  display: block;
+}
+
+/* ============================
+   DISEÑOS ESTUDIANTILES (STICKERBOOK, POLAROID, NOTEPAD)
+   ============================ */
+.cuadros-estudiantiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.cuadro-item-estudiantil {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  flex: 0 1 260px;
+  width: 100%;
+}
+
+@media (max-width: 576px) {
+  .cuadro-item-estudiantil {
+    flex: 0 0 100%;
+  }
+}
+
+.cuadro-link-estudiantil {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  position: relative;
+}
+
+.cuadro-img-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cuadro-img-estudiantil {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* 1. STICKERBOOK (Apariencia de calcomanías escolares) */
+[data-diseno="stickerbook"] .cuadros-estudiantiles {
+  gap: 2.5rem;
+}
+
+[data-diseno="stickerbook"] .cuadro-item-estudiantil {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 20px;
+  border: 4px solid #ffffff;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+[data-diseno="stickerbook"] .cuadro-item-estudiantil:hover {
+  transform: scale(1.1) rotate(0deg) !important;
+  box-shadow: 0 15px 30px rgba(123, 148, 255, 0.25);
+  z-index: 5;
+}
+
+[data-diseno="stickerbook"] .cuadro-img-container {
+  height: 110px;
+  border-radius: 12px;
+  background-color: #f7fafc;
+}
+
+[data-diseno="stickerbook"] .cuadro-label-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+[data-diseno="stickerbook"] .cuadro-etiqueta-text {
+  font-family: 'Gochi Hand', cursive;
+  font-size: 1.5rem;
+  color: #2d3748;
+}
+
+/* 2. POLAROID (Fotos instantáneas escolares) */
+[data-diseno="polaroid"] .cuadro-item-estudiantil {
+  background-color: #ffffff;
+  padding: 12px 12px 24px 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+[data-diseno="polaroid"] .cuadro-item-estudiantil:hover {
+  transform: translateY(-8px) rotate(1deg);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.15);
+}
+
+[data-diseno="polaroid"] .cuadro-img-container {
+  height: 150px;
+  background-color: #1a202c;
+}
+
+[data-diseno="polaroid"] .cuadro-img-estudiantil {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-diseno="polaroid"] .cuadro-label-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+[data-diseno="polaroid"] .cuadro-etiqueta-text {
+  font-family: 'Caveat', cursive;
+  font-size: 1.9rem;
+  color: #1a202c;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* 3. NOTEPAD (Libreta escolar con espirales) */
+[data-diseno="notepad"] .cuadro-item-estudiantil {
+  background: repeating-linear-gradient(
+    #ffffff,
+    #ffffff 24px,
+    #e2e8f0 24px,
+    #e2e8f0 25px
+  );
+  border: 1px solid #cbd5e0;
+  border-left: 10px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 20px 15px 15px 25px;
+  min-height: 160px;
+  box-shadow: 3px 3px 0px #cbd5e0;
+  position: relative;
+}
+
+[data-diseno="notepad"] .cuadro-item-estudiantil:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #7b94ff;
+}
+
+/* Espirales del bloc de notas */
+.notepad-spiral {
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.spiral-ring {
+  width: 8px;
+  height: 20px;
+  background: linear-gradient(to right, #cbd5e0, #a0aec0, #cbd5e0);
+  border-radius: 4px;
+  border: 1px solid #718096;
+}
+
+[data-diseno="notepad"] .cuadro-img-container {
+  height: 60px;
+  justify-content: flex-start;
+}
+
+[data-diseno="notepad"] .cuadro-img-estudiantil {
+  max-height: 50px;
+}
+
+[data-diseno="notepad"] .cuadro-label-container {
+  margin-top: 15px;
+  display: flex;
+}
+
+[data-diseno="notepad"] .cuadro-etiqueta-text {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #2d3748;
+  position: relative;
+  z-index: 1;
+}
+
+/* Marcador resaltador al hover en notepad */
+[data-diseno="notepad"] .cuadro-item-estudiantil:hover .cuadro-etiqueta-text::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: -5px;
+  width: calc(100% + 10px);
+  height: 10px;
+  background-color: var(--marker-color, #fef08a);
+  z-index: -1;
+  transform: rotate(-1deg);
+  opacity: 0.85;
+}
+
+/* ============================
+   MODAL CONFIG
+   ============================ */
+.categorias-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.categorias-modal-content {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  font-family: 'Outfit', sans-serif;
+}
+
+.cuadro-edit-item {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.option-block {
+  border: 1px solid transparent;
+}
+
+.option-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 8px;
+}
+
+.option-highlight {
+  background: #fffbeb;
+  border-color: #fef3c7 !important;
+}
+.option-highlight .option-label { color: #d97706; }

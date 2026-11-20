@@ -1,0 +1,169 @@
+<div class="faq-notebook-wrapper py-5 grid-bg-accent position-relative">
+  <!-- BOTONES SOBRE PUESTOS DE EDICIÓN -->
+  <div class="faq-actions position-absolute top-0 end-0 m-3 z-3">
+    <button class="btn btn-danger btn-sm me-2" (click)="eliminar()">✕</button>
+    <button class="btn btn-primary btn-sm" (click)="openModal()">⚙ Configurar FAQ</button>
+  </div>
+
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <span class="badge">Saca tus Dudas 📝</span>
+      <h2>Preguntas Frecuentes</h2>
+      <p class="handwritten-desc text-muted" *ngIf="props.layout === 'notebook'">¿Tienes dudas sobre el examen de admisión UDG o nuestros cursos? ¡Despeja tu mente aquí! 👇</p>
+      <p class="text-muted" *ngIf="props.layout !== 'notebook'">Resolvemos todas tus dudas académicas de forma inmediata.</p>
+    </div>
+
+    <!-- ================= 1. LAYOUT NOTEBOOK (Opción 1) ================= -->
+    <div class="notebook-page sketch-border shadow-lg" *ngIf="props.layout === 'notebook' || !props.layout">
+      <div class="binder-rings">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+      </div>
+
+      <div class="notebook-content">
+        <div class="faq-list">
+          <div class="faq-item-notebook" *ngFor="let f of props.faqs; let i = index">
+            <div class="faq-question-header" (click)="toggle(i)" [class.active]="abierto === i">
+              <span class="question-text"><i class="fas fa-question-circle me-2 text-primary"></i>{{ f.pregunta }}</span>
+              <span class="faq-arrow-doodle">
+                <i class="fas" [ngClass]="abierto === i ? 'fa-pencil-alt text-danger' : 'fa-chevron-down text-muted'"></i>
+              </span>
+            </div>
+
+            <div class="faq-answer-container" [class.mostrar]="abierto === i">
+              <div class="sticky-note mx-auto" [ngClass]="getPostItColor(i)" style="max-width: 90%; transform: rotate(1deg);">
+                <p class="handwritten comment-text mb-0">
+                  {{ f.respuesta }}
+                </p>
+                <span class="handwritten-badge">¡Estudia inteligente! 🧠🎯</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 2. LAYOUT CHAT (Opción 2) ================= -->
+    <div class="chat-faq-container mx-auto" style="max-width: 650px;" *ngIf="props.layout === 'chat'">
+      <div class="chat-header d-flex align-items-center gap-3 p-3 bg-primary text-white rounded-top shadow-sm">
+        <div class="avatar-header bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; color: #0F2042;">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <div>
+          <h6 class="mb-0 fw-bold">Soporte Cursos Lumière</h6>
+          <span class="small opacity-75">● En línea ahora</span>
+        </div>
+      </div>
+      
+      <div class="chat-body p-4 border border-top-0 rounded-bottom bg-light shadow-lg d-flex flex-column gap-3">
+        <div *ngFor="let f of props.faqs; let i = index" class="chat-item">
+          <!-- Question Bubble -->
+          <div class="chat-bubble bubble-right ms-auto" (click)="toggle(i)" [class.active]="abierto === i">
+            <p class="mb-0">{{ f.pregunta }}</p>
+            <span class="time-stamp">Estudiante</span>
+          </div>
+
+          <!-- Answer Bubble -->
+          <div class="chat-bubble-reply-wrapper d-flex gap-2 mt-2 align-items-start" *ngIf="abierto === i">
+            <div class="avatar-reply bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; min-width: 32px; font-size: 0.85rem;">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="chat-bubble bubble-left">
+              <p class="mb-0">{{ f.respuesta }}</p>
+              <span class="time-stamp text-muted">Coach Lumière</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 3. LAYOUT DISCORD (Opción 3) ================= -->
+    <div class="discord-faq-container mx-auto" style="max-width: 800px;" *ngIf="props.layout === 'discord'">
+      <div class="row g-3">
+        <div class="col-12" *ngFor="let f of props.faqs; let i = index">
+          <div class="discord-card border rounded shadow-sm bg-white overflow-hidden">
+            <div class="discord-card-header p-3 d-flex justify-content-between align-items-center cursor-pointer" (click)="toggle(i)">
+              <h6 class="mb-0 fw-bold text-slate-800 d-flex align-items-center gap-2">
+                <i class="fas fa-hashtag text-secondary"></i> {{ f.pregunta }}
+              </h6>
+              <i class="fas" [ngClass]="abierto === i ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </div>
+            
+            <div class="discord-card-body p-3 border-top bg-light" *ngIf="abierto === i">
+              <p class="text-muted mb-3">{{ f.respuesta }}</p>
+              
+              <!-- Reactions bar -->
+              <div class="d-flex gap-2 align-items-center border-top pt-2">
+                <span class="small text-muted me-2">Reaccionar:</span>
+                <button class="btn-reaction" (click)="react(i, '🔥')">
+                  🔥 <span class="badge-reaction">{{ getReactions(i)['🔥'] }}</span>
+                </button>
+                <button class="btn-reaction" (click)="react(i, '🤯')">
+                  🤯 <span class="badge-reaction">{{ getReactions(i)['🤯'] }}</span>
+                </button>
+                <button class="btn-reaction" (click)="react(i, '🙌')">
+                  🙌 <span class="badge-reaction">{{ getReactions(i)['🙌'] }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL CONFIGURACIÓN -->
+  <div *ngIf="abrirConfigModal" class="faq-modal-overlay">
+    <div class="faq-modal-content">
+      <h5 class="mb-3"><i class="fas fa-cog me-2"></i>Configurar Preguntas Frecuentes</h5>
+
+      <!-- SELECCIONAR LAYOUT -->
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-muted">Estilo / Layout de la Sección</label>
+        <select class="form-select" [(ngModel)]="layoutTemp">
+          <option value="notebook">Libreta de Notas (Notebook)</option>
+          <option value="chat">Conversación de Chat (WhatsApp)</option>
+          <option value="discord">Tablero de Respuestas (Discord/Reacciones)</option>
+        </select>
+      </div>
+
+      <!-- LISTA DE PREGUNTAS -->
+      <div class="faq-edit-scroll border rounded p-3 mb-3 bg-light" style="max-height: 320px; overflow-y: auto;">
+        <div *ngFor="let f of faqsTemp; let i = index" class="p-3 mb-3 bg-white border rounded position-relative">
+          <button class="btn btn-danger btn-xs position-absolute top-0 end-0 m-2" style="padding: 2px 6px;" (click)="eliminarFaq(i)">✖</button>
+          
+          <div class="mb-2">
+            <label class="form-label small fw-bold text-muted">Pregunta {{ i + 1 }}</label>
+            <input type="text" [(ngModel)]="faqsTemp[i].pregunta" class="form-control form-control-sm">
+          </div>
+          <div>
+            <label class="form-label small fw-bold text-muted">Respuesta</label>
+            <textarea [(ngModel)]="faqsTemp[i].respuesta" class="form-control form-control-sm" rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGREGAR PREGUNTA -->
+      <div class="text-start mb-3">
+        <button class="btn btn-outline-primary btn-sm" (click)="agregarFaq()">
+          ＋ Agregar pregunta
+        </button>
+      </div>
+
+      <!-- BOTONES ACCIÓN MODAL -->
+      <div class="text-end border-top pt-3">
+        <button class="btn btn-secondary btn-sm me-2" (click)="closeModal()">
+          Cerrar
+        </button>
+        <button class="btn btn-success btn-sm" (click)="guardar()">
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,116 @@
+<div class="banner-wrapper position-relative" [ngClass]="'style-' + styleType">
+
+    <!-- 1. CLÁSICO (Slider actual con formulario flotante) -->
+    @if (styleType === 'classic') {
+        <div class="banner-container position-relative">
+            <img *ngFor="let img of images; let i = index" [src]="img" class="banner-img" [class.active]="i === currentIndex">
+            <div class="flash-overlay" [class.flash-active]="flash"></div>
+        </div>
+        <div class="banner-form-wrapper">
+            <div class="banner-form card p-4 shadow-lg">
+                <h3 class="fw-bold text-primary mb-3 text-center">
+                    Solicitar Información
+                </h3>
+                <form (submit)="enviarFormulario($event)">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="nombre" [(ngModel)]="formNombre" required placeholder="Nombre">
+                        <label>Nombre</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" name="correo" [(ngModel)]="formCorreo" required placeholder="Correo">
+                        <label>Correo electrónico</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                        Enviar
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+
+    <!-- 2. NEON (Glassmorphism & Neon gradients) -->
+    @if (styleType === 'neon') {
+        <div class="neon-banner-container d-flex align-items-center justify-content-between px-5 position-relative overflow-hidden" 
+             [style.background-image]="images.length > 0 ? 'linear-gradient(to right, rgba(15,12,30,0.9), rgba(15,12,30,0.5)), url(' + images[0] + ')' : ''">
+            <div class="neon-glow-circle circle-1"></div>
+            <div class="neon-glow-circle circle-2"></div>
+            
+            <div class="neon-content z-3 text-start">
+                <span class="badge bg-primary text-uppercase mb-2 px-3 py-2 rounded-pill tracking-wide">🎓 Próximo Examen UdeG</span>
+                <h1 class="neon-title display-4 fw-bold text-white mb-3">{{ title || 'Asegura tu Ingreso a la Universidad' }}</h1>
+                <p class="neon-subtitle lead text-light mb-4">{{ subtitle || 'El mejor curso de preparación para tu examen de admisión' }}</p>
+                
+                @if (linkType === 'url') {
+                    <a [href]="linkUrl || '#'" target="_blank" class="btn btn-neon-glow btn-lg rounded-pill px-4">{{ buttonText || 'Ver Cursos' }}</a>
+                } @else {
+                    <a [routerLink]="'/' + cleanPageSlug" class="btn btn-neon-glow btn-lg rounded-pill px-4">{{ buttonText || 'Ver Cursos' }}</a>
+                }
+            </div>
+
+            <div class="neon-glass-card p-4 rounded-4 shadow-lg z-3">
+                <h4 class="fw-bold text-white text-center mb-3">¡Logra tu Puntaje!</h4>
+                <form (submit)="enviarFormulario($event)">
+                    <input type="text" class="form-control mb-3 glass-input" name="nombre" [(ngModel)]="formNombre" required placeholder="Tu Nombre">
+                    <input type="email" class="form-control mb-3 glass-input" name="correo" [(ngModel)]="formCorreo" required placeholder="Tu Correo">
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill btn-neon-submit">Comenzar Ahora</button>
+                </form>
+            </div>
+        </div>
+    }
+
+    <!-- 3. SPLIT (Contraste Activo / Split-Screen) -->
+    @if (styleType === 'split') {
+        <div class="split-banner-container d-flex flex-column flex-md-row position-relative">
+            <div class="split-left d-flex flex-column justify-content-center p-5 w-100 w-md-50 text-start">
+                <h2 class="split-title display-5 fw-bold mb-3 text-dark">
+                    {{ title || 'Prepárate para el examen e' }}
+                    <span class="split-highlight px-2 rounded">{{ highlightText || 'Ingresa' }}</span>
+                </h2>
+                <p class="split-desc text-muted mb-4 lead">
+                    {{ description || 'Accede a exámenes de simulación, temarios actualizados y asesorías personalizadas con profesores expertos.' }}
+                </p>
+                <div>
+                    @if (linkType === 'url') {
+                        <a [href]="linkUrl || '#'" target="_blank" class="btn btn-dark btn-lg rounded-3 px-4 shadow-sm me-3">{{ buttonText || 'Explorar Cursos' }}</a>
+                    } @else {
+                        <a [routerLink]="'/' + cleanPageSlug" class="btn btn-dark btn-lg rounded-3 px-4 shadow-sm me-3">{{ buttonText || 'Explorar Cursos' }}</a>
+                    }
+                    @if (link2Type === 'url') {
+                        <a [href]="link2Url || '#'" target="_blank" class="btn btn-outline-dark btn-lg rounded-3 px-4 shadow-sm">{{ button2Text || 'Saber más' }}</a>
+                    } @else {
+                        <a [routerLink]="'/' + clean2PageSlug" class="btn btn-outline-dark btn-lg rounded-3 px-4 shadow-sm">{{ button2Text || 'Saber más' }}</a>
+                    }
+                </div>
+            </div>
+            <div class="split-right w-100 w-md-50 position-relative" 
+                 [style.background-image]="'url(' + (images.length > 0 ? images[0] : 'https://picsum.photos/800/600') + ')'">
+                <div class="split-badge shadow-lg">⚡ 100% de Garantía</div>
+            </div>
+        </div>
+    }
+
+    <!-- 4. GRID (Bento Grid) -->
+    @if (styleType === 'grid') {
+        <div class="grid-banner-container p-4">
+            <div class="bento-grid">
+                <div class="bento-card bento-main p-5 d-flex flex-column justify-content-between" 
+                     [style.background-image]="images.length > 0 ? 'linear-gradient(to top, rgba(0,0,0,0.85), transparent), url(' + images[0] + ')' : ''">
+                    <div class="bento-badge text-uppercase">Aspirantes UdeG</div>
+                    <div class="text-start">
+                        <h2 class="text-white fw-bold display-6 mb-2">{{ title || 'Tu lugar en la universidad te espera' }}</h2>
+                        <p class="text-light-50 m-0">{{ infoText || 'Cursos dinámicos para examen de Licenciatura y Preparatoria' }}</p>
+                    </div>
+                </div>
+                <div class="bento-card bento-secondary p-4 d-flex flex-column justify-content-between">
+                    <h4 class="fw-bold text-dark mb-3 text-start">Solicitar Llamada 📞</h4>
+                    <form (submit)="enviarFormulario($event)" class="w-100">
+                        <input type="text" class="form-control mb-2 rounded-3" name="nombre" [(ngModel)]="formNombre" required placeholder="Nombre">
+                        <input type="tel" class="form-control mb-3 rounded-3" name="telefono" [(ngModel)]="formTelefono" required placeholder="Teléfono">
+                        <button type="submit" class="btn btn-warning w-100 rounded-3 fw-bold">Solicitar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

@@ -1,0 +1,156 @@
+<!-- MENÚ GLOBAL FIJO EN EL BUILDER -->
+<app-menu [styleType]="getGlobalMenuStyle()" [sinTransparencia]="getGlobalMenuSinTransparencia()" (actualizarProps)="saveGlobalMenuStyle($event)"></app-menu>
+
+<div class="canvas p-3" cdkDropList [cdkDropListData]="elements" (cdkDropListDropped)="drop($event)">
+
+  <div class="row g-2">
+
+    <div *ngFor="let el of elements; let i = index; trackBy: trackById"
+         [class]="'canvas-block col-12 col-md-' + (el.col || 12)"
+         cdkDrag>
+
+        <!-- HANDLE PARA ARRASTRAR + SELECTOR DE COLUMNAS -->
+        <div class="drag-handle d-flex align-items-center justify-content-between" cdkDragHandle>
+            <span>☰ Arrastrar sección</span>
+            <div class="col-selector d-flex align-items-center gap-1" (click)="$event.stopPropagation()">
+                <span class="col-label">Col:</span>
+                <div class="btn-group btn-group-sm">
+                    <button *ngFor="let c of colOptions"
+                            class="btn btn-col"
+                            [class.active]="(el.col || 12) === c"
+                            (click)="cambiarCol(i, c)">
+                        {{ c }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <app-banner *ngIf="el.type === 'banner'" 
+                    [images]="el.props.images" 
+                    [styleType]="el.props.styleType"
+                    [title]="el.props.title"
+                    [subtitle]="el.props.subtitle"
+                    [description]="el.props.description"
+                    [highlightText]="el.props.highlightText"
+                    [buttonText]="el.props.buttonText"
+                    [infoText]="el.props.infoText"
+                    [linkType]="el.props.linkType"
+                    [linkPageSlug]="el.props.linkPageSlug"
+                    [linkUrl]="el.props.linkUrl"
+                    [button2Text]="el.props.button2Text"
+                    [link2Type]="el.props.link2Type"
+                    [link2PageSlug]="el.props.link2PageSlug"
+                    [link2Url]="el.props.link2Url"
+                    [sendUrl]="el.props.sendUrl"
+                    [sendToken]="el.props.sendToken"
+                    (eliminarElemento)="eliminarElemento(i)" 
+                    (actualizarProps)="actualizarProps(i, $event)">
+        </app-banner>
+
+        <app-hero *ngIf="el.type === 'hero'" 
+                  [props]="el.props"
+                  (actualizarProps)="actualizarProps(i, $event)"
+                  (eliminarElemento)="eliminarElemento(i)">
+        </app-hero>
+
+        <app-simulador *ngIf="el.type === 'simulador'" 
+                       [props]="el.props"
+                       (actualizarProps)="actualizarProps(i, $event)"
+                       (eliminarElemento)="eliminarElemento(i)">
+        </app-simulador>
+
+        <app-cursos-udg *ngIf="el.type === 'cursos-udg'" 
+                        [props]="el.props"
+                        (actualizarProps)="actualizarProps(i, $event)"
+                        (eliminarElemento)="eliminarElemento(i)">
+        </app-cursos-udg>
+
+        <app-muro-opiniones *ngIf="el.type === 'muro-opiniones'" 
+                            [props]="el.props"
+                            (actualizarProps)="actualizarProps(i, $event)"
+                            (eliminarElemento)="eliminarElemento(i)">
+        </app-muro-opiniones>
+
+        <app-badge-flotante *ngIf="el.type === 'badge-flotante'" 
+                            [props]="el.props"
+                            (actualizarProps)="actualizarProps(i, $event)"
+                            (eliminarElemento)="eliminarElemento(i)">
+        </app-badge-flotante>
+
+        <app-whatsapp *ngIf="el.type === 'whatsapp'" [phone]="el.props.phone" [message]="el.props.message" (eliminarElemento)="eliminarElemento(i)" (actualizarProps)="actualizarProps(i, $event)">
+        </app-whatsapp>
+
+        <app-faq *ngIf="el.type === 'faq'" [props]="el.props" (eliminarElemento)="eliminarElemento(i)" (actualizarProps)="actualizarProps(i, $event)">
+        </app-faq>
+
+        <app-foto-planteles *ngIf="el.type === 'foto-planteles'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-foto-planteles>
+
+        <app-mensaje *ngIf="el.type === 'mensaje'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-mensaje>
+
+        <app-numeros *ngIf="el.type === 'numeros'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-numeros>
+
+        <app-profesores *ngIf="el.type === 'profesores'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-profesores>
+
+        <app-testimonios *ngIf="el.type === 'testimonios'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-testimonios>
+
+        <app-cursos *ngIf="el.type === 'cursos'" [cursos]="cursos" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-cursos>
+
+        <app-streaming *ngIf="el.type === 'streaming'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-streaming>
+
+        <app-experiencia-evento *ngIf="el.type === 'experiencia-evento'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-experiencia-evento>
+
+        <app-categorias *ngIf="el.type === 'categorias'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-categorias>
+
+        <app-modalidades *ngIf="el.type === 'modalidades'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-modalidades>
+
+        <app-minibanner *ngIf="el.type === 'minibanner'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-minibanner>
+
+        <app-galeria-carrusel *ngIf="el.type === 'galeria-carrusel'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-galeria-carrusel>
+
+        <app-video-texto *ngIf="el.type === 'video-texto'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-video-texto>
+
+        <app-tabla-admitidos *ngIf="el.type === 'tabla-admitidos'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-tabla-admitidos>
+
+        <app-kommo-form *ngIf="el.type === 'kommo-form'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-kommo-form>
+
+        <app-banner-descripcion *ngIf="el.type === 'banner-descripcion'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-banner-descripcion>
+
+        <app-imagen *ngIf="el.type === 'imagen'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-imagen>
+
+        <app-documentos-pdf *ngIf="el.type === 'documentos-pdf'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-documentos-pdf>
+
+        <app-tabla-carreras *ngIf="el.type === 'tabla-carreras'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-tabla-carreras>
+
+        <app-form-imagen *ngIf="el.type === 'form-imagen'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-form-imagen>
+
+        <app-espacio-menu *ngIf="el.type === 'espacio-menu'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-espacio-menu>
+
+        <app-examen-gratis *ngIf="el.type === 'examen-gratis'" [props]="el.props" (actualizarProps)="actualizarProps(i, $event)" (eliminarElemento)="eliminarElemento(i)">
+        </app-examen-gratis>
+
+    </div>
+
+  </div>
+
+</div>

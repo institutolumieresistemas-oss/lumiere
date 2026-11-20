@@ -1,0 +1,65 @@
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6 hero-content doodle-container">
+        <!-- Doodle de estrella o rayón -->
+        <div class="doodle doodle-star" style="top: -20px; left: -10px;"><i class="fas fa-star"></i></div>
+        <div class="doodle-circle" style="width: 170px; height: 36px; top: 12px; left: 16px;"></div>
+        
+        <span class="badge">{{ badge }}</span>
+        <h1 class="hero-title">
+          {{ titleStart }} <span class="highlight-marker">{{ titleHighlight }}</span> {{ titleMiddle }} <span class="pencil-circle pencil-circle-blue">{{ titleCircle }}</span>.
+        </h1>
+        <p class="hero-description">{{ description }}</p>
+        
+        <div class="hero-buttons">
+          <!-- Botón 1 -->
+          <ng-container *ngIf="btn1Text">
+            <a *ngIf="btn1LinkType === 'url'" [href]="btn1Url || '#'" target="_blank" class="btn btn-primary sketch-border">{{ btn1Text }}</a>
+            <a *ngIf="btn1LinkType === 'page'" [routerLink]="'/' + btn1PageSlug" class="btn btn-primary sketch-border">{{ btn1Text }}</a>
+          </ng-container>
+
+          <!-- Botón 2 -->
+          <ng-container *ngIf="btn2Text">
+            <a *ngIf="btn2LinkType === 'url'" [href]="btn2Url || '#'" target="_blank" class="btn btn-outline">{{ btn2Text }} <i class="fas fa-calculator"></i></a>
+            <a *ngIf="btn2LinkType === 'page'" [routerLink]="'/' + btn2PageSlug" class="btn btn-outline">{{ btn2Text }} <i class="fas fa-calculator"></i></a>
+          </ng-container>
+        </div>
+        
+        <div class="hero-stats">
+          @for (stat of stats; track stat.label) {
+            <div class="hero-stat-item" style="position: relative;">
+              @if (stat.tag) {
+                <span class="handwritten" style="position: absolute; top: -30px; left: 10px; font-size: 1.2rem; transform: rotate(-5deg); color: #000000;">
+                  {{ stat.tag }}
+                </span>
+              }
+              <h4>{{ stat.value }}</h4>
+              <p>{{ stat.label }}</p>
+            </div>
+          }
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="hero-image-wrapper sketch-border" style="position: relative;">
+          <img [src]="heroImage" alt="Estudiantes exitosos UDG" class="hero-image">
+          
+          <!-- Post-it estudiantil decorativo -->
+          <div class="sticky-note sticky-yellow" style="position: absolute; top: 20px; right: -20px; max-width: 180px; z-index: 20; transform: rotate(6deg);">
+            <p class="handwritten" style="color: #0F2042; font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">{{ stickyNoteTitle }}</p>
+            <p class="handwritten" style="font-size: 1rem; color: #B5901D;">{{ stickyNoteText }}</p>
+          </div>
+          
+          <div class="hero-card-floating float-anim">
+            <div class="floating-avatar">{{ floatingAvatar }}</div>
+            <div>
+              <h4 style="font-size: 1rem; color: var(--primary);">{{ floatingTitle }}</h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0;">{{ floatingSubtitle }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

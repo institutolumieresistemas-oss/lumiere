@@ -1,0 +1,396 @@
+/* =========================
+   SECCIÓN PROFESORES
+========================= */
+
+.profesores-section {
+    padding: 40px 20px;
+    background: #f9fafb;
+    border-radius: 24px;
+}
+
+.titulo {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    color: #111827;
+}
+
+
+/* =========================
+   SCROLL HORIZONTAL
+========================= */
+
+.profesores-scroll {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scroll-snap-type: x mandatory;
+}
+
+.profesores-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.profesores-scroll::-webkit-scrollbar-thumb {
+    background: #dbeafe;
+    border-radius: 10px;
+}
+
+
+/* =========================
+   CARD PROFESOR
+========================= */
+
+.profesor-card {
+    width: 260px;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+}
+
+.profesor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================
+   IMAGEN
+========================= */
+
+.imagen-wrapper img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.contenido {
+    padding: 18px;
+    text-align: center;
+}
+
+.contenido h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #111827;
+}
+
+.especialidad {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6366f1;
+    margin-bottom: 6px;
+}
+
+
+/* TEXTO VER PERFIL */
+
+.ver-perfil {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2563eb;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.ver-perfil:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-profesor {
+    border-radius: 22px;
+    padding: 12px;
+}
+
+.imagen-modal {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.descripcion {
+    font-size: 15px;
+    color: #4b5563;
+    margin-top: 12px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 480px) {
+    .titulo {
+        font-size: 22px;
+    }
+    .profesor-card {
+        width: 220px;
+    }
+    .imagen-wrapper img {
+        height: 140px;
+    }
+}
+
+/* MODAL CONFIG & DETAIL OVERLAY */
+.modal-config {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 420px;
+    max-height: 85vh;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Redes Sociales y Botones */
+.social-icon {
+    font-size: 18px;
+    color: #4b5563;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+.social-icon:hover {
+    color: #6366f1;
+    transform: scale(1.15);
+}
+
+.social-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white !important;
+    text-decoration: none;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.social-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(0.9);
+}
+
+.tiktok-btn {
+    background: #000000;
+}
+
+.instagram-btn {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.facebook-btn {
+    background: #1877f2;
+}
+
+.youtube-btn {
+    background: #ff0000;
+}
+
+/* POLAROID GRID */
+.polaroid-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+}
+.polaroid-card-wrapper {
+    position: relative;
+    background: #fff;
+    padding: 15px 15px 25px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+}
+.polaroid-card-wrapper:hover {
+    transform: rotate(2deg) scale(1.03);
+}
+.polaroid-inner img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 2px;
+}
+.polaroid-caption {
+    margin-top: 15px;
+    text-align: center;
+}
+.polaroid-caption h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1e293b;
+}
+.specialty-handwritten {
+    font-family: 'Caveat', cursive, sans-serif;
+    color: #6366f1;
+    font-size: 1.3rem;
+    margin: 5px 0 0;
+}
+
+/* STORIES GRID */
+.stories-grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+.story-bubble {
+    width: 150px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+.story-bubble:hover {
+    transform: scale(1.05);
+}
+.story-avatar-wrapper {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    margin: 0 auto 10px;
+}
+.story-avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+}
+.story-bubble h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1e293b;
+}
+.story-bubble span {
+    font-size: 0.8rem;
+    color: #6366f1;
+}
+
+/* FICHAS DE ESTUDIO (FLASHCARDS) */
+.flashcard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+.flashcard-prof-card {
+    background: #fffbef; /* color ficha papel */
+    border: 1px dashed #d97706;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 8px;
+    background-image: radial-gradient(#e5e7eb 1.5px, transparent 1.5px), radial-gradient(#e5e7eb 1.5px, #fffbef 1.5px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+.flashcard-prof-card::before {
+    content: '📌';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    z-index: 5;
+}
+.flashcard-prof-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(217, 119, 6, 0.15);
+}
+.flashcard-prof-card img {
+    width: 100%;
+    aspect-ratio: 1.3;
+    object-fit: cover;
+    border-radius: 12px;
+}
+.flashcard-prof-card h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-top: 10px;
+}
+.flashcard-badge {
+    background: #fef3c7;
+    border: 1px dashed #d97706;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+    color: #b45309;
+}
+
+/* SWIPE DECK */
+.deck-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+.deck-wrapper {
+    width: 100%;
+    max-width: 380px;
+}
+.deck-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+.deck-card img {
+    width: 100%;
+    aspect-ratio: 1.25;
+    object-fit: cover;
+}
+.deck-info {
+    padding: 20px;
+    text-align: center;
+}
+.deck-info h3 {
+    margin: 0 0 8px;
+    font-weight: 700;
+    color: #1e293b;
+}

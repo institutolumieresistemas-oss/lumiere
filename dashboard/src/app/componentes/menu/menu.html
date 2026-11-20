@@ -1,0 +1,114 @@
+<nav class="navbar navbar-expand-lg fixed-top py-3 shadow-sm" [class.nav-scrolled]="scrolled" [class.nav-sin-transparencia]="sinTransparencia" [ngClass]="'style-' + styleType">
+    <div class="container">
+
+        <!-- BOTONES DE EDICIÓN DEL BUILDER (SOLO CONFIGURACIÓN) -->
+        <div class="menu-actions-top">
+            <button class="btn btn-sm btn-primary" (click)="abrirModal()" title="Configurar Menú Global">⚙</button>
+        </div>
+
+        <a class="navbar-brand d-flex align-items-center fw-bold" href="#">
+            <i class="bi bi-lightning-charge-fill me-2"></i> Cursos Lumiere
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuNav">
+
+            <!-- MENÚ NORMAL (Sincronizado con la Web) -->
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/">Inicio</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Cursos</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" routerLink="/licenciatura">🎓 Licenciatura UdeG</a></li>
+                        <li><a class="dropdown-item" routerLink="/preparatoria">🏫 Preparatoria UdeG</a></li>
+                        <li><a class="dropdown-item" routerLink="/exani">⚡ Exani II</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Aspirantes</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" routerLink="/calculadora">🧮 Calculadora de Puntaje</a></li>
+                        <li><a class="dropdown-item" routerLink="/puntajes">📊 Puntajes Mínimos</a></li>
+                        <li><a class="dropdown-item" routerLink="/examenGratis">📝 Examen Gratis</a></li>
+                        <li><a class="dropdown-item" routerLink="/moduloExani">📚 Módulo EXANI II</a></li>
+                        <li><a class="dropdown-item" routerLink="/admitidos">🎉 Admitidos</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Planteles</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" routerLink="/planteles">🏢 Nuestros Planteles</a></li>
+                        <li><a class="dropdown-item" routerLink="/ubicaciones">📍 Ubicaciones</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                        Comienza Gratis <span class="badge-gratis-bounce">¡GRATIS! 🔥</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" routerLink="/material">📖 Material de Estudio</a></li>
+                        <li><a class="dropdown-item" routerLink="/comunidad">👥 Comunidad</a></li>
+                        <li><a class="dropdown-item" routerLink="/youtube">📺 Canal de Youtube</a></li>
+                        <li><a class="dropdown-item" routerLink="/streaming">🎥 Streaming</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <a class="btn btn-primary ms-lg-3 mt-3 mt-lg-0 px-4 rounded-pill">
+                <i class="bi bi-person-circle me-2"></i> Ingresar
+            </a>
+
+        </div>
+    </div>
+</nav>
+
+<!-- ================= MODAL CONFIGURACIÓN ================= -->
+
+<div class="modal-backdrop-custom" *ngIf="mostrarModal">
+
+    <div class="modal-custom">
+
+        <div class="modal-header">
+            <h5 class="m-0 fw-bold text-dark">Configurar Menú (Global)</h5>
+            <button class="btn-close" (click)="cerrarModal()"></button>
+        </div>
+
+        <div class="modal-body text-start">
+
+            <div class="mb-3">
+                <label class="form-label fw-bold text-dark">Seleccionar Estilo del Menú</label>
+                <select class="form-select" [(ngModel)]="styleType" (change)="emitirCambio()">
+                    <option value="capsule">Estilo 1: Cápsula Flotante (Glassmorphism)</option>
+                    <option value="neon">Estilo 2: Neon Flow (Borde neón dinámico)</option>
+                    <option value="playful">Estilo 3: Playful Minimalist (Neo-brutalismo azul y blanco)</option>
+                    <option value="liquid">Estilo 4: Borde Líquido Animado (Glow futurista)</option>
+                    <option value="bento">Estilo 5: Bento Grid Pastel (Pósits escolares)</option>
+                    <option value="wave">Estilo 6: Ocean Wave (Ola azul minimalista)</option>
+                    <option value="tech">Estilo 7: Glow Tech (Cian y blanco tecnológico)</option>
+                </select>
+                <div class="form-text mt-2 text-muted">
+                    💡 Este menú se configurará globalmente y se aplicará a todas las páginas de forma automática.
+                </div>
+            </div>
+
+            <div class="mb-3 d-flex align-items-center gap-3">
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="sinTransparenciaToggle"
+                           [(ngModel)]="sinTransparencia" (change)="emitirCambio()">
+                    <label class="form-check-label fw-semibold text-dark" for="sinTransparenciaToggle">
+                        Sin transparencia inicial
+                    </label>
+                </div>
+                <span class="text-muted" style="font-size: 12px;">El menú aparecerá opaco desde el inicio, sin esperar el scroll.</span>
+            </div>
+
+        </div>
+
+    </div>
+</div>

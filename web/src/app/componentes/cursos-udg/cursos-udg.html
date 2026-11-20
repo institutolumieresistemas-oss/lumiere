@@ -1,0 +1,17 @@
+<section class="section-padding courses-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="badge">Nuestros Programas</span>
+      <h2>{{ props.title }}</h2>
+      <p>{{ props.subtitle }}</p>
+    </div>
+
+    <!-- Sticky Note Rosa -->
+    <div class="d-flex justify-content-center" *ngIf="props.stickyNoteText">
+      <div class="sticky-note sticky-pink" style="max-width: 280px; transform: rotate(-2deg); text-align: left;">
+        <p class="handwritten" style="color: #0F2042; font-size: 1.25rem; font-weight: bold; margin-bottom: 5px;">{{ props.stickyNoteTitle }}</p>
+        <p class="handwritten" style="font-size: 1.05rem; color: #BE185D; margin-bottom: 0;">{{ props.stickyNoteText }}</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,62 @@
+<section class="carreras-section py-5">
+
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="badge px-3 py-2 rounded-pill mb-2" 
+                  [style.backgroundColor]="props.colorFondo || '#3b82f6'" 
+                  [style.color]="props.colorLetra || '#ffffff'">
+                  🏫 {{ props.centroUniversitario || 'Centro' }}
+            </span>
+            <h2 class="fw-bold text-dark">{{ props.titulo || 'Puntajes de Admisión' }}</h2>
+        </div>
+
+        <!-- VISTA ESCRITORIO (TABLA) -->
+        <div class="table-scroll-container d-none d-md-block shadow-sm rounded-4 border">
+            <table class="table table-hover align-middle mb-0 w-100">
+                <thead [style.backgroundColor]="props.colorFondo || '#3b82f6'" [style.color]="props.colorLetra || '#ffffff'">
+                    <tr>
+                        <th class="py-3 px-4">Carrera</th>
+                        <th class="py-3 px-4 text-center">Puntaje Mínimo</th>
+                        <th class="py-3 px-4 text-center">Admitidos</th>
+                        <th class="py-3 px-4 text-center">Aspirantes</th>
+                        <th class="py-3 px-4 text-center">Calendario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of props.carreras">
+                        <td class="py-3 px-4 fw-semibold text-dark">{{ item.carrera }}</td>
+                        <td class="py-3 px-4 text-center fw-bold" [style.color]="props.colorFondo || '#3b82f6'">{{ item.puntaje }}</td>
+                        <td class="py-3 px-4 text-center text-muted">{{ item.cupos }}</td>
+                        <td class="py-3 px-4 text-center text-muted">{{ item.aspirantes || '-' }}</td>
+                        <td class="py-3 px-4 text-center"><span class="badge bg-light text-dark border">{{ item.calendario }}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VISTA MÓVIL (TARJETAS/CARDS) -->
+        <div class="d-block d-md-none">
+            <div class="cards-scroll-wrapper">
+                <div class="row g-3">
+                    <div class="col-12" *ngFor="let item of props.carreras">
+                        <div class="carrera-card p-3 rounded-3 shadow-sm border bg-white d-flex justify-content-between align-items-center">
+                            <div class="carrera-meta">
+                                <span class="text-muted d-block small mb-1">{{ props.centroUniversitario }} • {{ item.calendario }}</span>
+                                <h6 class="fw-bold mb-0 text-dark">{{ item.carrera }}</h6>
+                                <small class="text-muted" *ngIf="item.aspirantes">Aspirantes: {{ item.aspirantes }} • Admitidos: {{ item.cupos }}</small>
+                            </div>
+                            <div class="carrera-score text-end">
+                                <span class="d-block small text-muted mb-1">Mínimo</span>
+                                <span class="badge fs-6 fw-bold px-3 py-2 rounded-3"
+                                      [style.backgroundColor]="props.colorFondo || '#3b82f6'"
+                                      [style.color]="props.colorLetra || '#ffffff'">{{ item.puntaje }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>

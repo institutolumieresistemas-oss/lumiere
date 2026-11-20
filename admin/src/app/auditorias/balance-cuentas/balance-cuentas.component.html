@@ -1,0 +1,71 @@
+<div class="card">
+    <div class="card-header pb-0 bg-lumiere">
+        <div class="d-flex align-items-center">
+            <h5 class="mb-1 text-white">Balance de cuentas</h5>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                @for (cuenta of cuentas; track cuenta.id) {
+                    <div class="col-sm-4">
+                        <app-card [encabezado]="cuenta.nombre">
+                            <div class="row">
+                                <div class="col-sm-12 clicable" (click)="descargarExcel(cuenta.lista_ingresos, 'Ingresos', cuenta.nombre)" title="Descargar Excel de Ingresos">
+                                    <b>Ingresos: ${{generales.milesNumeros(cuenta.totalIngresos)}}</b>
+                                </div>
+                                <div class="col-sm-12 clicable" (click)="descargarExcel(cuenta.lista_egresos, 'Egresos', cuenta.nombre)" title="Descargar Excel de Egresos">
+                                    <b>Egresos: ${{generales.milesNumeros(cuenta.totalEgresos)}}</b>
+                                </div>
+                                <div class="col-sm-12 {{(cuenta.positivo) ? 'text-success' : 'text-danger'}}">
+                                    <b>Total: ${{generales.milesNumeros(cuenta.totalFinal)}}</b>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-primary" (click)="abrirCuenta(cuenta)">Traspasar</button>
+                                </div>
+                            </div>
+                        </app-card>
+                    </div>
+                }
+            </div><br><br>
+            <div class="row">
+                @for (sucursal of sucursales; track sucursal.id) {
+                    <div class="col-sm-4">
+                        <app-card [encabezado]="sucursal.nombre">
+                            <div class="row">
+                                <div class="col-sm-12 clicable" (click)="descargarExcel(sucursal.lista_ingresos, 'Ingresos', sucursal.nombre + ' Efectivo')" title="Descargar Excel de Ingresos">
+                                    <b>Ingresos: ${{generales.milesNumeros(sucursal.total_ingresos)}}</b>
+                                </div>
+                                <div class="col-sm-12 clicable" (click)="descargarExcel(sucursal.lista_egresos, 'Egresos', sucursal.nombre + ' Efectivo')" title="Descargar Excel de Egresos">
+                                    <b>Egresos: ${{generales.milesNumeros(sucursal.total_egresos)}}</b>
+                                </div>
+                                <div class="col-sm-12 clicable" (click)="descargarExcel(sucursal.lista_vales, 'Vales', sucursal.nombre + ' Efectivo')" title="Descargar Excel de Vales Administrativos">
+                                    <b>Vale Administrativo: ${{generales.milesNumeros(sucursal.total_vales)}}</b>
+                                </div>
+                                <div class="col-sm-12 {{(sucursal.positivo) ? 'text-success' : 'text-danger'}}">
+                                    <b>Efectivo: ${{generales.milesNumeros(sucursal.total_final)}}</b>
+                                </div>
+                            </div>
+                            @if (sucursal.id.toString() === '10') {
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <button class="btn btn-primary" (click)="efectivo(sucursal)">Traspasar</button>
+                                    </div>
+                                </div>
+                            }
+                        </app-card>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<app-modal>
+    @switch (vista) {
+        @case ('traspaso') {
+            <app-modal-traspaso [formas]="formas" [cuenta]="seleccion" [cuentas]="cuentas" [guardando]="guardando" (emitidor)="traspaso($event)"></app-modal-traspaso>
+        }
+    }
+</app-modal>

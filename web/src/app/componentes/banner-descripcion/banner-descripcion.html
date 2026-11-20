@@ -1,0 +1,49 @@
+<section class="banner-descripcion-section position-relative" [class.gallery-right]="props.galleryPosition === 'right'" [attr.data-diseno]="props.diseno || 'playful'">
+    
+    <div class="container">
+        <div class="row align-items-stretch g-5">
+            
+            <!-- COLUMNA GALERÍA -->
+            <div class="col-12 col-md-6 order-1" [class.order-md-2]="props.galleryPosition === 'right'" [class.order-md-1]="props.galleryPosition !== 'right'">
+                <div class="gallery-wrapper sketch-border">
+                    <div class="tape-decor"></div>
+                    <div class="gallery-slide" *ngFor="let img of props.galeria; let idx = index" [class.active]="idx === activeImageIndex">
+                        <img [src]="img" alt="Foto Plantel">
+                    </div>
+                    <!-- Indicadores -->
+                    <div class="gallery-dots" *ngIf="props.galeria && props.galeria.length > 1">
+                        <span *ngFor="let img of props.galeria; let idx = index" 
+                              class="dot" 
+                              [class.active]="idx === activeImageIndex"
+                              (click)="activeImageIndex = idx">
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA INFORMACIÓN -->
+            <div class="col-12 col-md-6 order-2 d-flex flex-column justify-content-center" [class.order-md-1]="props.galleryPosition === 'right'" [class.order-md-2]="props.galleryPosition !== 'right'">
+                <div class="info-card">
+                    <span class="badge-tag handwritten mb-2 d-inline-block">📍 Nuestro Plantel</span>
+                    <h2 class="plantel-nombre text-primary">{{ props.nombre || 'Nombre del Plantel' }}</h2>
+                    <p class="plantel-descripcion my-3 text-muted">{{ props.descripcion || 'Descripción del plantel' }}</p>
+                    
+                    <div class="detail-box p-3 rounded mb-4">
+                        <div class="detail-item">
+                            <span class="detail-icon">🏢</span>
+                            <span class="detail-text ms-2"><strong>Dirección:</strong> {{ props.direccion || 'Dirección del plantel' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="map-action" *ngIf="props.mapaUrl">
+                        <a [href]="props.mapaUrl" target="_blank" class="btn btn-mapa btn-primary w-100">
+                            🗺️ Ver en Google Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>

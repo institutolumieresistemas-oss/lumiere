@@ -1,0 +1,599 @@
+/* ==========================================================================
+   SISTEMA DE DISEÑO DE MENÚ DE 7 ESTILOS CONFIGURABLES
+   ========================================================================== */
+
+/* ----------------- ESTILOS COMUNES Y DE EDICIÓN DEL BUILDER ----------------- */
+
+.menu-actions-top {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    z-index: 1100;
+    display: flex;
+    gap: 6px;
+}
+
+.menu-actions-top button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    padding: 0;
+    border: none;
+}
+
+/* Modales */
+.modal-backdrop-custom {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-custom {
+    background: #ffffff;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 2px solid #000;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   ESTILO 1: CÁPSULA FLOTANTE (style-capsule)
+   -------------------------------------------------------------------------- */
+
+.navbar.style-capsule {
+    top: 15px;
+    width: 92%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 10px 24px !important;
+}
+
+.navbar.style-capsule.nav-scrolled {
+    top: 10px;
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.navbar.style-capsule .nav-link,
+.navbar.style-capsule .navbar-brand {
+    color: white !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.navbar.style-capsule .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s ease, left 0.3s ease;
+}
+
+.navbar.style-capsule .nav-link:hover::after {
+    width: 70%;
+    left: 15%;
+}
+
+.navbar.style-capsule.nav-scrolled .nav-link,
+.navbar.style-capsule.nav-scrolled .navbar-brand {
+    color: #212529 !important;
+}
+
+.navbar.style-capsule.nav-scrolled .nav-link:hover {
+    color: #4c6ef5 !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   ESTILO 2: NEON FLOW (style-neon)
+   -------------------------------------------------------------------------- */
+
+.navbar.style-neon {
+    top: 0;
+    width: 100%;
+    background-color: transparent !important;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 16px 0 !important;
+}
+
+.navbar.style-neon.nav-scrolled {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 12px 0 !important;
+    border-bottom: none;
+}
+
+.navbar.style-neon.nav-scrolled::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #00f0ff, #ff007f, #ffd600, #00f0ff);
+    background-size: 300% 100%;
+    animation: neon-flow 4s linear infinite;
+}
+
+.navbar.style-neon .nav-link,
+.navbar.style-neon .navbar-brand {
+    color: white !important;
+    font-weight: 600;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.navbar.style-neon .nav-link:hover {
+    color: #00f0ff !important;
+}
+
+.navbar.style-neon.nav-scrolled .nav-link,
+.navbar.style-neon.nav-scrolled .navbar-brand {
+    color: #1e1b4b !important;
+}
+
+.navbar.style-neon.nav-scrolled .nav-link:hover {
+    color: #ff007f !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   ESTILO 3: PLAYFUL MINIMALIST (style-playful) - AZUL Y BLANCO
+   -------------------------------------------------------------------------- */
+
+.navbar.style-playful {
+    top: 0;
+    width: 100%;
+    background-color: transparent !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+    padding: 16px 0 !important;
+}
+
+.navbar.style-playful.nav-scrolled {
+    background-color: #ffffff !important;
+    border-bottom: 3px solid #000000;
+    box-shadow: 0 4px 0px rgba(0, 0, 0, 0.04);
+    padding: 12px 0 !important;
+}
+
+.navbar.style-playful .navbar-brand {
+    font-family: 'Caveat', cursive, sans-serif;
+    font-size: 28px;
+    color: white !important;
+}
+
+.navbar.style-playful.nav-scrolled .navbar-brand {
+    color: #000000 !important;
+}
+
+.navbar.style-playful .nav-link {
+    color: white !important;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 6px 14px !important;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Reemplazado Amarillo por Azul y Blanco */
+.navbar.style-playful .nav-link:hover {
+    background-color: #3b5bdb !important; /* Azul eléctrico premium */
+    color: #ffffff !important;
+    transform: rotate(-1.5deg) scale(1.05);
+}
+
+.navbar.style-playful.nav-scrolled .nav-link {
+    color: #000000 !important;
+}
+
+.navbar.style-playful.nav-scrolled .nav-link:hover {
+    background-color: #3b5bdb !important;
+    color: #ffffff !important;
+}
+
+/* Botón en Azul y Blanco con bordes negros */
+.navbar.style-playful .btn-primary {
+    background-color: #3b5bdb !important;
+    color: #ffffff !important;
+    border: 2.5px solid #000000 !important;
+    border-radius: 14px !important;
+    font-weight: 800;
+    box-shadow: 4px 4px 0px #000000;
+    transition: all 0.15s ease;
+}
+
+.navbar.style-playful .btn-primary:hover {
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 6px 6px 0px #000000;
+    background-color: #ffffff !important;
+    color: #3b5bdb !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   ESTILO 4: LIQUID GRADIENT BORDER (style-liquid)
+   -------------------------------------------------------------------------- */
+
+.navbar.style-liquid {
+    top: 15px;
+    width: 92%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 100px;
+    background: rgba(13, 11, 24, 0.8) !important;
+    backdrop-filter: blur(16px) saturate(180%);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 10px 24px !important;
+    position: relative;
+}
+
+.navbar.style-liquid::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 102px;
+    padding: 2px;
+    background: linear-gradient(90deg, #ff007f, #00f0ff, #ffd600, #ff007f);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: neon-flow 4s linear infinite;
+    background-size: 300% 100%;
+}
+
+.navbar.style-liquid.nav-scrolled {
+    top: 10px;
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.navbar.style-liquid .nav-link,
+.navbar.style-liquid .navbar-brand {
+    color: white !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.navbar.style-liquid .nav-link:hover {
+    color: #00f0ff !important;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+.navbar.style-liquid.nav-scrolled .nav-link,
+.navbar.style-liquid.nav-scrolled .navbar-brand {
+    color: #1e1b4b !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   ESTILO 5: BENTO GRID PASTEL (style-bento)
+   -------------------------------------------------------------------------- */
+
+.navbar.style-bento {
+    top: 15px;
+    width: 95%;
+    max-width: 1250px;
+    margin: 0 auto;
+    background: transparent !important;
+    border: none;
+    padding: 10px 0 !important;
+    transition: all 0.3s ease;
+}
+
+.navbar.style-bento .container {
+    background: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.navbar.style-bento .nav-item {
+    margin: 0 6px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,0.02);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Colores pastel bento */
+.navbar.style-bento .nav-item:nth-child(1) { background-color: rgba(186, 230, 253, 0.35); }
+.navbar.style-bento .nav-item:nth-child(2) { background-color: rgba(254, 215, 170, 0.35); }
+.navbar.style-bento .nav-item:nth-child(3) { background-color: rgba(207, 250, 254, 0.35); }
+.navbar.style-bento .nav-item:nth-child(4) { background-color: rgba(253, 244, 180, 0.35); }
+.navbar.style-bento .nav-item:nth-child(5) { background-color: rgba(225, 190, 231, 0.35); }
+.navbar.style-bento .nav-item:nth-child(even) { background-color: rgba(244, 219, 244, 0.35); }
+
+.navbar.style-bento .nav-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.navbar.style-bento .nav-link,
+.navbar.style-bento .navbar-brand {
+    color: #1e1b4b !important;
+    font-weight: 600;
+}
+
+.navbar.style-bento .nav-link:hover {
+    color: #4c6ef5 !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   ESTILO 6: OCEAN WAVE (style-wave) - AZUL Y BLANCO MINIMALISTA
+   -------------------------------------------------------------------------- */
+
+.navbar.style-wave {
+    top: 15px;
+    width: 92%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(13, 110, 253, 0.15);
+    transition: all 0.3s ease;
+    padding: 10px 24px !important;
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.04);
+}
+
+.navbar.style-wave.nav-scrolled {
+    top: 8px;
+    background: #ffffff !important;
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.12);
+}
+
+.navbar.style-wave .navbar-brand {
+    color: #0d6efd !important;
+}
+
+.navbar.style-wave .nav-link {
+    color: #495057 !important;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.navbar.style-wave .nav-link:hover {
+    color: #0d6efd !important;
+}
+
+/* Efecto Ola Desplazable de Subrayado */
+.navbar.style-wave .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0d6efd, #00f0ff);
+    border-radius: 10px;
+    transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.navbar.style-wave .nav-link:hover::after {
+    width: 100%;
+}
+
+.navbar.style-wave .btn-primary {
+    background: transparent !important;
+    color: #0d6efd !important;
+    border: 2px solid #0d6efd !important;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.navbar.style-wave .btn-primary:hover {
+    background: #0d6efd !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+
+/* --------------------------------------------------------------------------
+   ESTILO 7: GLOW TECH (style-tech) - BLANCO Y CIAN CIBERNÉTICO
+   -------------------------------------------------------------------------- */
+
+.navbar.style-tech {
+    top: 0;
+    width: 100%;
+    background: rgba(10, 17, 40, 0.9) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid #00f0ff;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+    padding: 14px 0 !important;
+}
+
+.navbar.style-tech.nav-scrolled {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 2px solid #0d6efd;
+    box-shadow: 0 5px 20px rgba(13, 110, 253, 0.08);
+}
+
+.navbar.style-tech .navbar-brand {
+    color: #00f0ff !important;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}
+
+.navbar.style-tech.nav-scrolled .navbar-brand {
+    color: #0d6efd !important;
+    text-shadow: none;
+}
+
+.navbar.style-tech .nav-link {
+    color: #ffffff !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+}
+
+.navbar.style-tech.nav-scrolled .nav-link {
+    color: #212529 !important;
+}
+
+.navbar.style-tech .nav-link:hover {
+    color: #00f0ff !important;
+    text-shadow: 0 0 10px #00f0ff;
+}
+
+.navbar.style-tech.nav-scrolled .nav-link:hover {
+    color: #0d6efd !important;
+}
+
+.navbar.style-tech .btn-primary {
+    background: linear-gradient(135deg, #00f0ff, #0d6efd) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.navbar.style-tech .btn-primary:hover {
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+    transform: scale(1.04);
+}
+
+
+/* --------------------------------------------------------------------------
+   MODIFICADOR GLOBAL: SIN TRANSPARENCIA INICIAL
+   Aplica el estado "scrolled" desde el inicio, sin esperar scroll
+   -------------------------------------------------------------------------- */
+
+.navbar.style-capsule.nav-sin-transparencia {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.navbar.style-capsule.nav-sin-transparencia .nav-link,
+.navbar.style-capsule.nav-sin-transparencia .navbar-brand {
+    color: #212529 !important;
+}
+
+.navbar.style-capsule.nav-sin-transparencia .nav-link:hover {
+    color: #4c6ef5 !important;
+}
+
+.navbar.style-neon.nav-sin-transparencia {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    border-bottom: none !important;
+}
+
+.navbar.style-neon.nav-sin-transparencia .nav-link,
+.navbar.style-neon.nav-sin-transparencia .navbar-brand {
+    color: #1e1b4b !important;
+}
+
+.navbar.style-neon.nav-sin-transparencia .nav-link:hover {
+    color: #ff007f !important;
+}
+
+.navbar.style-neon.nav-sin-transparencia::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #00f0ff, #ff007f, #ffd600, #00f0ff);
+    background-size: 300% 100%;
+    animation: neon-flow 4s linear infinite;
+}
+
+.navbar.style-playful.nav-sin-transparencia {
+    background-color: #ffffff !important;
+    border-bottom: 3px solid #000000 !important;
+    box-shadow: 0 4px 0px rgba(0, 0, 0, 0.04) !important;
+}
+
+.navbar.style-playful.nav-sin-transparencia .navbar-brand {
+    color: #000000 !important;
+}
+
+.navbar.style-playful.nav-sin-transparencia .nav-link {
+    color: #000000 !important;
+}
+
+.navbar.style-liquid.nav-sin-transparencia {
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06) !important;
+}
+
+.navbar.style-liquid.nav-sin-transparencia .nav-link,
+.navbar.style-liquid.nav-sin-transparencia .navbar-brand {
+    color: #1e1b4b !important;
+}
+
+/* ----------------- COMPONENTES GLOBALES (BADGES, BOTONES, ETC) ----------------- */
+
+/* Badges gratis */
+.badge-gratis-bounce {
+    font-size: 10px;
+    font-weight: 800;
+    background: #000000;
+    color: #ffd600;
+    padding: 2px 7px;
+    border-radius: 6px;
+    margin-left: 6px;
+    animation: gratis-bounce 1.5s infinite alternate;
+    display: inline-block;
+}
+
+@keyframes gratis-bounce {
+    0% { transform: translateY(0) rotate(-1deg); }
+    100% { transform: translateY(-4px) rotate(2deg); }
+}
+
+/* Estilos de flow neón */
+@keyframes neon-flow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+
+/* Dropdown */
+.dropdown-menu {
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+.dropdown-item {
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.dropdown-item:hover {
+    background-color: rgba(76, 110, 245, 0.05);
+    color: #4c6ef5 !important;
+    transform: translateX(3px);
+}

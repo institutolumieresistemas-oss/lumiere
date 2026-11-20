@@ -1,0 +1,31 @@
+<div class="card">
+    <div class="card-header pb-0 bg-lumiere">
+        <div class="d-flex align-items-center">
+            <h5 class="mb-1 text-white">Creditos</h5>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            <div class="row" *ngIf="seleccion === undefined">
+                <div class="col-sm-12">
+                    <button class="btn btn-success" (click)="modal('nuevo')">Agregar Credito</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <app-datatable [configuracion]="configuracion" [datos]="datos" (emitidor)="seleccion = $event;" (doble)="ruta()"></app-datatable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-cargando *ngIf="cargando"></app-cargando>
+<app-botones *ngIf="seleccion !== undefined">
+    <button class="btn btn-success" (click)="modal('nuevo');">Agregar Credito</button>
+    <button class="btn btn-yellow" (click)="modal('abonos');">Abonos</button>
+    <button class="btn btn-info" (click)="ruta();">Gestionar</button>
+</app-botones>
+<app-modal [ngSwitch]="vista">
+    <app-modal-credito *ngSwitchCase="'nuevo'" [listas]="listas" [modificar]="false" (emitidor)="nuevo($event);"></app-modal-credito>
+    <app-modal-abonos *ngSwitchCase="'abonos'" [datos]="seleccion.abonos"></app-modal-abonos>
+</app-modal>

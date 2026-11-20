@@ -1,0 +1,103 @@
+name: Deploy API (PHP Lumen) to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api/**'
+      - '.github/workflows/deploy-api.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-api:
+    name: Build & Deploy Lumen API (Producción)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate SSH Secret
+        run: |
+          if [ -z "${{ secrets.HOSTINGER_SSH_PASSWORD }}" ] && [ -z "${{ secrets.HOSTINGER_SSH_KEY }}" ] && [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "❌ Falta configurar el secreto HOSTINGER_SSH_PASSWORD (o HOSTINGER_SSH_KEY) en GitHub -> Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+
+      - name: Setup PHP 8.1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, xml, ctype, iconv, intl, gd, pdo, pdo_mysql, pdo_sqlite, curl, json
+          tools: composer:v2
+
+      - name: Install Dependencies
+        run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --ignore-platform-reqs
+
+      - name: Package API Archive
+        run: |
+          tar --exclude='.git' \
+              --exclude='.github' \
+              --exclude='.env' \
+              --exclude='.env.*' \
+              --exclude='tests' \
+              --exclude='storage/logs/*.log' \
+              --exclude='storage/framework/views/*' \
+              --exclude='storage/framework/cache/*' \
+              --exclude='*.zip' \
+              --exclude='cls' \
+              -czf "$GITHUB_WORKSPACE/api-dist.tar.gz" .
+
+      - name: Ensure Target Directory Exists on Hostinger
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOSTINGER_SSH_HOST || '31.170.166.250' }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT || '65002' }}
+          username: ${{ secrets.HOSTINGER_SSH_USER || 'u740702945' }}
+          password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY }}
+          script: |
+            TARGET="${{ secrets.API_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html/api' }}"
+            mkdir -p "$TARGET"
+
+      - name: Upload Package Archive via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOSTINGER_SSH_HOST || '31.170.166.250' }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT || '65002' }}
+          username: ${{ secrets.HOSTINGER_SSH_USER || 'u740702945' }}
+          password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY }}
+          source: "api-dist.tar.gz"
+          target: "${{ secrets.API_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html/api' }}"
+          timeout: 180s
+
+      - name: Extract API and Run Migrations on Hostinger
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOSTINGER_SSH_HOST || '31.170.166.250' }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT || '65002' }}
+          username: ${{ secrets.HOSTINGER_SSH_USER || 'u740702945' }}
+          password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY }}
+          script: |
+            TARGET="${{ secrets.API_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html/api' }}"
+            cd "$TARGET"
+            tar -xzf api-dist.tar.gz
+            rm -f api-dist.tar.gz
+
+            mkdir -p storage/logs storage/framework/views storage/framework/cache/data database uploads
+            chmod -R 775 storage uploads 2>/dev/null || true
+
+            if [ ! -f .env ] && [ -f .env.example ]; then
+              cp .env.example .env
+            fi
+
+            php artisan migrate --force 2>&1 || true
+            php -r "if (function_exists('opcache_reset')) { opcache_reset(); }" || true
+            echo "✅ ¡API PHP Lumen desplegada con éxito en $TARGET!"

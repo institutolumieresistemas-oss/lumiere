@@ -1,0 +1,182 @@
+<div class="modalidades-wrapper position-relative">
+
+  <!-- ACCIONES DEL CONSTRUCTOR (VISIBLES AL HACER HOVER EN EL BUILDER) -->
+  <div class="modalidades-actions">
+    <button class="btn btn-danger btn-sm" (click)="eliminar()" title="Eliminar Sección">✖</button>
+    <button class="btn btn-primary btn-sm" (click)="openConfigModal()" title="Configurar Sección">⚙</button>
+  </div>
+
+  <!-- CABECERA -->
+  <div class="modalidades-head">
+    @if (props.titulo) {
+      <h2 class="modalidades-title">{{ props.titulo }}</h2>
+    }
+    @if (props.subtitulo) {
+      <h3 class="modalidades-subtitle">{{ props.subtitulo }}</h3>
+    }
+    @if (props.detalle) {
+      <p class="modalidades-detail">{{ props.detalle }}</p>
+    }
+  </div>
+
+  <!-- GRID DE MODALIDADES -->
+  <div class="row g-4 justify-content-center">
+    @for (m of props.modalidades; track $index) {
+      <div class="col-12 col-md-4">
+        <div class="modalidad-item-wrapper">
+          <!-- TARJETA CON COLOR DE FONDO CONFIGURABLE -->
+          <div class="modalidad-card" [style.backgroundColor]="m.colorFondo || '#f8fafc'">
+            @if (m.imagen) {
+              <div class="modalidad-icon-wrapper">
+                <img [src]="m.imagen" alt="Icono" class="modalidad-icon">
+              </div>
+            }
+            <h4 class="modalidad-text" [style.color]="m.colorTexto || '#1e293b'">{{ m.titulo || 'Nueva Modalidad' }}</h4>
+          </div>
+
+          <!-- BOTÓN MÁS INFORMACIÓN CON COLOR CONFIGURABLE -->
+          <a 
+            [href]="m.enlace || 'javascript:void(0)'"
+            target="_blank"
+            class="modalidad-btn text-decoration-none" 
+            [style.backgroundColor]="m.btnColor || '#fb923c'"
+            [style.color]="m.btnColorTexto || '#ffffff'">
+            {{ m.btnTexto || 'MÁS INFORMACIÓN' }}
+          </a>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- MODAL DE CONFIGURACIÓN DEL CONSTRUCTOR (BACK-END / EDICIÓN) -->
+  @if (abrirConfig) {
+    <div class="modalidades-modal-overlay">
+      <div class="modalidades-modal-content" style="max-width: 650px;">
+        <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+          <h5 class="m-0 fw-bold">Configurar Modalidades</h5>
+          <button class="btn-close" (click)="closeConfigModal()"></button>
+        </div>
+
+        <!-- CONFIGURACIÓN DE TÍTULOS -->
+        <div class="mb-4">
+          <h6 class="fw-bold text-primary mb-2">Títulos de la Sección</h6>
+          <div class="row g-2">
+            <div class="col-md-6 mb-2">
+              <label class="form-label small fw-semibold">Título Principal</label>
+              <input type="text" [(ngModel)]="propsTemp.titulo" class="form-control form-control-sm" placeholder="Ej: SELECCIONA UNA MODALIDAD:">
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label small fw-semibold">Subtítulo</label>
+              <input type="text" [(ngModel)]="propsTemp.subtitulo" class="form-control form-control-sm" placeholder="Ej: CURSOS 2027A">
+            </div>
+            <div class="col-12 mb-2">
+              <label class="form-label small fw-semibold">Detalle Adicional</label>
+              <input type="text" [(ngModel)]="propsTemp.detalle" class="form-control form-control-sm" placeholder="Ej: Examen Admisión UDG: NOVIEMBRE 2026">
+            </div>
+          </div>
+        </div>
+
+        <!-- LISTA DE MODALIDADES (RECUADROS) -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-primary m-0">Recuadros (Modalidades)</h6>
+          </div>
+
+          <div class="modalidades-edit-list" style="max-height: 40vh; overflow-y: auto; padding-right: 5px;">
+            @for (m of propsTemp.modalidades; track $index) {
+              <div class="p-3 mb-3 border rounded bg-light position-relative">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="badge bg-primary">Recuadro #{{ $index + 1 }}</span>
+                </div>
+
+                <div class="row g-2">
+                  <!-- TEXTO Y COLOR DEL RECUADRO -->
+                  <div class="col-md-8 mb-2">
+                    <label class="form-label small mb-1">Texto Principal</label>
+                    <input type="text" [(ngModel)]="m.titulo" class="form-control form-control-sm">
+                  </div>
+                  <div class="col-md-4 mb-2">
+                    <label class="form-label small mb-1">Color de Texto</label>
+                    <input type="color" [(ngModel)]="m.colorTexto" class="form-control form-control-color w-100 form-control-sm" style="height: 31px;">
+                  </div>
+
+                  <!-- COLOR DE FONDO (PALETA + COLOR PICKER) -->
+                  <div class="col-12 mb-2">
+                    <label class="form-label small mb-1 d-block">Color de Fondo del Recuadro</label>
+                    <div class="d-flex align-items-center gap-2">
+                      <input type="color" [(ngModel)]="m.colorFondo" class="form-control form-control-color form-control-sm" style="width: 45px; height: 35px; flex-shrink: 0;">
+                      <div class="color-palette-container m-0">
+                        @for (color of paletaColores; track color) {
+                          <span 
+                            class="color-option" 
+                            [style.backgroundColor]="color"
+                            [class.selected]="m.colorFondo === color"
+                            (click)="m.colorFondo = color"
+                            [title]="color">
+                          </span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- IMAGEN/ICONO DEL RECUADRO -->
+                  <div class="col-12 mb-2">
+                    <label class="form-label small mb-1">Icono/Imagen del Recuadro</label>
+                    <div class="alert alert-info py-1 px-2 mb-1 small d-flex align-items-center gap-1">
+                        <span>📐</span><span><strong>Recomendado:</strong> <code>60 × 60 px</code> — Cuadrado · SVG o PNG · Máx. 50 KB</span>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                      <input type="file" accept="image/*" (change)="onImageUpload($event, $index)" class="form-control form-control-sm">
+                      @if (m.imagen) {
+                        <img [src]="m.imagen" alt="Preview" class="img-thumbnail" style="max-height: 40px;">
+                      }
+                    </div>
+                  </div>
+
+                  <!-- CONFIGURACIÓN BOTÓN MÁS INFORMACIÓN -->
+                  <div class="col-md-6 mb-2">
+                    <label class="form-label small mb-1">Texto del Botón</label>
+                    <input type="text" [(ngModel)]="m.btnTexto" class="form-control form-control-sm" placeholder="MÁS INFORMACIÓN">
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <label class="form-label small mb-1 d-block">Color del Botón</label>
+                    <div class="d-flex gap-2">
+                      <input type="color" [(ngModel)]="m.btnColor" class="form-control form-control-color form-control-sm" style="width: 45px; height: 31px;">
+                      <input type="color" [(ngModel)]="m.btnColorTexto" class="form-control form-control-color form-control-sm" style="width: 45px; height: 31px;" title="Color texto del botón">
+                    </div>
+                  </div>
+
+                  <!-- CONFIGURACIÓN DE URL DE REDIRECCIÓN -->
+                  <div class="col-12 mt-2 pt-2 border-top">
+                    <label class="form-label small mb-1">Tipo de Enlace</label>
+                    <select [(ngModel)]="m.tipoEnlace" class="form-select form-select-sm">
+                      <option value="externa">URL Externa o ruta manual</option>
+                      <option value="interna">Página del sitio (Interna)</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label small mb-1">Destino (Enlace)</label>
+                    <select *ngIf="m.tipoEnlace === 'interna'" [(ngModel)]="m.enlace" class="form-select form-select-sm">
+                      <option value="">Selecciona una página...</option>
+                      <option *ngFor="let pag of paginas" [value]="'/' + pag.slug">{{ pag.name }} (/{{ pag.slug }})</option>
+                    </select>
+                    <input *ngIf="m.tipoEnlace !== 'interna'" type="text" [(ngModel)]="m.enlace"
+                           class="form-control form-control-sm" placeholder="https://ejemplo.com o /ruta-manual">
+                  </div>
+
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- ACCIONES DEL MODAL -->
+        <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+          <button class="btn btn-secondary" (click)="closeConfigModal()">Cancelar</button>
+          <button class="btn btn-success" (click)="guardar()">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

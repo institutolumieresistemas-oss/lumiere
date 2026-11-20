@@ -1,0 +1,72 @@
+<div class="mensaje-container py-3">
+
+    <!-- BOTONES -->
+    <div class="mensaje-actions d-flex gap-2 align-items-center">
+        <select class="form-select form-select-sm w-auto d-inline-block" [ngModel]="props.layout || 'classic'" (ngModelChange)="actualizarLayout($event)">
+            <option value="classic">Clásico (Caja Simple)</option>
+            <option value="postit">Post-it (Nota Adhesiva)</option>
+            <option value="highlighter">Caja Marcatextos (Resaltador)</option>
+            <option value="push">Notificación Push (Celular)</option>
+            <option value="comic">Globo de Cómic</option>
+            <option value="gamer">Pantalla de Carga (Gamer)</option>
+        </select>
+        <button class="btn btn-sm btn-primary" (click)="editar = !editar">⚙</button>
+        <button class="btn btn-sm btn-danger" (click)="eliminarElemento.emit()">✖</button>
+    </div>
+
+    <!-- MENSAJE VISTAS -->
+    <div [ngSwitch]="props.layout || 'classic'" class="mt-4 w-100 text-center">
+
+        <!-- 1. CLÁSICO -->
+        <div *ngSwitchCase="'classic'" class="mensaje-card animate__fadeInUp mx-auto">
+            <h2 class="mensaje-text m-0" *ngIf="!editar">
+                {{ props.texto }}
+            </h2>
+        </div>
+
+        <!-- 2. POST-IT -->
+        <div *ngSwitchCase="'postit'" class="postit-card mx-auto">
+            <div class="postit-pin">📌</div>
+            <p class="postit-text m-0" *ngIf="!editar">{{ props.texto }}</p>
+        </div>
+
+        <!-- 3. HIGHLIGHTER -->
+        <div *ngSwitchCase="'highlighter'" class="highlighter-card d-flex align-items-center gap-3 p-4 mx-auto rounded-4 shadow-sm border text-start">
+            <div class="highlighter-icon">💡</div>
+            <p class="highlighter-text m-0 flex-grow-1" *ngIf="!editar">{{ props.texto }}</p>
+        </div>
+
+        <!-- 4. PUSH NOTIFICATION -->
+        <div *ngSwitchCase="'push'" class="push-card p-3 mx-auto shadow-lg border rounded-4 bg-white text-dark text-start">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="push-app-icon">🔔</span>
+                    <span class="push-app-title fw-bold text-secondary small">AVISO LUMIERE</span>
+                </div>
+                <span class="push-time text-muted small">ahora</span>
+            </div>
+            <p class="push-text m-0 text-dark" *ngIf="!editar">{{ props.texto }}</p>
+        </div>
+
+        <!-- 5. COMIC BUBBLE -->
+        <div *ngSwitchCase="'comic'" class="comic-bubble-card p-4 mx-auto position-relative">
+            <p class="comic-text m-0 fw-bold" *ngIf="!editar">{{ props.texto }}</p>
+            <div class="comic-tail"></div>
+        </div>
+
+        <!-- 6. GAMER TIP -->
+        <div *ngSwitchCase="'gamer'" class="gamer-tip-card p-4 mx-auto rounded shadow bg-dark text-white text-start">
+            <div class="gamer-header text-primary fw-bold text-uppercase small mb-2">⚡ Tip de Carga / Hack UDG</div>
+            <p class="gamer-text m-0" *ngIf="!editar">{{ props.texto }}</p>
+        </div>
+
+    </div>
+
+    <!-- AREA EDICION TEXTO -->
+    <div *ngIf="editar" class="edit-area-container mt-3 p-3 bg-light border rounded mx-auto" style="max-width: 600px;">
+        <label class="fw-bold">Editar mensaje:</label>
+        <textarea [(ngModel)]="props.texto" rows="3" class="form-control mt-1"></textarea>
+        <button class="btn btn-success mt-2 px-4" (click)="guardar()">Guardar Texto</button>
+    </div>
+
+</div>

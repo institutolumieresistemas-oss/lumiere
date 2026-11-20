@@ -1,0 +1,11 @@
+<section class="imagen-section position-relative"
+         [style.margin-top.px]="props.marginTop"
+         [style.margin-bottom.px]="props.marginBottom"
+         [style.margin-left.px]="props.marginLeft"
+         [style.margin-right.px]="props.marginRight">
+
+    <div class="image-container">
+        <img [src]="props.imageUrl || 'https://placehold.co/1200x500?text=Selecciona+una+imagen'" alt="Imagen" class="full-width-image">
+    </div>
+
+</section>
