@@ -56,7 +56,7 @@ jobs:
           password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
           key: ${{ secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY }}
           script: |
-            TARGET="${{ secrets.ADMIN_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html' }}"
+            TARGET="${{ secrets.ADMIN_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html/nueva' }}"
             mkdir -p "$TARGET"
 
       - name: Upload Package Archive via SCP
@@ -68,7 +68,7 @@ jobs:
           password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
           key: ${{ secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY }}
           source: "admin-dist.tar.gz"
-          target: "${{ secrets.ADMIN_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html' }}"
+          target: "${{ secrets.ADMIN_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html/nueva' }}"
           timeout: 180s
 
       - name: Extract Admin Safely Preserving Server Folders
@@ -80,9 +80,9 @@ jobs:
           password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
           key: ${{ secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY }}
           script: |
-            TARGET="${{ secrets.ADMIN_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html' }}"
+            TARGET="${{ secrets.ADMIN_TARGET_DIR || '/home/u740702945/domains/lumieresiga.com/public_html/nueva' }}"
             cd "$TARGET"
-            echo "🔍 Limpiando archivos anteriores del Admin preservando subcarpetas protegidas..."
+            echo "🔍 Limpiando archivos anteriores del Admin en $TARGET preservando subcarpetas protegidas..."
 
             # api es la API independiente, server, prueba, etc. NO deben tocarse
             PROTECTED_ITEMS=("api" "apip" "server" ".env" ".htaccess" "RESPALDO" "respaldo" "prueba" "act" "nueva" "licencias" ".well-known" "cgi-bin" "admin-dist.tar.gz")
@@ -109,5 +109,13 @@ jobs:
 
             tar -xzf admin-dist.tar.gz
             rm -f admin-dist.tar.gz
+
+            # Si Hostinger tiene además el subdominio configurado como domains/nueva.lumieresiga.com/public_html, sincronizar
+            STANDALONE_DIR="/home/u740702945/domains/nueva.lumieresiga.com/public_html"
+            if [ -d "$STANDALONE_DIR" ] && [ "$TARGET" != "$STANDALONE_DIR" ]; then
+              echo "🔄 Sincronizando con $STANDALONE_DIR..."
+              cp -r . "$STANDALONE_DIR/" 2>/dev/null || true
+            fi
+
             php -r "if (function_exists('opcache_reset')) { opcache_reset(); }" || true
-            echo "✅ ¡Admin desplegado con éxito en $TARGET!"
+            echo "✅ ¡Admin desplegado con éxito en el subdominio nueva ($TARGET)!"

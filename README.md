@@ -4,7 +4,7 @@ Monorepo para gestionar las 4 aplicaciones de **Lumiere** en un solo repositorio
 
 ## Estructura del monorepo
 - `api/` — API REST PHP Lumen (`https://api.lumieresiga.com/`) → despliega a `/home/u740702945/domains/lumieresiga.com/public_html/api`.
-- `admin/` — Panel Admin SIGA (Angular 17) (`https://lumieresiga.com/`) → despliega a la raíz `/home/u740702945/domains/lumieresiga.com/public_html`, **protegiendo y preservando** la subcarpeta `api/`, `server/`, `.env`, `.htaccess` y respaldos.
+- `admin/` — Panel Admin SIGA (Angular 17) (`https://nueva.lumieresiga.com/`) → despliega al subdominio nueva `/home/u740702945/domains/lumieresiga.com/public_html/nueva`.
 - `web/` — Web Cursos Lumiere (Angular 20) (`https://cursoslumiere.com/`) → despliega a la raíz `/home/u740702945/domains/cursoslumiere.com/public_html`, **protegiendo y preservando** la subcarpeta `dashboard/`, `quizes/`, `app/`, `licencias/`, etc.
 - `dashboard/` — Dashboard Builder (Angular 20) (`https://cursoslumiere.com/dashboard/`) → despliega exclusivamente a `/home/u740702945/domains/cursoslumiere.com/public_html/dashboard` sin tocar la web raíz.
 - `.github/workflows/` — Workflows individuales con filtro `paths:` (`deploy-api.yml`, `deploy-admin.yml`, `deploy-web.yml`, `deploy-dashboard.yml`).
