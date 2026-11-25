@@ -24,7 +24,27 @@
   			)->where('empleados.eliminado', '=', 0)->
   			where('empleados.id', '<>', 1)->
   			where('departamentos.id', '<>', 1)->get();
-  		} catch (Exception $e) {
+  		} catch (\Throwable $e) {
+  			return null;
+  		}
+  	}
+
+  	function obtenerUno($id){
+  		try {
+  			return Empleado::join('departamentos', 'idDepartamento', '=', 'departamentos.id')->
+  			join('sucursales', 'idSucursal', '=', 'sucursales.id')->
+  			join('puestos', 'idPuesto', '=', 'puestos.id')->
+  			leftjoin('usuarios', 'usuarios.idEmpleado', '=', 'empleados.id')->
+  			select(
+  				'empleados.*',
+  				'departamentos.nombre as departamento',
+  				'sucursales.nombre as sucursal',
+  				'puestos.nombre as puesto',
+  				'usuarios.usuario',
+  				'usuarios.idTipoUsuario',
+  				DB::raw("IF(empleados.activo, '', 'bg-rojo') as bg"),
+  			)->where('empleados.id', '=', $id)->first();
+  		} catch (\Throwable $e) {
   			return null;
   		}
   	}

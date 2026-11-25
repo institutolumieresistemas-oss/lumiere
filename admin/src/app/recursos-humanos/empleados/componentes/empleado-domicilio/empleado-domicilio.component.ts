@@ -5,23 +5,29 @@ import { GeneralesService } from '../../../../servicios/generales.service';
   templateUrl: './empleado-domicilio.component.html',
   styleUrl: './empleado-domicilio.component.css'
 })
-export class EmpleadoDomicilioComponent {
+export class EmpleadoDomicilioComponent implements OnInit {
   @Output() siguiente = new EventEmitter<any>();
   @Output() anterior = new EventEmitter<any>();
   @Input() dato: any;
-  @Input()listas: any;
+  @Input() listas: any;
   municipios: any;
   @Input() modificar = false;
   constructor(private generales: GeneralesService) { }
   
   ngOnInit(): void {
-    
-    (this.modificar) ? this.buscarMunicipios() : null;
+    if (this.dato && this.dato.idEstado) {
+      this.cargarMunicipios();
+    }
   }
 
-  buscarMunicipios(){
-    this.dato.idMunicipio = (this.modificar) ? this.dato.idMunicipio : 0;
-    this.municipios = this.generales.sublista(this.listas.municipios, this.dato.idEstado, 'idEstado');
+  cambioEstado(idEstado: any) {
+    this.dato.idEstado = idEstado;
+    this.dato.idMunicipio = 0;
+    this.cargarMunicipios();
+  }
+
+  cargarMunicipios(){
+    this.municipios = this.generales.sublista(this.listas?.municipios, this.dato.idEstado, 'idEstado');
   }
   
   emitir() {

@@ -19,7 +19,7 @@
         <app-select [obligatorio]="true" [etiqueta]="'Sucursal'" [datos]="listas.sucursales" [dato]="dato.idSucursal" (emitidor)="dato.idSucursal = $event;"></app-select>
     </div>
     <div class="col-sm-4">
-        <app-select [obligatorio]="true" [etiqueta]="'Departamento'" [datos]="listas.departamentos" [dato]="dato.idDepartamento" (emitidor)="dato.idDepartamento = $event; buscarPuestos();"></app-select>
+        <app-select [obligatorio]="true" [etiqueta]="'Departamento'" [datos]="listas.departamentos" [dato]="dato.idDepartamento" (emitidor)="cambioDepartamento($event);"></app-select>
     </div>
     <div class="col-sm-4">
         <app-select [obligatorio]="true" [etiqueta]="'Puesto'" [datos]="puestos" [dato]="dato.idPuesto" (emitidor)="dato.idPuesto = $event;"></app-select>
@@ -27,7 +27,7 @@
 </div>
 <div class="row justify-content-end">
     <div class="col-sm-12 d-md-flex justify-content-md-end">
-        <button class="btn btn-success" (click)="emitir()">Siguiente</button>
-        <button class="btn btn-danger" (click)="cerrar()">Anterior</button>
+        <button class="btn btn-danger me-2" (click)="cerrar()">Anterior</button>
+        <button class="btn btn-success" (click)="emitir()">{{ modificar ? 'Guardar Cambios' : 'Guardar Empleado' }}</button>
     </div>
 </div>

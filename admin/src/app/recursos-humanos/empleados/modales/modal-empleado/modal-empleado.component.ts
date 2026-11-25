@@ -9,11 +9,11 @@ import { GeneralesService } from '../../../../servicios/generales.service';
 export class ModalEmpleadoComponent implements OnInit {
   @Output() emitidor = new EventEmitter<any>();
   
-  @Input() dato = {
+  @Input() dato: any = {
     personales: { nombre: '', estadoCivil: '', fechaNacimiento: '', telefono: '', celular: '', correo: '' },
     domicilio: { calle: '', numeroExterior: '', numeroInterior: '', colonia: '', idEstado: 0, idMunicipio: 0, codigoPostal: '' },
     fiscales: { nss: '', rfc: '', curp: '', cuentaBancaria: '', fechaAltaImss: '', fechaIngreso: '', fechaBaja: '' },
-    empresa: { sueldoBase: '', sueldoFiscal: '', bono: '', idSucursal: 0, idDepartamento: 0, idPuesto: 0 }
+    empresa: { sueldoBase: '', sueldoFiscal: '', bono: '', bonoPuntualidad: '', idSucursal: 0, idDepartamento: 0, idPuesto: 0 }
   };
 
   @Input() listas = {
@@ -26,7 +26,13 @@ export class ModalEmpleadoComponent implements OnInit {
 
   constructor(private generales: GeneralesService) { }
   
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.vista = 0;
+  }
+
+  irAPaso(paso: number) {
+    this.vista = paso;
+  }
   
   guardarPaso(seccion: string, datosRecibidos: any) {
     // Almacena de forma segura los datos enviados por el componente hijo
@@ -50,18 +56,7 @@ export class ModalEmpleadoComponent implements OnInit {
   }
 
   finalizarRegistro() {
-    if (this.validar(this.dato)) {
-      this.emitidor.emit(this.dato);
-    }
-  }
-
-  validar(dato: any): boolean {
-    if (this.generales.validarString(dato.personales.nombre)) {
-      this.generales.mensajeError('No se ha ingresado el nombre');
-      return false;
-    }
-    // Agrega tus demás validaciones aquí...
-    return true;
+    this.emitidor.emit(this.dato);
   }
   
   cerrar() {

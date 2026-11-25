@@ -34,13 +34,23 @@ class EmpleadosController extends BaseController
             $domicilio = $request['domicilio'];
             $fiscales = $request['fiscales'];
             $empresa = $request['empresa'];
-            $imagenes = $request['imagenes'];
+            $imagenes = isset($request['imagenes']) ? $request['imagenes'] : null;
 
-            $fechaIngreso = (is_null($fiscales['fechaIngreso']) || $fiscales['fechaIngreso'] == '') ? null : $fiscales['fechaIngreso'];
-            $fechaAltaIMSS = (is_null($fiscales['fechaAltaImss']) || $fiscales['fechaAltaImss'] == '') ? null : $fiscales['fechaAltaImss'];
-            $fechaNacimiento = (is_null($personales['fechaNacimiento']) || $personales['fechaNacimiento'] == '') ? null : $personales['fechaNacimiento'];
+            $fechaIngreso = (isset($fiscales['fechaIngreso']) && strlen($fiscales['fechaIngreso']) > 0) ? $fiscales['fechaIngreso'] : null;
+            $fechaAltaIMSS = null;
+            if (isset($fiscales['fechaAltaImss']) && strlen($fiscales['fechaAltaImss']) > 0) {
+                $fechaAltaIMSS = $fiscales['fechaAltaImss'];
+            } else if (isset($fiscales['fechaAltaIMSS']) && strlen($fiscales['fechaAltaIMSS']) > 0) {
+                $fechaAltaIMSS = $fiscales['fechaAltaIMSS'];
+            }
+            $fechaNacimiento = (isset($personales['fechaNacimiento']) && strlen($personales['fechaNacimiento']) > 0) ? $personales['fechaNacimiento'] : null;
             $hay = Empleado::all();
             
+            $nss = (isset($fiscales['nss']) && strlen($fiscales['nss']) > 0) ? $fiscales['nss'] : (count($hay)+1);
+            $rfc = (isset($fiscales['rfc']) && strlen($fiscales['rfc']) > 0) ? $fiscales['rfc'] : (count($hay)+1);
+            $curp = (isset($fiscales['curp']) && strlen($fiscales['curp']) > 0) ? $fiscales['curp'] : (count($hay)+1);
+            $bono = isset($empresa['bono']) ? $empresa['bono'] : (isset($empresa['bonoPuntualidad']) ? $empresa['bonoPuntualidad'] : 0);
+
             $empleado = Empleado::create([
                 //Personales
                 'nombre' => $personales['nombre'],
@@ -58,40 +68,41 @@ class EmpleadosController extends BaseController
                 'idEstado' => $domicilio['idEstado'],
                 'codigoPostal' => $domicilio['codigoPostal'],
                 //Fiscales
-                'nss' => strlen($fiscales['nss'] > 0) ? $fiscales['nss'] : count($hay)+1,
-                'rfc' => strlen($fiscales['rfc'] > 0) ? $fiscales['rfc'] : count($hay)+1,
-                'curp' => strlen($fiscales['curp'] > 0) ? $fiscales['curp'] : count($hay)+1,
+                'nss' => $nss,
+                'rfc' => $rfc,
+                'curp' => $curp,
                 'fechaAltaIMSS' => $fechaAltaIMSS,
                 'fechaIngreso' => $fechaIngreso,
                 'cuentaBancaria' => $fiscales['cuentaBancaria'],
                 //Empresa
-                
                 'sueldoBase' => $empresa['sueldoBase'],
                 'sueldoFiscal' => $empresa['sueldoFiscal'],
                 'idSucursal' => $empresa['idSucursal'],
                 'idDepartamento' => $empresa['idDepartamento'],
                 'idPuesto' => $empresa['idPuesto'],
-                'bonoPuntualidad' => $empresa['bono'],
+                'bonoPuntualidad' => $bono,
                 //Imagenes
-                'actaNacimiento' => NULL,
-                'comprobanteDomicilio' => NULL,
-                'curpImagen' => NULL,
-                'ifef' => NULL,
-                'ifet' => NULL,
-                'rfcImagen' => NULL,
-                'carta1' => NULL,
-                'carta2' => NULL,
-                'nssImagen' => NULL,
-                'comprobanteEstudios' => NULL,
+                'actaNacimiento' => ($imagenes && isset($imagenes['actaNacimiento'])) ? $imagenes['actaNacimiento'] : NULL,
+                'comprobanteDomicilio' => ($imagenes && isset($imagenes['comprobanteDomicilio'])) ? $imagenes['comprobanteDomicilio'] : NULL,
+                'curpImagen' => ($imagenes && isset($imagenes['curpImagen'])) ? $imagenes['curpImagen'] : NULL,
+                'ifef' => ($imagenes && isset($imagenes['ifef'])) ? $imagenes['ifef'] : NULL,
+                'ifet' => ($imagenes && isset($imagenes['ifet'])) ? $imagenes['ifet'] : NULL,
+                'rfcImagen' => ($imagenes && isset($imagenes['rfcImagen'])) ? $imagenes['rfcImagen'] : NULL,
+                'carta1' => ($imagenes && isset($imagenes['carta1'])) ? $imagenes['carta1'] : NULL,
+                'carta2' => ($imagenes && isset($imagenes['carta2'])) ? $imagenes['carta2'] : NULL,
+                'nssImagen' => ($imagenes && isset($imagenes['nssImagen'])) ? $imagenes['nssImagen'] : NULL,
+                'comprobanteEstudios' => ($imagenes && isset($imagenes['comprobanteEstudios'])) ? $imagenes['comprobanteEstudios'] : NULL,
                 //Otros
                 'activo' => 1,
                 'eliminado' => 0
-                
             ]);
 
-            return response()->json($empleado, 200);
-        }catch(Exception $e){
-            return response()->json('Error en el servidor', 400);
+            $funciones = new Empleados();
+            $creado = $funciones->obtenerUno($empleado->id);
+
+            return response()->json($creado ? $creado : $empleado, 200);
+        }catch(\Throwable $e){
+            return response()->json('Error en el servidor: ' . $e->getMessage(), 400);
         }
     }
 
@@ -101,14 +112,27 @@ class EmpleadosController extends BaseController
             $domicilio = $request['domicilio'];
             $fiscales = $request['fiscales'];
             $empresa = $request['empresa'];
-            $imagenes = $request['imagenes'];
-
+            $imagenes = isset($request['imagenes']) ? $request['imagenes'] : null;
 
             $fechaIngreso = (isset($fiscales['fechaIngreso']) && strlen($fiscales['fechaIngreso']) > 0) ? $fiscales['fechaIngreso'] : null;
-            $fechaAltaIMSS = (!array_key_exists("fechaAltaIMSS", $fiscales)) ? null : $fiscales['fechaAltaIMSS'];
+            $fechaAltaIMSS = null;
+            if (isset($fiscales['fechaAltaImss']) && strlen($fiscales['fechaAltaImss']) > 0) {
+                $fechaAltaIMSS = $fiscales['fechaAltaImss'];
+            } else if (isset($fiscales['fechaAltaIMSS']) && strlen($fiscales['fechaAltaIMSS']) > 0) {
+                $fechaAltaIMSS = $fiscales['fechaAltaIMSS'];
+            }
             $fechaNacimiento = (isset($personales['fechaNacimiento']) && strlen($personales['fechaNacimiento']) > 0) ? $personales['fechaNacimiento'] : null;
 
-            $empleado = Empleado::find($personales['id']);
+            $id = isset($personales['id']) ? $personales['id'] : (isset($request['id']) ? $request['id'] : null);
+            if (!$id) {
+                return response()->json("ID de empleado no especificado", 400);
+            }
+
+            $empleado = Empleado::find($id);
+            if (!$empleado) {
+                return response()->json("Empleado no encontrado", 404);
+            }
+
             //Personales
             $empleado->nombre = $personales['nombre'];
             $empleado->telefono = $personales['telefono'];
@@ -118,7 +142,6 @@ class EmpleadosController extends BaseController
             $empleado->correo = $personales['correo'];
 
             //Domicilio
-            
             $empleado->calle = $domicilio['calle'];
             $empleado->numeroInterior = $domicilio['numeroInterior'];
             $empleado->numeroExterior = $domicilio['numeroExterior'];
@@ -141,25 +164,30 @@ class EmpleadosController extends BaseController
             $empleado->idPuesto = $empresa['idPuesto'];
             $empleado->sueldoBase = $empresa['sueldoBase'];
             $empleado->sueldoFiscal = $empresa['sueldoFiscal'];
-            $empleado->bonoPuntualidad = $empresa['bonoPuntualidad'];
-            
+            $empleado->bonoPuntualidad = isset($empresa['bono']) ? $empresa['bono'] : (isset($empresa['bonoPuntualidad']) ? $empresa['bonoPuntualidad'] : 0);
             
             //Imagenes
-            $empleado->actaNacimiento = $imagenes['actaNacimiento'];
-            $empleado->comprobanteDomicilio = $imagenes['comprobanteDomicilio'];
-            $empleado->curpImagen = $imagenes['curpImagen'];
-            $empleado->ifef = $imagenes['ifef'];
-            $empleado->ifet = $imagenes['ifet'];
-            $empleado->rfcImagen = $imagenes['rfcImagen'];
-            $empleado->carta1 = $imagenes['carta1'];
-            $empleado->carta2 = $imagenes['carta2'];
-            $empleado->nssImagen = $imagenes['nssImagen'];
-            $empleado->comprobanteEstudios = $imagenes['comprobanteEstudios'];
+            if ($imagenes && is_array($imagenes)) {
+                if (array_key_exists('actaNacimiento', $imagenes)) $empleado->actaNacimiento = $imagenes['actaNacimiento'];
+                if (array_key_exists('comprobanteDomicilio', $imagenes)) $empleado->comprobanteDomicilio = $imagenes['comprobanteDomicilio'];
+                if (array_key_exists('curpImagen', $imagenes)) $empleado->curpImagen = $imagenes['curpImagen'];
+                if (array_key_exists('ifef', $imagenes)) $empleado->ifef = $imagenes['ifef'];
+                if (array_key_exists('ifet', $imagenes)) $empleado->ifet = $imagenes['ifet'];
+                if (array_key_exists('rfcImagen', $imagenes)) $empleado->rfcImagen = $imagenes['rfcImagen'];
+                if (array_key_exists('carta1', $imagenes)) $empleado->carta1 = $imagenes['carta1'];
+                if (array_key_exists('carta2', $imagenes)) $empleado->carta2 = $imagenes['carta2'];
+                if (array_key_exists('nssImagen', $imagenes)) $empleado->nssImagen = $imagenes['nssImagen'];
+                if (array_key_exists('comprobanteEstudios', $imagenes)) $empleado->comprobanteEstudios = $imagenes['comprobanteEstudios'];
+            }
             
             $empleado->save();
-            return response()->json($empleado, 200);
-        }catch(Exception $e){
-            return response()->json("Error en el servidor", 400);
+
+            $funciones = new Empleados();
+            $actualizado = $funciones->obtenerUno($empleado->id);
+
+            return response()->json($actualizado ? $actualizado : $empleado, 200);
+        }catch(\Throwable $e){
+            return response()->json("Error en el servidor: " . $e->getMessage(), 400);
         }
     }
 
@@ -170,8 +198,11 @@ class EmpleadosController extends BaseController
             $empleado->activo = 1;
             $empleado->save();
 
-            return response()->json($empleado, 200);
-        }catch(Exception $e){
+            $funciones = new Empleados();
+            $actualizado = $funciones->obtenerUno($empleado->id);
+
+            return response()->json($actualizado ? $actualizado : $empleado, 200);
+        }catch(\Throwable $e){
             return response()->json("Error en el servidor", 400);
         }
     }
@@ -180,14 +211,16 @@ class EmpleadosController extends BaseController
         try{
             $carbon = new \Carbon\Carbon();
             $date = $carbon->now();
-            $empleado = new Empleado();
             $empleado = Empleado::find($request['id']);
             $empleado->activo = 0;
             $empleado->fechaSalida = $date;
             $empleado->save();
 
-            return response()->json($empleado, 200);
-        }catch(Exception $e){
+            $funciones = new Empleados();
+            $actualizado = $funciones->obtenerUno($empleado->id);
+
+            return response()->json($actualizado ? $actualizado : $empleado, 200);
+        }catch(\Throwable $e){
             return response()->json("Error en el servidor", 400);
         }
     }

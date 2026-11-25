@@ -6,7 +6,7 @@ import { GeneralesService } from '../../../../servicios/generales.service';
   templateUrl: './empleado-empresa.component.html',
   styleUrl: './empleado-empresa.component.css'
 })
-export class EmpleadoEmpresaComponent {
+export class EmpleadoEmpresaComponent implements OnInit {
   @Output() siguiente = new EventEmitter<any>();
   @Output() anterior = new EventEmitter<any>();
   @Input() dato: any;
@@ -20,12 +20,19 @@ export class EmpleadoEmpresaComponent {
   constructor(private generales: GeneralesService) { }
   
   ngOnInit(): void {
-    (this.modificar) ? this.buscarPuestos() : null;
+    if (this.dato && this.dato.idDepartamento) {
+      this.cargarPuestos();
+    }
   }
 
-  buscarPuestos(){
-    this.dato.idPuesto = (this.modificar) ? this.dato.idPuesto : 0;
-    this.puestos = this.generales.sublista(this.listas.puestos, this.dato.idDepartamento, 'idDepartamento');
+  cambioDepartamento(idDepartamento: any) {
+    this.dato.idDepartamento = idDepartamento;
+    this.dato.idPuesto = 0;
+    this.cargarPuestos();
+  }
+
+  cargarPuestos(){
+    this.puestos = this.generales.sublista(this.listas?.puestos, this.dato.idDepartamento, 'idDepartamento');
   }
   
   emitir() {

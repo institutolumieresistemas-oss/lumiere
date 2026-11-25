@@ -66,6 +66,10 @@ export class EmpleadosService {
   }
   
   validar(dato: any): boolean {
+    if (!dato || !dato.personales || !dato.domicilio || !dato.fiscales || !dato.empresa) {
+      this.generales.mensajeError('Información de empleado incompleta');
+      return false;
+    }
     // ==========================================
     // 1. VALIDACIÓN: DATOS PERSONALES (Paso 0)
     // ==========================================

@@ -1,37 +1,42 @@
-<div class="modal-header bg-success">
-    <h4 class="text-white">{{ modificar ? 'Modificar' : 'Agregar' }} Empleado</h4>
-    <button type="button" class="close" (click)="cerrar()" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+<div class="modal-header" [ngClass]="modificar ? 'bg-primary' : 'bg-success'">
+    <h4 class="text-white mb-0">{{ modificar ? 'Modificar' : 'Agregar' }} Empleado</h4>
+    <div class="d-flex align-items-center">
+        <button *ngIf="modificar" type="button" class="btn btn-sm btn-light me-2" (click)="finalizarRegistro()">
+            <i class="fas fa-save me-1"></i> Guardar Cambios
+        </button>
+        <button type="button" class="close text-white" (click)="cerrar()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 </div>
 <div class="modal-body">
     <div class="container">
 
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
-                <a class="nav-link" [class.active]="vista === 0" [class.disabled]="true">Personales</a>
+                <a class="nav-link cursor-pointer" [class.active]="vista === 0" (click)="irAPaso(0)" role="button">Personales</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" [class.active]="vista === 1" [class.disabled]="true">Domicilio</a>
+                <a class="nav-link cursor-pointer" [class.active]="vista === 1" (click)="irAPaso(1)" role="button">Domicilio</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" [class.active]="vista === 2" [class.disabled]="true">Fiscales</a>
+                <a class="nav-link cursor-pointer" [class.active]="vista === 2" (click)="irAPaso(2)" role="button">Fiscales</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" [class.active]="vista === 3" [class.disabled]="true">Empresa</a>
+                <a class="nav-link cursor-pointer" [class.active]="vista === 3" (click)="irAPaso(3)" role="button">Empresa</a>
             </li>
         </ul>
 
-        <app-empleado-personales *ngIf="vista === 0" [dato]="dato.personales" (siguiente)="guardarPaso('personales', $event)">
+        <app-empleado-personales *ngIf="vista === 0" [dato]="dato.personales" [modificar]="modificar" (siguiente)="guardarPaso('personales', $event)">
         </app-empleado-personales>
 
-        <app-empleado-domicilio *ngIf="vista === 1" [dato]="dato.domicilio" [listas]="listas.domicilio" (atras)="atrasPaso()" (siguiente)="guardarPaso('domicilio', $event)">
+        <app-empleado-domicilio *ngIf="vista === 1" [dato]="dato.domicilio" [listas]="listas.domicilio" [modificar]="modificar" (anterior)="atrasPaso()" (siguiente)="guardarPaso('domicilio', $event)">
         </app-empleado-domicilio>
 
-        <app-empleado-fiscales *ngIf="vista === 2" [dato]="dato.fiscales" (atras)="atrasPaso()" (siguiente)="guardarPaso('fiscales', $event)">
+        <app-empleado-fiscales *ngIf="vista === 2" [dato]="dato.fiscales" [modificar]="modificar" (anterior)="atrasPaso()" (siguiente)="guardarPaso('fiscales', $event)">
         </app-empleado-fiscales>
 
-        <app-empleado-empresa *ngIf="vista === 3" [dato]="dato.empresa" [listas]="listas.empresa" (atras)="atrasPaso()" (siguiente)="guardarPaso('empresa', $event)">
+        <app-empleado-empresa *ngIf="vista === 3" [dato]="dato.empresa" [listas]="listas.empresa" [modificar]="modificar" (anterior)="atrasPaso()" (siguiente)="guardarPaso('empresa', $event)">
         </app-empleado-empresa>
 
     </div>
