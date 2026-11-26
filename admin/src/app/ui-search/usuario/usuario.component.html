@@ -5,6 +5,16 @@
     </div>
 </a>
 <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+    <li class="mb-2 px-3 py-2 border-bottom" *ngIf="sesion$ | async as s" style="cursor: pointer;" (click)="verDetallesSesion(s)">
+        <div class="d-flex flex-column">
+            <span class="text-xxs text-uppercase text-secondary font-weight-bold">Sesión (1 año)</span>
+            <div class="d-flex align-items-center mt-1">
+                <i class="far fa-clock text-info me-2"></i>
+                <span class="text-xs font-weight-bold text-dark">{{ s.formatoCorto }}</span>
+            </div>
+            <span class="text-xxs text-muted mt-1">Expira: {{ s.fechaExpiracionTexto }}</span>
+        </div>
+    </li>
     <li class="mb-2" routerLink="perfil">
         <div class="d-flex py-1">
             &nbsp;

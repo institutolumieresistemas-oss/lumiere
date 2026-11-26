@@ -51,6 +51,7 @@ import { ImagenTextoComponent } from './imagen-texto/imagen-texto.component';
 import { ImagenSeleccionableComponent } from './imagen-seleccionable/imagen-seleccionable.component';
 import { DatoEstadoCuentaComponent } from './dato-estado-cuenta/dato-estado-cuenta.component';
 import { ModalVerVoucherComponent } from './modal-ver-voucher/modal-ver-voucher.component';
+import { ContadorSesionComponent } from './contador-sesion/contador-sesion.component';
 
 
 
@@ -103,6 +104,7 @@ import { ModalVerVoucherComponent } from './modal-ver-voucher/modal-ver-voucher.
     ImagenSeleccionableComponent,
     DatoEstadoCuentaComponent,
     ModalVerVoucherComponent,
+    ContadorSesionComponent,
   ],
   imports: [
     CommonModule,
@@ -157,7 +159,8 @@ import { ModalVerVoucherComponent } from './modal-ver-voucher/modal-ver-voucher.
     ImagenTextoComponent,
     ImagenSeleccionableComponent,
     DatoEstadoCuentaComponent,
-    ModalVerVoucherComponent
+    ModalVerVoucherComponent,
+    ContadorSesionComponent
   ]
 })
 export class UiSearchModule { }

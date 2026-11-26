@@ -1,0 +1,20 @@
+<div class="contador-sesion-container" *ngIf="sesion$ | async as s">
+  <div
+    *ngIf="s.activa"
+    class="contador-chip d-flex align-items-center"
+    [ngClass]="'estado-' + s.estado"
+    (click)="mostrarDetalles(s)"
+    role="button"
+    tabindex="0"
+    [title]="'Sesión activa. Expira: ' + s.fechaExpiracionTexto + '. Clic para más información.'"
+  >
+    <div class="icono-wrapper me-2">
+      <i class="far fa-clock icono-reloj" [class.fa-spin]="s.estado === 'peligro'"></i>
+    </div>
+    <div class="texto-wrapper d-flex flex-column justify-content-center">
+      <span class="etiqueta-sesion d-none d-md-inline">TIEMPO DE SESIÓN</span>
+      <span class="valor-tiempo font-weight-bold">{{ s.formatoCorto }}</span>
+    </div>
+    <i class="fas fa-info-circle ms-2 ms-md-3 info-icon opacity-7"></i>
+  </div>
+</div>

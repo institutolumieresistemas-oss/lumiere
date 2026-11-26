@@ -1,16 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GeneralesService } from '../../servicios/generales.service';
+import { SesionService, InfoSesion } from '../../servicios/sesion.service';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-usuario',
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.css'
 })
-export class UsuarioComponent {
+export class UsuarioComponent implements OnInit {
   user: any;
-  constructor(private generales: GeneralesService,
-              private router: Router){}
+  sesion$: Observable<InfoSesion>;
+
+  constructor(
+    private generales: GeneralesService,
+    private sesionService: SesionService,
+    private router: Router
+  ) {
+    this.sesion$ = this.sesionService.sesion$;
+  }
 
   ngOnInit(): void {
     this.generales.delay(4000).then(fun => {
@@ -18,7 +27,11 @@ export class UsuarioComponent {
     });
   }
 
-  cerrarSesion(){
+  verDetallesSesion(info: InfoSesion): void {
+    this.sesionService.mostrarModalDetalles(info);
+  }
+
+  cerrarSesion(): void {
     this.generales.cerrarSesion();
     this.router.navigate(['login']);
   }

@@ -26,6 +26,13 @@ class AuthController extends Controller
             'usuario'    => 'required',
         ]);
         try {
+            $ttl = (int) env('JWT_TTL', 525600);
+            if (method_exists($this->jwt, 'factory')) {
+                $this->jwt->factory()->setTTL($ttl);
+            } elseif (method_exists($this->jwt, 'setTTL')) {
+                $this->jwt->setTTL($ttl);
+            }
+
             if ( !$token = $this->jwt->attempt($request->only('usuario', 'password'))) {
                 return response()->json('Usuario no encontrado', 400);
             }

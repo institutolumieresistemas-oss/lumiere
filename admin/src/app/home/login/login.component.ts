@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { GeneralesService } from '../../servicios/generales.service';
 import { LoginService } from '../../servicios/login.service';
+import { SesionService } from '../../servicios/sesion.service';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,7 @@ export class LoginComponent implements OnInit {
   private generales = inject(GeneralesService);
   private login = inject(LoginService);
   private router = inject(Router);
+  private sesionService = inject(SesionService);
 
   usuario = '';
   password = '';
@@ -32,6 +34,7 @@ export class LoginComponent implements OnInit {
     this.login.getToken(this.usuario, this.password).subscribe((respuesta: any) => {
       localStorage.setItem('token', respuesta['token']);
       localStorage.setItem('usuario', this.usuario);
+      this.sesionService.actualizarSesion();
       this.router.navigate(['admin']);
     });
   }
