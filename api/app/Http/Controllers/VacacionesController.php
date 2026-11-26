@@ -86,6 +86,32 @@ class VacacionesController extends Controller
         try {
             $this->asegurarColumnas();
 
+            $idEmpleado = $request->input('idEmpleado');
+            $fechaInicio = $request->input('fechaInicio');
+            $fechaFin = $request->input('fechaFin');
+
+            if (empty($idEmpleado) || empty($fechaInicio) || empty($fechaFin)) {
+                return response()->json('Debe proporcionar el empleado, fecha de inicio y fecha de fin.', 400);
+            }
+
+            // Validar traslape de fechas con otra solicitud existente activa del mismo empleado
+            // "a menos que la otra solicitud este eliminada o rechazada"
+            $traslape = Vacacion::where('idEmpleado', $idEmpleado)
+                ->where('eliminado', 0)
+                ->where('estatus', '!=', 'Rechazado')
+                ->where(function ($q) use ($fechaInicio, $fechaFin) {
+                    $q->where('fechaInicio', '<=', $fechaFin)
+                      ->where('fechaFin', '>=', $fechaInicio);
+                })
+                ->first();
+
+            if ($traslape) {
+                return response()->json(
+                    "No se puede registrar la solicitud: El rango de fechas seleccionado ({$fechaInicio} al {$fechaFin}) se traslapa con otra solicitud ya registrada del {$traslape->fechaInicio} al {$traslape->fechaFin} con estatus '{$traslape->estatus}'. Para utilizar estas fechas, la solicitud previa debe ser eliminada o rechazada.",
+                    400
+                );
+            }
+
             $idJefe = $request->input('idJefeInmediato');
             $nombreJefe = $request->input('jefeInmediato', '');
 
@@ -147,10 +173,21 @@ class VacacionesController extends Controller
             $id = $request->input('id');
             $estatus = $request->input('estatus'); // 'Autorizado' o 'Rechazado'
             $motivo = $request->input('motivoRechazo', '');
+            $idEmpleadoSolicitante = $request->input('idEmpleado');
 
             $vacacion = Vacacion::find($id);
             if (!$vacacion) {
                 return response()->json(['error' => 'Solicitud no encontrada'], 404);
+            }
+
+            // Validar que exista jefe asignado: "si no hay jefe no aparezcan / no autorizar"
+            if (empty($vacacion->idJefeInmediato)) {
+                return response()->json('No se puede autorizar o rechazar esta solicitud porque no tiene un jefe inmediato asignado.', 400);
+            }
+
+            // Validar que solo el jefe asignado en ese momento pueda autorizar o rechazar
+            if (!empty($idEmpleadoSolicitante) && intval($vacacion->idJefeInmediato) !== intval($idEmpleadoSolicitante)) {
+                return response()->json('Solo el jefe inmediato asignado a esta solicitud tiene permiso para autorizarla o rechazarla.', 403);
             }
 
             $vacacion->estatus = $estatus;
@@ -199,13 +236,18 @@ class VacacionesController extends Controller
                 ->select(
                     'vacaciones.*',
                     'empleados.nombre as empleado',
+                    'empleados.nombre as empleadoNombre',
                     'puestos.nombre as puesto',
                     'sucursales.nombre as sucursal'
                 )
                 ->where('vacaciones.eliminado', 0)
-                ->where('vacaciones.estatus', 'Pendiente');
+                ->where('vacaciones.estatus', 'Pendiente')
+                // Solo si tiene jefe asignado: "si no hay jefe no aparezcan"
+                ->whereNotNull('vacaciones.idJefeInmediato')
+                ->where('vacaciones.idJefeInmediato', '>', 0);
 
-            if (!$esAdmin && !empty($idEmpleado)) {
+            if (!empty($idEmpleado)) {
+                // Solo al jefe que este asignado en ese momento
                 $queryPendientes->where('vacaciones.idJefeInmediato', $idEmpleado);
             }
 
@@ -233,12 +275,13 @@ class VacacionesController extends Controller
                 ->select(
                     'vacaciones.*',
                     'empleados.nombre as empleado',
+                    'empleados.nombre as empleadoNombre',
                     'puestos.nombre as puesto',
                     'sucursales.nombre as sucursal'
                 )
                 ->where('vacaciones.eliminado', 0);
 
-            if (!$esAdmin && !empty($idEmpleado)) {
+            if (!empty($idEmpleado)) {
                 $queryHistorial->where(function ($q) use ($idEmpleado) {
                     $q->where('vacaciones.idJefeInmediato', $idEmpleado)
                       ->orWhere('vacaciones.idEmpleado', $idEmpleado);
@@ -249,7 +292,9 @@ class VacacionesController extends Controller
 
             return response()->json([
                 'pendientes' => $pendientes,
+                'porAutorizar' => $pendientes,
                 'notificacionesEmpleado' => $notificacionesEmpleado,
+                'misSolicitudes' => $notificacionesEmpleado,
                 'conteoNoLeidas' => $conteoPendientesNoLeidas + $conteoEmpleadoNoLeidas,
                 'historial' => $historial
             ], 200);

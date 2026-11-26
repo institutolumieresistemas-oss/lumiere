@@ -229,9 +229,13 @@ export class VacacionesService {
     return `${f.getDate()} de ${meses[f.getMonth()]} ${f.getFullYear()}`;
   }
 
-  cambiarEstatus(body: { id: number | string, estatus: string, motivoRechazo?: string }) {
+  cambiarEstatus(body: { id: number | string, estatus: string, motivoRechazo?: string, idEmpleado?: any }) {
     const url = this.uri + 'cambiar-estatus';
-    return this.http.post(url, body, { headers: this.headers }).pipe(map(respuesta => respuesta));
+    const payload = {
+      ...body,
+      idEmpleado: body.idEmpleado || localStorage.getItem('idEmpleado')
+    };
+    return this.http.post(url, payload, { headers: this.headers }).pipe(map(respuesta => respuesta));
   }
 
   obtenerNotificaciones(idEmpleado?: any, idTipoUsuario?: any) {

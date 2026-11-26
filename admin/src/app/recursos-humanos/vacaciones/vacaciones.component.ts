@@ -39,6 +39,8 @@ export class VacacionesComponent implements OnInit {
   seleccion: any;
   vistaModal = '';
   vistaActual: 'solicitudes' | 'tabulador' = 'solicitudes';
+  idEmpleadoLogueado: any = null;
+  solicitudTraslapada: any = null;
 
   // Empleado Seleccionado y Balance
   empleadoSeleccionado: any = null;
@@ -102,6 +104,7 @@ export class VacacionesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.idEmpleadoLogueado = localStorage.getItem('idEmpleado');
     this.tabulador = this.vacacionesService.obtenerTabulador();
     this.mostrar();
   }
@@ -321,6 +324,7 @@ export class VacacionesComponent implements OnInit {
     this.jefeSeleccionado = null;
     this.mostrarDropdownJefe = false;
     this.jefesFiltrados = [...this.empleados];
+    this.solicitudTraslapada = null;
   }
 
   onSeleccionarEmpleado(id: any) {
@@ -343,6 +347,32 @@ export class VacacionesComponent implements OnInit {
     this.calcularPeriodo();
   }
 
+  verificarTraslape(empId: any, inicio: string, fin: string): any {
+    if (!empId || !inicio || !fin) return null;
+    return this.datos.find(d => {
+      if (d.idEmpleado != empId) return false;
+      if (d.eliminado == 1) return false;
+      // "a menos que la otra solicitud este eliminada o rechazada"
+      if (d.estatus === 'Rechazado') return false;
+
+      const dInicio = d.fechaInicio;
+      const dFin = d.fechaFin;
+      if (!dInicio || !dFin) return false;
+
+      // Solapamiento: inicio <= dFin && fin >= dInicio
+      return inicio <= dFin && fin >= dInicio;
+    });
+  }
+
+  puedeAutorizar(item: any): boolean {
+    // Si no hay jefe no aparezcan
+    if (!item || !item.idJefeInmediato) {
+      return false;
+    }
+    // Solo le aparezcan al jefe que este asignado en ese momento
+    return !!this.idEmpleadoLogueado && String(item.idJefeInmediato) === String(this.idEmpleadoLogueado);
+  }
+
   calcularPeriodo() {
     if (!this.formSolicitud.fechaInicio || !this.formSolicitud.fechaFin) {
       this.diasNaturales = 0;
@@ -350,8 +380,12 @@ export class VacacionesComponent implements OnInit {
       this.diasDescansoConteo = 0;
       this.textoPeriodo = '';
       this.calendariosPeriodo = [];
+      this.solicitudTraslapada = null;
       return;
     }
+
+    const empId = this.empleadoSeleccionado ? this.empleadoSeleccionado.id : this.formSolicitud.idEmpleado;
+    this.solicitudTraslapada = this.verificarTraslape(empId, this.formSolicitud.fechaInicio, this.formSolicitud.fechaFin);
 
     const start = new Date(this.formSolicitud.fechaInicio + 'T00:00:00');
     const end = new Date(this.formSolicitud.fechaFin + 'T00:00:00');
@@ -508,6 +542,15 @@ export class VacacionesComponent implements OnInit {
     }
     if (this.diasEfectivos <= 0) {
       this.generales.mensajeError('El periodo seleccionado no contiene días de vacaciones válidos.');
+      return;
+    }
+
+    // Validar traslape con otra solicitud activa (no eliminada y no rechazada)
+    const traslape = this.verificarTraslape(empId, this.formSolicitud.fechaInicio, this.formSolicitud.fechaFin);
+    if (traslape) {
+      this.generales.mensajeError(
+        `No se puede registrar: El periodo solicitado (${this.formSolicitud.fechaInicio} al ${this.formSolicitud.fechaFin}) se traslapa con otra solicitud del ${traslape.fechaInicio} al ${traslape.fechaFin} con estatus '${traslape.estatus}'. Para solicitar estas fechas, la otra solicitud debe estar eliminada o rechazada.`
+      );
       return;
     }
 

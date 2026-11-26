@@ -88,6 +88,15 @@ export class BuzonNotificacionesComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Comprobar si el usuario actual es el jefe directo asignado a la solicitud
+  // "si no hay jefe no aparezcan y solo le aparezcan al jefe asignado en ese momento"
+  puedeAutorizar(item: any): boolean {
+    if (!item || !item.idJefeInmediato) {
+      return false;
+    }
+    return !!this.idEmpleado && String(item.idJefeInmediato) === String(this.idEmpleado);
+  }
+
   // --- ACCIONES RÁPIDAS DIRECTAMENTE DESDE LA NOTIFICACIÓN SIN SALIR ---
 
   autorizarRapido(item: any, event: MouseEvent) {

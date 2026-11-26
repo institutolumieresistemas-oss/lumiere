@@ -134,25 +134,29 @@
                                 </div>
                             </td>
                             <td class="text-end">
-                                <div class="btn-group btn-group-sm">
+                                <div class="btn-group btn-group-sm" *ngIf="item.estatus === 'Pendiente' && puedeAutorizar(item)">
                                     <button class="btn btn-success" 
-                                            *ngIf="item.estatus === 'Pendiente'" 
                                             (click)="autorizar(item)" 
                                             title="Autorizar solicitud">
                                         <i class="fas fa-check me-1"></i> Autorizar
                                     </button>
                                     <button class="btn btn-outline-danger" 
-                                            *ngIf="item.estatus === 'Pendiente'" 
                                             (click)="rechazar(item)" 
                                             title="Rechazar solicitud">
                                         <i class="fas fa-times me-1"></i> Rechazar
                                     </button>
-                                    <button class="btn btn-outline-primary" 
-                                            (click)="verPerfilVacaciones(item.idEmpleado)" 
-                                            title="Ver historial completo y saldo">
-                                        <i class="fas fa-eye me-1"></i> Ficha
-                                    </button>
                                 </div>
+                                <span class="badge bg-light text-warning border small me-1" *ngIf="item.estatus === 'Pendiente' && !item.idJefeInmediato">
+                                    <i class="fas fa-exclamation-triangle me-1"></i> Sin jefe asignado
+                                </span>
+                                <span class="badge bg-light text-secondary border small me-1" *ngIf="item.estatus === 'Pendiente' && item.idJefeInmediato && !puedeAutorizar(item)">
+                                    <i class="fas fa-lock me-1"></i> Solo jefe asignado
+                                </span>
+                                <button class="btn btn-outline-primary btn-sm ms-1" 
+                                        (click)="verPerfilVacaciones(item.idEmpleado)" 
+                                        title="Ver historial completo y saldo">
+                                    <i class="fas fa-eye me-1"></i> Ficha
+                                </button>
                             </td>
                         </tr>
                     </tbody>

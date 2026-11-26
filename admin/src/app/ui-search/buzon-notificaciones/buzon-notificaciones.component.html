@@ -71,8 +71,8 @@
                             "{{ item.observaciones }}"
                         </div>
 
-                        <!-- BOTONES DE ACCIÓN RÁPIDA (AUTORIZAR / RECHAZAR SIN ENTRAR A LA VISTA) -->
-                        <div class="d-flex gap-2 mt-2 pt-1 border-top" (click)="$event.stopPropagation()">
+                        <!-- BOTONES DE ACCIÓN RÁPIDA (SOLO PARA EL JEFE ASIGNADO EN ESE MOMENTO; SI NO HAY JEFE NO APARECEN) -->
+                        <div class="d-flex gap-2 mt-2 pt-1 border-top" *ngIf="item.estatus === 'Pendiente' && puedeAutorizar(item)" (click)="$event.stopPropagation()">
                             <button type="button" 
                                     class="btn btn-sm btn-success flex-fill py-1 fw-bold" 
                                     (click)="autorizarRapido(item, $event)" 
@@ -85,6 +85,12 @@
                                     title="Rechazar directamente">
                                 <i class="fas fa-times me-1"></i> Rechazar
                             </button>
+                        </div>
+                        <div class="small text-muted mt-2 pt-1 border-top fst-italic" *ngIf="item.estatus === 'Pendiente' && !item.idJefeInmediato">
+                            <i class="fas fa-exclamation-triangle text-warning me-1"></i> Sin jefe asignado (no autorizable)
+                        </div>
+                        <div class="small text-muted mt-2 pt-1 border-top fst-italic" *ngIf="item.estatus === 'Pendiente' && item.idJefeInmediato && !puedeAutorizar(item)">
+                            <i class="fas fa-lock text-secondary me-1"></i> Solo el jefe asignado puede autorizar
                         </div>
                     </div>
                 </div>

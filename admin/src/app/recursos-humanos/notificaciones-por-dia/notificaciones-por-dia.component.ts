@@ -131,6 +131,15 @@ export class NotificacionesPorDiaComponent implements OnInit {
     return `${yyyy}-${mm}-${dd}`;
   }
 
+  puedeAutorizar(item: any): boolean {
+    // Si no hay jefe asignado no aparecen
+    if (!item || !item.idJefeInmediato) {
+      return false;
+    }
+    // Solo le aparecen al jefe que esté asignado en ese momento
+    return !!this.idEmpleado && String(item.idJefeInmediato) === String(this.idEmpleado);
+  }
+
   autorizar(item: any) {
     if (!item || !item.id) return;
     this.cargando = true;
