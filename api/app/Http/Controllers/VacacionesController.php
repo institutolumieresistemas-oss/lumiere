@@ -29,10 +29,23 @@ class VacacionesController extends Controller
                 ->orderBy('vacaciones.id', 'desc')
                 ->get();
 
-            $datos['empleados'] = Empleado::select('id', 'nombre', 'fechaIngreso', 'idPuesto', 'idDepartamento', 'idSucursal')
-                ->where('eliminado', 0)
-                ->where('activo', 1)
-                ->orderBy('nombre', 'asc')
+            $datos['empleados'] = Empleado::leftJoin('puestos', 'empleados.idPuesto', '=', 'puestos.id')
+                ->leftJoin('departamentos', 'empleados.idDepartamento', '=', 'departamentos.id')
+                ->leftJoin('sucursales', 'empleados.idSucursal', '=', 'sucursales.id')
+                ->select(
+                    'empleados.id',
+                    'empleados.nombre',
+                    'empleados.fechaIngreso',
+                    'empleados.idPuesto',
+                    'empleados.idDepartamento',
+                    'empleados.idSucursal',
+                    'puestos.nombre as puesto',
+                    'departamentos.nombre as departamento',
+                    'sucursales.nombre as sucursal'
+                )
+                ->where('empleados.eliminado', 0)
+                ->where('empleados.activo', 1)
+                ->orderBy('empleados.nombre', 'asc')
                 ->get();
 
             return response()->json($datos, 200);

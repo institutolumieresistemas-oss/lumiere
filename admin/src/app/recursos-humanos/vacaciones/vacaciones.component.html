@@ -42,17 +42,206 @@
 
         <!-- VISTA SOLICITUDES -->
         <div *ngIf="vistaActual === 'solicitudes'">
-            <div class="row mb-3" *ngIf="!seleccion">
-                <div class="col-sm-12">
-                    <button class="btn btn-success" (click)="modalNuevaSolicitud()">
-                        <i class="fas fa-plus-circle me-1"></i> Nueva Solicitud de Vacaciones
-                    </button>
+
+            <!-- BARRA DE BÚSQUEDA Y FILTRADO CON SELECT COMPLETE DE EMPLEADO -->
+            <div class="card bg-light border-0 shadow-sm mb-4">
+                <div class="card-body py-3">
+                    <div class="row align-items-center g-3">
+                        <div class="col-lg-7 col-md-8 position-relative">
+                            <label class="form-label fw-bold text-dark mb-1">
+                                <i class="fas fa-user-search text-primary me-1"></i> Buscar y Seleccionar Empleado:
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    class="form-control border-start-0 ps-0" 
+                                    placeholder="Escribe el nombre del empleado para filtrar coincidencias..."
+                                    [(ngModel)]="filtroTextoEmpleado"
+                                    (input)="filtrarEmpleados()"
+                                    (focus)="mostrarDropdownEmpleados = true; filtrarEmpleados()"
+                                    (blur)="onBlurDropdown()"
+                                >
+                                <button class="btn btn-outline-secondary" type="button" *ngIf="filtroTextoEmpleado || empleadoSeleccionado" (click)="limpiarSeleccionEmpleado()" title="Quitar selección y ver todos">
+                                    <i class="fas fa-times me-1"></i> Ver Todos
+                                </button>
+                            </div>
+
+                            <!-- Menú flotante autocompletado -->
+                            <div class="dropdown-menu show w-100 shadow-lg border mt-1 select-complete-menu" 
+                                 *ngIf="mostrarDropdownEmpleados && empleadosFiltrados.length > 0">
+                                <button 
+                                    type="button" 
+                                    class="dropdown-item py-2 border-bottom select-complete-item" 
+                                    *ngFor="let emp of empleadosFiltrados" 
+                                    (mousedown)="seleccionarEmpleado(emp)"
+                                >
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-bold text-dark">{{ emp.nombre }}</div>
+                                            <small class="text-muted">
+                                                <i class="fas fa-briefcase me-1"></i>{{ emp.puesto || 'Sin puesto' }}
+                                                <span *ngIf="emp.departamento"> • {{ emp.departamento }}</span>
+                                                <span *ngIf="emp.sucursal"> • {{ emp.sucursal }}</span>
+                                            </small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-light text-primary border" *ngIf="emp.fechaIngreso">
+                                                <i class="fas fa-calendar-alt me-1"></i>Ingreso: {{ emp.fechaIngreso }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="dropdown-menu show w-100 shadow border p-3 text-center text-muted small" 
+                                 *ngIf="mostrarDropdownEmpleados && empleadosFiltrados.length === 0">
+                                No se encontraron empleados que coincidan con "{{ filtroTextoEmpleado }}".
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5 col-md-4 text-md-end mt-3 mt-md-0">
+                            <button class="btn btn-success" (click)="modalNuevaSolicitud()">
+                                <i class="fas fa-plus-circle me-1"></i> Nueva Solicitud
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- FICHA DETALLADA Y BALANCE DE VACACIONES DEL EMPLEADO SELECCIONADO -->
+            <div class="card border-primary shadow-sm mb-4" *ngIf="empleadoSeleccionado && balanceEmpleado">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2">
+                    <div>
+                        <h6 class="mb-0 text-white font-weight-bold">
+                            <i class="fas fa-user-check me-2"></i>{{ empleadoSeleccionado.nombre }}
+                            <span class="badge bg-light text-primary ms-2">{{ empleadoSeleccionado.puesto || 'Puesto no asignado' }}</span>
+                        </h6>
+                    </div>
+                    <div>
+                        <span class="badge bg-warning text-dark me-2" *ngIf="empleadoSeleccionado.sucursal">
+                            <i class="fas fa-store me-1"></i>{{ empleadoSeleccionado.sucursal }}
+                        </span>
+                        <span class="badge bg-light text-dark">
+                            <i class="fas fa-calendar-check me-1"></i>Ingreso: {{ empleadoSeleccionado.fechaIngreso || 'No registrada' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- INFORMACIÓN DEL PERIODO ANUAL ACTUAL (1 AÑO) -->
+                    <div class="alert alert-primary py-2 mb-3 d-flex flex-wrap justify-content-between align-items-center" *ngIf="balanceEmpleado.periodoActual">
+                        <div>
+                            <span class="fw-bold d-block text-dark">
+                                <i class="fas fa-clock text-primary me-2"></i>Periodo Anual Actual:
+                                <span class="text-primary fs-6">{{ balanceEmpleado.periodoActual.inicioLegible }}</span> al 
+                                <span class="text-primary fs-6">{{ balanceEmpleado.periodoActual.finLegible }}</span>
+                            </span>
+                            <small class="text-muted">
+                                Antigüedad cumplida en este periodo: <strong>{{ balanceEmpleado.aniosCumplidos }} {{ balanceEmpleado.aniosCumplidos === 1 ? 'año' : 'años' }}</strong>
+                                • Próxima renovación de vacaciones: <strong>{{ balanceEmpleado.periodoActual.proximaRenovacion }}</strong>
+                            </small>
+                        </div>
+                        <div class="mt-2 mt-md-0">
+                            <span class="badge bg-info text-white p-2">
+                                <i class="fas fa-sync-alt me-1"></i>Renovación cada {{ empleadoSeleccionado.fechaIngreso ? (empleadoSeleccionado.fechaIngreso.split('-')[2] + '/' + empleadoSeleccionado.fechaIngreso.split('-')[1]) : 'año' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 4 TARJETAS DE DÍAS: CORRESPONDIENTES, A FAVOR ANTERIORES, TOMADOS Y DISPONIBLES -->
+                    <div class="row g-3 text-center mb-3">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-3 border rounded bg-light h-100">
+                                <span class="text-muted d-block small fw-bold text-uppercase">Días por Antigüedad (Año Actual):</span>
+                                <h3 class="mb-0 text-primary fw-bold">{{ balanceEmpleado.periodoActual?.diasTabulador || 0 }}</h3>
+                                <small class="text-muted">Según Ley Federal del Trabajo</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-3 border rounded bg-light border-success h-100 position-relative">
+                                <span class="text-success d-block small fw-bold text-uppercase">
+                                    <i class="fas fa-plus-circle me-1"></i>Días a Favor (Años Anteriores):
+                                </span>
+                                <h3 class="mb-0 text-success fw-bold">+{{ balanceEmpleado.diasPendientesAnteriores || 0 }}</h3>
+                                <small class="text-muted">Días no gozados acumulados</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-3 border rounded bg-light border-warning h-100">
+                                <span class="text-warning d-block small fw-bold text-uppercase text-dark">
+                                    <i class="fas fa-minus-circle me-1"></i>Días Tomados en este Periodo:
+                                </span>
+                                <h3 class="mb-0 text-warning fw-bold">-{{ balanceEmpleado.periodoActual?.diasTomados || 0 }}</h3>
+                                <small class="text-muted">{{ balanceEmpleado.periodoActual?.solicitudes?.length || 0 }} solicitud(es) registradas</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-3 border rounded bg-success bg-opacity-10 border-success h-100">
+                                <span class="text-success d-block small fw-bold text-uppercase">
+                                    <i class="fas fa-check-double me-1"></i>Saldo Disponible para Tomar:
+                                </span>
+                                <h3 class="mb-0 text-success fw-bold">{{ balanceEmpleado.diasDisponibles || 0 }} DÍAS</h3>
+                                <small class="text-success fw-bold">Listos para disfrutar</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SELECTOR DE FILTRO DE SOLICITUDES: PERIODO ACTUAL VS TODOS LOS PERIODOS -->
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn" [class.btn-primary]="filtroPeriodo === 'actual'" [class.btn-outline-primary]="filtroPeriodo !== 'actual'" (click)="cambiarFiltroPeriodo('actual')">
+                                <i class="fas fa-calendar-day me-1"></i> Solicitudes del Año Actual ({{ balanceEmpleado.solicitudesActuales?.length || 0 }})
+                            </button>
+                            <button type="button" class="btn" [class.btn-primary]="filtroPeriodo === 'todos'" [class.btn-outline-primary]="filtroPeriodo !== 'todos'" (click)="cambiarFiltroPeriodo('todos')">
+                                <i class="fas fa-history me-1"></i> Histórico Completo de Vacaciones
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-danger" (click)="limpiarSeleccionEmpleado()">
+                                <i class="fas fa-times me-1"></i> Quitar Filtro de Empleado
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLA DE SOLICITUDES (MOSTRADAS SEGÚN EL FILTRO) -->
             <div class="row">
                 <div class="col-sm-12">
-                    <app-datatable [configuracion]="configuracion" [datos]="datos" (emitidor)="seleccion = $event;"></app-datatable>
+                    <div class="d-flex justify-content-between align-items-center mb-2" *ngIf="empleadoSeleccionado">
+                        <span class="text-muted small fw-bold">
+                            <span *ngIf="filtroPeriodo === 'actual'">
+                                Mostrando las solicitudes de <strong>{{ empleadoSeleccionado.nombre }}</strong> correspondientes a su periodo anual actual:
+                            </span>
+                            <span *ngIf="filtroPeriodo === 'todos'">
+                                Mostrando todas las solicitudes históricas de <strong>{{ empleadoSeleccionado.nombre }}</strong>:
+                            </span>
+                        </span>
+                        <span class="badge bg-secondary">{{ datosMostrados.length }} registro(s)</span>
+                    </div>
+
+                    <div class="alert alert-info py-2" *ngIf="!empleadoSeleccionado">
+                        <i class="fas fa-info-circle me-1"></i> Mostrando todas las solicitudes registradas. Para consultar el periodo de 1 año y los días a favor de un empleado, búscalo en el selector superior o selecciónalo desde la lista de <a (click)="irAEmpleados()" role="button" class="text-primary fw-bold text-decoration-underline pointer">Empleados</a>.
+                    </div>
+
+                    <div class="alert alert-warning text-center py-4 my-3" *ngIf="empleadoSeleccionado && datosMostrados.length === 0">
+                        <i class="fas fa-umbrella-beach fa-2x text-warning d-block mb-2"></i>
+                        <h6 class="fw-bold mb-1">Sin solicitudes registradas en este periodo</h6>
+                        <p class="text-muted small mb-3">El empleado no ha registrado solicitudes de vacaciones durante el periodo seleccionado.</p>
+                        <button class="btn btn-sm btn-success" (click)="modalNuevaSolicitud()">
+                            <i class="fas fa-plus-circle me-1"></i> Registrar Primera Solicitud
+                        </button>
+                    </div>
+
+                    <div *ngIf="datosMostrados.length > 0">
+                        <app-datatable [configuracion]="configuracion" [datos]="datosMostrados" (emitidor)="seleccion = $event;"></app-datatable>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,7 +274,7 @@
             </h5>
         </div>
         <div class="modal-body">
-            <!-- SELECCIÓN EMPLEADO Y ANTES -->
+            <!-- SELECCIÓN EMPLEADO Y JEFE INMEDIATO -->
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-bold">Empleado Solicitante <span class="text-danger">*</span></label>
@@ -102,22 +291,29 @@
                 </div>
             </div>
 
-            <!-- DETALLES ANTIGÜEDAD Y DÍAS SEGÚN TABULADOR -->
+            <!-- DETALLES ANTIGÜEDAD, DÍAS TABULADOR Y DÍAS A FAVOR -->
             <div class="row mb-3" *ngIf="formSolicitud.empleadoObj">
                 <div class="col-sm-12">
                     <div class="p-3 bg-light rounded border border-info">
-                        <div class="row text-center">
-                            <div class="col-md-4">
+                        <div class="row text-center align-items-center g-2">
+                            <div class="col-md-3">
                                 <span class="text-muted d-block small">Fecha de Ingreso:</span>
                                 <strong>{{ formSolicitud.empleadoObj.fechaIngreso || 'No registrada' }}</strong>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <span class="text-muted d-block small">Antigüedad Cumplida:</span>
                                 <strong>{{ antiguedadAnios }} {{ antiguedadAnios === 1 ? 'año' : 'años' }}</strong>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <span class="text-muted d-block small">Días según Tabulador:</span>
-                                <span class="badge bg-success fs-6">{{ diasTabulador }} días</span>
+                                <span class="badge bg-primary fs-6">{{ diasTabulador }} días</span>
+                            </div>
+                            <div class="col-md-3" *ngIf="balanceEmpleado && balanceEmpleado.fechaIngreso === formSolicitud.empleadoObj.fechaIngreso">
+                                <span class="text-muted d-block small">Saldo Total Disponible:</span>
+                                <span class="badge bg-success fs-6">{{ balanceEmpleado.diasDisponibles }} días</span>
+                                <small class="text-success d-block small mt-1" *ngIf="balanceEmpleado.diasPendientesAnteriores > 0">
+                                    (+{{ balanceEmpleado.diasPendientesAnteriores }} días a favor acumulados)
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -180,10 +376,17 @@
             <div class="alert alert-success py-2 mb-3" *ngIf="textoPeriodo && diasEfectivos > 0">
                 <h6 class="mb-1 text-success font-weight-bold"><i class="fas fa-check-circle me-1"></i> RESUMEN DEL PERIODO SOLICITADO:</h6>
                 <p class="mb-1 text-dark fw-bold">{{ textoPeriodo }}</p>
-                <div class="d-flex gap-3 mt-2">
+                <div class="d-flex flex-wrap gap-2 mt-2 align-items-center">
                     <span class="badge bg-secondary">Días Naturales: {{ diasNaturales }}</span>
                     <span class="badge bg-warning text-dark">Días Descanso: {{ diasDescansoConteo }}</span>
-                    <span class="badge bg-success">Días Efectivos de Vacaciones: {{ diasEfectivos }}</span>
+                    <span class="badge bg-success fs-6">Días Efectivos de Vacaciones: {{ diasEfectivos }}</span>
+                    <span class="badge bg-info text-dark" *ngIf="balanceEmpleado && balanceEmpleado.fechaIngreso === formSolicitud.empleadoObj?.fechaIngreso">
+                        Quedarán disponibles: {{ (balanceEmpleado.diasDisponibles - diasEfectivos) }} días
+                    </span>
+                </div>
+
+                <div class="alert alert-danger py-1 px-2 mt-2 mb-0 small" *ngIf="balanceEmpleado && balanceEmpleado.fechaIngreso === formSolicitud.empleadoObj?.fechaIngreso && diasEfectivos > balanceEmpleado.diasDisponibles">
+                    <i class="fas fa-exclamation-triangle me-1"></i> <strong>Aviso:</strong> Los días solicitados ({{ diasEfectivos }}) exceden el saldo disponible de este periodo ({{ balanceEmpleado.diasDisponibles }} días).
                 </div>
             </div>
 

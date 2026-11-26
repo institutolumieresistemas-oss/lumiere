@@ -13,6 +13,21 @@
     border-radius: 4px;
 }
 
+.select-complete-menu {
+    max-height: 290px;
+    overflow-y: auto;
+    z-index: 1060;
+    border-radius: 8px;
+}
+
+.select-complete-item:hover {
+    background-color: #eef6ff !important;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
 .dia-descanso {
     background-color: #f1f3f5 !important;
     color: #adb5bd !important;

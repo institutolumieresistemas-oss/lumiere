@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { datatableConfig } from '../../interfaces/tables.interface';
 import { GeneralesService } from '../../servicios/generales.service';
 import { VacacionesService } from '../../servicios/vacaciones.service';
@@ -31,12 +32,23 @@ export class VacacionesComponent implements OnInit {
   };
 
   datos: any[] = [];
+  datosMostrados: any[] = [];
   empleados: any[] = [];
   tabulador: any[] = [];
   cargando = false;
   seleccion: any;
   vistaModal = '';
   vistaActual: 'solicitudes' | 'tabulador' = 'solicitudes';
+
+  // Empleado Seleccionado y Balance
+  empleadoSeleccionado: any = null;
+  balanceEmpleado: any = null;
+  filtroPeriodo: 'actual' | 'todos' = 'actual';
+
+  // Buscador con autocompletado de empleados
+  filtroTextoEmpleado = '';
+  mostrarDropdownEmpleados = false;
+  empleadosFiltrados: any[] = [];
 
   // Formulario Solicitud
   formSolicitud = {
@@ -78,7 +90,9 @@ export class VacacionesComponent implements OnInit {
   constructor(
     public generales: GeneralesService,
     private vacacionesService: VacacionesService,
-    private empleadosService: EmpleadosService
+    private empleadosService: EmpleadosService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -93,6 +107,20 @@ export class VacacionesComponent implements OnInit {
         this.cargando = false;
         this.datos = respuesta.datos || [];
         this.empleados = respuesta.empleados || [];
+        this.empleadosFiltrados = [...this.empleados];
+
+        // Verificar si viene idEmpleado en los queryParams desde el módulo de Empleados
+        this.route.queryParams.subscribe(params => {
+          if (params && params['idEmpleado']) {
+            const empId = params['idEmpleado'];
+            const emp = this.empleados.find(e => e.id == empId);
+            if (emp) {
+              this.seleccionarEmpleado(emp);
+            }
+          } else {
+            this.actualizarDatosMostrados();
+          }
+        });
       },
       error => {
         this.cargando = false;
@@ -101,8 +129,109 @@ export class VacacionesComponent implements OnInit {
     );
   }
 
+  // --- BUSCADOR Y AUTOCOMPLETADO DE EMPLEADOS ---
+
+  filtrarEmpleados() {
+    const busqueda = (this.filtroTextoEmpleado || '').toLowerCase().trim();
+    if (!busqueda) {
+      this.empleadosFiltrados = [...this.empleados];
+    } else {
+      this.empleadosFiltrados = this.empleados.filter(e => {
+        const nombre = (e.nombre || '').toLowerCase();
+        const puesto = (e.puesto || '').toLowerCase();
+        const depto = (e.departamento || '').toLowerCase();
+        const sucursal = (e.sucursal || '').toLowerCase();
+        return nombre.includes(busqueda) || puesto.includes(busqueda) || depto.includes(busqueda) || sucursal.includes(busqueda);
+      });
+    }
+    this.mostrarDropdownEmpleados = true;
+  }
+
+  seleccionarEmpleado(emp: any) {
+    this.empleadoSeleccionado = emp;
+    this.filtroTextoEmpleado = emp.nombre;
+    this.mostrarDropdownEmpleados = false;
+    this.filtroPeriodo = 'actual';
+    this.calcularBalanceEmpleado();
+  }
+
+  limpiarSeleccionEmpleado() {
+    this.empleadoSeleccionado = null;
+    this.balanceEmpleado = null;
+    this.filtroTextoEmpleado = '';
+    this.empleadosFiltrados = [...this.empleados];
+    this.mostrarDropdownEmpleados = false;
+    this.actualizarDatosMostrados();
+
+    // Limpiar query params de la URL sin recargar
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      replaceUrl: true
+    });
+  }
+
+  irAEmpleados() {
+    this.router.navigate(['admin/empleados']);
+  }
+
+  onBlurDropdown() {
+    setTimeout(() => {
+      this.mostrarDropdownEmpleados = false;
+    }, 250);
+  }
+
+  // --- CÁLCULO DE PERIODO DE 1 AÑO Y DÍAS A FAVOR ---
+
+  calcularBalanceEmpleado() {
+    if (!this.empleadoSeleccionado) {
+      this.balanceEmpleado = null;
+      this.actualizarDatosMostrados();
+      return;
+    }
+
+    const solicitudesEmpleado = this.datos.filter(d => d.idEmpleado == this.empleadoSeleccionado.id);
+    this.balanceEmpleado = this.vacacionesService.calcularBalanceCompleto(
+      this.empleadoSeleccionado.fechaIngreso,
+      solicitudesEmpleado
+    );
+
+    this.actualizarDatosMostrados();
+  }
+
+  cambiarFiltroPeriodo(filtro: 'actual' | 'todos') {
+    this.filtroPeriodo = filtro;
+    this.actualizarDatosMostrados();
+  }
+
+  actualizarDatosMostrados() {
+    if (!this.empleadoSeleccionado) {
+      this.datosMostrados = [...this.datos];
+      return;
+    }
+
+    if (!this.balanceEmpleado) {
+      this.datosMostrados = this.datos.filter(d => d.idEmpleado == this.empleadoSeleccionado.id);
+      return;
+    }
+
+    if (this.filtroPeriodo === 'actual') {
+      this.datosMostrados = this.balanceEmpleado.solicitudesActuales || [];
+    } else {
+      this.datosMostrados = this.datos.filter(d => d.idEmpleado == this.empleadoSeleccionado.id);
+    }
+  }
+
+  // --- MODAL Y FORMULARIO DE NUEVA SOLICITUD ---
+
   modalNuevaSolicitud() {
     this.resetForm();
+
+    // Si ya hay un empleado seleccionado, preseleccionarlo en el formulario
+    if (this.empleadoSeleccionado) {
+      this.onSeleccionarEmpleado(this.empleadoSeleccionado.id);
+    }
+
     this.vistaModal = 'nueva';
     this.generales.abrirModal();
   }
@@ -247,7 +376,6 @@ export class VacacionesComponent implements OnInit {
       m2Year++;
     }
 
-    // Si el periodo termina en un mes posterior, usamos ese mes como segundo calendario
     if (end.getFullYear() > m1Year || end.getMonth() > m1Month) {
       m2Year = end.getFullYear();
       m2Month = end.getMonth();
@@ -263,7 +391,6 @@ export class VacacionesComponent implements OnInit {
     const primerDiaMes = new Date(year, month, 1);
     const ultimoDiaMes = new Date(year, month + 1, 0);
 
-    // Ajustar primer día de la semana (Lunes = 0, ..., Domingo = 6)
     let startDayOfWeek = primerDiaMes.getDay() - 1;
     if (startDayOfWeek === -1) startDayOfWeek = 6;
 
@@ -271,7 +398,6 @@ export class VacacionesComponent implements OnInit {
     const semanas: DiaMes[][] = [];
     let semanaActual: DiaMes[] = [];
 
-    // Celdas vacías al inicio del mes
     for (let i = 0; i < startDayOfWeek; i++) {
       semanaActual.push({ numero: null, fechaStr: null, esVacacion: false, esDescanso: false });
     }
@@ -293,7 +419,6 @@ export class VacacionesComponent implements OnInit {
       }
     }
 
-    // Completar última semana
     if (semanaActual.length > 0) {
       while (semanaActual.length < 7) {
         semanaActual.push({ numero: null, fechaStr: null, esVacacion: false, esDescanso: false });
@@ -354,6 +479,14 @@ export class VacacionesComponent implements OnInit {
         this.cargando = false;
         this.generales.mensajeCorrecto('Solicitud de vacaciones registrada con éxito.');
         this.datos = [respuesta, ...this.datos];
+
+        // Recalcular balance si el empleado coincide
+        if (this.empleadoSeleccionado && this.empleadoSeleccionado.id == payload.idEmpleado) {
+          this.calcularBalanceEmpleado();
+        } else {
+          this.actualizarDatosMostrados();
+        }
+
         this.generales.cerrarModal();
 
         // Preparar para imprimir inmediatamente
@@ -386,7 +519,6 @@ export class VacacionesComponent implements OnInit {
     const start = new Date(solicitud.fechaInicio + 'T00:00:00');
     const end = new Date(solicitud.fechaFin + 'T00:00:00');
 
-    // Parsear días de descanso
     const descansosSet = new Set<string>();
     const vacsSet = new Set<string>();
 
@@ -457,6 +589,12 @@ export class VacacionesComponent implements OnInit {
           this.generales.mensajeCorrecto('Solicitud eliminada.');
           this.datos = this.datos.filter(d => d.id !== item.id);
           this.seleccion = null;
+
+          if (this.empleadoSeleccionado) {
+            this.calcularBalanceEmpleado();
+          } else {
+            this.actualizarDatosMostrados();
+          }
         },
         error => {
           this.cargando = false;

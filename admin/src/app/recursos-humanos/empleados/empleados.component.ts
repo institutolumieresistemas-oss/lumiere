@@ -26,7 +26,11 @@ export class EmpleadosComponent {
   constructor(private generales: GeneralesService, private servicio: EmpleadosService, private router: Router){}
 
   irAVacaciones() {
-    this.router.navigate(['admin/vacaciones']);
+    if (this.seleccion && this.seleccion.id) {
+      this.router.navigate(['admin/vacaciones'], { queryParams: { idEmpleado: this.seleccion.id } });
+    } else {
+      this.router.navigate(['admin/vacaciones']);
+    }
   }
   
   ngOnInit(): void {
