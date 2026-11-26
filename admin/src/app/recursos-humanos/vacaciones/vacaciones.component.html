@@ -154,40 +154,40 @@
                     <!-- 4 TARJETAS DE DÍAS: CORRESPONDIENTES, A FAVOR ANTERIORES, TOMADOS Y DISPONIBLES -->
                     <div class="row g-3 text-center mb-3">
                         <div class="col-md-3 col-sm-6">
-                            <div class="p-3 border rounded bg-light h-100">
-                                <span class="text-muted d-block small fw-bold text-uppercase">Días por Antigüedad (Año Actual):</span>
-                                <h3 class="mb-0 text-primary fw-bold">{{ balanceEmpleado.periodoActual?.diasTabulador || 0 }}</h3>
-                                <small class="text-muted">Según Ley Federal del Trabajo</small>
+                            <div class="p-3 border rounded h-100 text-center" style="background-color: #ffffff; border: 2px solid #0d6efd !important;">
+                                <span class="text-dark d-block small fw-bold text-uppercase">Días por Antigüedad (Año Actual):</span>
+                                <h3 class="mb-0 fw-bold my-1 text-primary">{{ balanceEmpleado.periodoActual?.diasTabulador || 0 }}</h3>
+                                <small class="text-muted d-block">Según Ley Federal del Trabajo</small>
                             </div>
                         </div>
 
                         <div class="col-md-3 col-sm-6">
-                            <div class="p-3 border rounded bg-light border-success h-100 position-relative">
-                                <span class="text-success d-block small fw-bold text-uppercase">
-                                    <i class="fas fa-plus-circle me-1"></i>Días a Favor (Años Anteriores):
+                            <div class="p-3 border rounded h-100 position-relative text-center" style="background-color: #ffffff; border: 2px solid #198754 !important;">
+                                <span class="text-dark d-block small fw-bold text-uppercase">
+                                    <i class="fas fa-plus-circle text-success me-1"></i>Días a Favor (Años Anteriores):
                                 </span>
-                                <h3 class="mb-0 text-success fw-bold">+{{ balanceEmpleado.diasPendientesAnteriores || 0 }}</h3>
-                                <small class="text-muted">Días no gozados acumulados</small>
+                                <h3 class="mb-0 fw-bold my-1 text-success">+{{ balanceEmpleado.diasPendientesAnteriores || 0 }}</h3>
+                                <small class="text-muted d-block">Días no gozados acumulados</small>
                             </div>
                         </div>
 
                         <div class="col-md-3 col-sm-6">
-                            <div class="p-3 border rounded bg-light border-warning h-100">
-                                <span class="text-warning d-block small fw-bold text-uppercase text-dark">
-                                    <i class="fas fa-minus-circle me-1"></i>Días Tomados en este Periodo:
+                            <div class="p-3 border rounded h-100 text-center" style="background-color: #ffffff; border: 2px solid #ffc107 !important;">
+                                <span class="text-dark d-block small fw-bold text-uppercase">
+                                    <i class="fas fa-minus-circle text-warning me-1"></i>Días Tomados en este Periodo:
                                 </span>
-                                <h3 class="mb-0 text-warning fw-bold">-{{ balanceEmpleado.periodoActual?.diasTomados || 0 }}</h3>
-                                <small class="text-muted">{{ balanceEmpleado.periodoActual?.solicitudes?.length || 0 }} solicitud(es) registradas</small>
+                                <h3 class="mb-0 fw-bold my-1 text-danger">-{{ balanceEmpleado.periodoActual?.diasTomados || 0 }}</h3>
+                                <small class="text-muted d-block">{{ balanceEmpleado.periodoActual?.solicitudes?.length || 0 }} solicitud(es) registradas</small>
                             </div>
                         </div>
 
                         <div class="col-md-3 col-sm-6">
-                            <div class="p-3 border rounded bg-success bg-opacity-10 border-success h-100">
-                                <span class="text-success d-block small fw-bold text-uppercase">
+                            <div class="p-3 rounded shadow-sm h-100 text-center" style="background-color: #198754; color: #ffffff;">
+                                <span class="d-block small fw-bold text-uppercase" style="color: #e8f5e9;">
                                     <i class="fas fa-check-double me-1"></i>Saldo Disponible para Tomar:
                                 </span>
-                                <h3 class="mb-0 text-success fw-bold">{{ balanceEmpleado.diasDisponibles || 0 }} DÍAS</h3>
-                                <small class="text-success fw-bold">Listos para disfrutar</small>
+                                <h2 class="mb-0 fw-bold my-1" style="color: #ffffff; font-size: 2rem;">{{ balanceEmpleado.diasDisponibles || 0 }} DÍAS</h2>
+                                <span class="badge bg-white text-dark fw-bold mt-1 px-2 py-1 shadow-sm">Listos para disfrutar</span>
                             </div>
                         </div>
                     </div>
