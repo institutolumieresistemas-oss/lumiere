@@ -1,0 +1,171 @@
+<div class="card mb-4">
+    <div class="card-header pb-0 bg-lumiere d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-1 text-white">
+                <i class="fas fa-tasks me-2"></i>Buzón de Vacaciones por Autorizar
+            </h5>
+            <p class="text-white-50 small mb-0">Revisión y autorización directa de solicitudes de vacaciones asignadas como jefe directo o directivo.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-light" (click)="cargarSolicitudes()" title="Refrescar solicitudes">
+                <i class="fas fa-sync-alt me-1" [class.fa-spin]="cargando"></i> Actualizar
+            </button>
+            <button class="btn btn-sm btn-light text-primary" (click)="volverAVacaciones()">
+                <i class="fas fa-umbrella-beach me-1"></i> Ir a Control de Vacaciones
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <!-- BARRA DE FILTROS Y BÚSQUEDA -->
+        <div class="row align-items-center g-3 mb-4">
+            <div class="col-md-7">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" 
+                            class="btn" 
+                            [class.btn-warning]="filtroEstatus === 'Pendiente'" 
+                            [class.btn-outline-warning]="filtroEstatus !== 'Pendiente'"
+                            (click)="cambiarFiltro('Pendiente')">
+                        <i class="fas fa-clock me-1"></i> Por Autorizar (Pendientes)
+                    </button>
+                    <button type="button" 
+                            class="btn" 
+                            [class.btn-success]="filtroEstatus === 'Autorizado'" 
+                            [class.btn-outline-success]="filtroEstatus !== 'Autorizado'"
+                            (click)="cambiarFiltro('Autorizado')">
+                        <i class="fas fa-check-circle me-1"></i> Autorizadas
+                    </button>
+                    <button type="button" 
+                            class="btn" 
+                            [class.btn-danger]="filtroEstatus === 'Rechazado'" 
+                            [class.btn-outline-danger]="filtroEstatus !== 'Rechazado'"
+                            (click)="cambiarFiltro('Rechazado')">
+                        <i class="fas fa-times-circle me-1"></i> Rechazadas
+                    </button>
+                    <button type="button" 
+                            class="btn" 
+                            [class.btn-primary]="filtroEstatus === 'todas'" 
+                            [class.btn-outline-primary]="filtroEstatus !== 'todas'"
+                            (click)="cambiarFiltro('todas')">
+                        <i class="fas fa-list me-1"></i> Todas
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" 
+                           class="form-control" 
+                           placeholder="Filtrar por nombre de empleado o puesto..." 
+                           [(ngModel)]="busquedaTexto" 
+                           (input)="aplicarFiltros()">
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTA DE SOLICITUDES -->
+        <div *ngIf="solicitudesFiltradas.length > 0">
+            <div class="table-responsive shadow-sm rounded border">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-secondary small text-uppercase">
+                        <tr>
+                            <th>Empleado Solicitante</th>
+                            <th>Periodo Solicitado</th>
+                            <th class="text-center">Días Efectivos</th>
+                            <th>Jefe / Autorizador</th>
+                            <th class="text-center">Estatus</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of solicitudesFiltradas" [class.table-warning]="item.estatus === 'Pendiente'">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-sm bg-primary text-white rounded-circle me-2 d-flex align-items-center justify-content-center fw-bold">
+                                        {{ (item.empleadoNombre || 'E').charAt(0) }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark cursor-pointer text-decoration-underline" 
+                                             (click)="verPerfilVacaciones(item.idEmpleado)" 
+                                             title="Ver ficha de vacaciones">
+                                            {{ item.empleadoNombre }}
+                                        </div>
+                                        <small class="text-muted d-block">
+                                            {{ item.puesto || 'Sin puesto' }} 
+                                            <span *ngIf="item.sucursal"> • {{ item.sucursal }}</span>
+                                        </small>
+                                        <small class="text-muted" *ngIf="item.fechaIngreso">
+                                            Ingreso: {{ item.fechaIngreso }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">
+                                    {{ item.fechaInicio }} <i class="fas fa-arrow-right text-muted mx-1"></i> {{ item.fechaFin }}
+                                </div>
+                                <small class="text-muted d-block">
+                                    {{ item.diasNaturales }} días naturales solicitados
+                                </small>
+                                <small class="text-secondary fst-italic d-block" *ngIf="item.observaciones">
+                                    "{{ item.observaciones }}"
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-success fs-6 px-3 py-2">
+                                    {{ item.diasEfectivos }} días
+                                </span>
+                            </td>
+                            <td>
+                                <div class="small fw-bold text-dark">{{ item.jefeInmediato || 'Sin asignar' }}</div>
+                                <small class="text-muted" *ngIf="item.fechaRespuesta">Respuesta: {{ item.fechaRespuesta }}</small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge" 
+                                      [class.bg-warning]="item.estatus === 'Pendiente'" 
+                                      [class.text-dark]="item.estatus === 'Pendiente'" 
+                                      [class.bg-success]="item.estatus === 'Autorizado'" 
+                                      [class.bg-danger]="item.estatus === 'Rechazado'">
+                                    {{ item.estatus }}
+                                </span>
+                                <div class="small text-danger mt-1" *ngIf="item.motivoRechazo">
+                                    <strong>Motivo:</strong> {{ item.motivoRechazo }}
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-success" 
+                                            *ngIf="item.estatus === 'Pendiente'" 
+                                            (click)="autorizar(item)" 
+                                            title="Autorizar solicitud">
+                                        <i class="fas fa-check me-1"></i> Autorizar
+                                    </button>
+                                    <button class="btn btn-outline-danger" 
+                                            *ngIf="item.estatus === 'Pendiente'" 
+                                            (click)="rechazar(item)" 
+                                            title="Rechazar solicitud">
+                                        <i class="fas fa-times me-1"></i> Rechazar
+                                    </button>
+                                    <button class="btn btn-outline-primary" 
+                                            (click)="verPerfilVacaciones(item.idEmpleado)" 
+                                            title="Ver historial completo y saldo">
+                                        <i class="fas fa-eye me-1"></i> Ficha
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SIN REGISTROS -->
+        <div class="alert alert-light text-center py-5 border" *ngIf="solicitudesFiltradas.length === 0">
+            <i class="fas fa-check-double fa-3x text-success mb-3 d-block"></i>
+            <h5 class="fw-bold text-dark">No hay solicitudes {{ filtroEstatus !== 'todas' ? (filtroEstatus | lowercase) + 's' : '' }}</h5>
+            <p class="text-muted small mb-0">No se encontraron solicitudes de vacaciones con el criterio seleccionado.</p>
+        </div>
+    </div>
+</div>
+<app-cargando *ngIf="cargando"></app-cargando>

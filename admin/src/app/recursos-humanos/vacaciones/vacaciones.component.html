@@ -263,14 +263,17 @@
 
 <!-- BOTONES DE ACCIÓN PARA SELECCIÓN -->
 <app-botones *ngIf="seleccion && vistaActual === 'solicitudes'">
-    <button class="btn btn-success" (click)="modalNuevaSolicitud()">
-        <i class="fas fa-plus me-1"></i> Nueva Solicitud
+    <button class="btn btn-success" *ngIf="seleccion.estatus === 'Pendiente'" (click)="autorizarSolicitud(seleccion)" title="Autorizar">
+        <i class="fas fa-check-circle me-1"></i> Autorizar
+    </button>
+    <button class="btn btn-warning" *ngIf="seleccion.estatus === 'Pendiente'" (click)="rechazarSolicitud(seleccion)" title="Rechazar">
+        <i class="fas fa-times-circle me-1"></i> Rechazar
     </button>
     <button class="btn btn-primary" (click)="prepararImpresion(seleccion)">
-        <i class="fas fa-print me-1"></i> Imprimir Formato de Solicitud
+        <i class="fas fa-print me-1"></i> Imprimir Formato
     </button>
     <button class="btn btn-danger" (click)="eliminar(seleccion)">
-        <i class="fas fa-trash me-1"></i> Eliminar Solicitud
+        <i class="fas fa-trash me-1"></i> Eliminar
     </button>
 </app-botones>
 
@@ -313,9 +316,52 @@
                     </select>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Jefe Inmediato <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" placeholder="Nombre completo del jefe inmediato" [(ngModel)]="formSolicitud.jefeInmediato">
+                <div class="col-md-6 position-relative">
+                    <label class="form-label fw-bold text-dark">
+                        <i class="fas fa-user-tie text-primary me-1"></i> Jefe Inmediato <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input 
+                            type="text" 
+                            class="form-control border-start-0 ps-0" 
+                            placeholder="Buscar jefe entre empleados o escribir..." 
+                            [(ngModel)]="filtroTextoJefe"
+                            (input)="formSolicitud.jefeInmediato = filtroTextoJefe; filtrarJefes()"
+                            (focus)="mostrarDropdownJefe = true; filtrarJefes()"
+                            (blur)="onBlurDropdownJefe()"
+                        >
+                        <button class="btn btn-outline-secondary" type="button" *ngIf="filtroTextoJefe || jefeSeleccionado" (click)="limpiarJefe()" title="Limpiar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Menú desplegable autocomplete jefe -->
+                    <div class="dropdown-menu show w-100 shadow-lg border mt-1 select-complete-menu" 
+                         *ngIf="mostrarDropdownJefe && jefesFiltrados.length > 0" 
+                         style="max-height: 220px; overflow-y: auto; z-index: 1060;">
+                        <button 
+                            type="button" 
+                            class="dropdown-item py-2 border-bottom select-complete-item" 
+                            *ngFor="let jefe of jefesFiltrados" 
+                            (mousedown)="seleccionarJefe(jefe)"
+                        >
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold text-dark">{{ jefe.nombre }}</div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-briefcase me-1"></i>{{ jefe.puesto || 'Sin puesto' }}
+                                        <span *ngIf="jefe.departamento"> • {{ jefe.departamento }}</span>
+                                    </small>
+                                </div>
+                                <span class="badge bg-light text-primary border" *ngIf="jefe.sucursal">
+                                    {{ jefe.sucursal }}
+                                </span>
+                            </div>
+                        </button>
+                    </div>
                 </div>
             </div>
 

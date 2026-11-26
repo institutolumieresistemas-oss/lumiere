@@ -228,4 +228,22 @@ export class VacacionesService {
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
     return `${f.getDate()} de ${meses[f.getMonth()]} ${f.getFullYear()}`;
   }
+
+  cambiarEstatus(body: { id: number | string, estatus: string, motivoRechazo?: string }) {
+    const url = this.uri + 'cambiar-estatus';
+    return this.http.post(url, body, { headers: this.headers }).pipe(map(respuesta => respuesta));
+  }
+
+  obtenerNotificaciones(idEmpleado?: any, idTipoUsuario?: any) {
+    const url = this.uri + 'notificaciones';
+    let params: any = {};
+    if (idEmpleado) params.idEmpleado = idEmpleado;
+    if (idTipoUsuario) params.idTipoUsuario = idTipoUsuario;
+    return this.http.get(url, { headers: this.headers, params }).pipe(map(respuesta => respuesta));
+  }
+
+  marcarLeida(id: any, rol: 'jefe' | 'empleado', idEmpleado?: any) {
+    const url = this.uri + 'marcar-leida';
+    return this.http.post(url, { id, rol, idEmpleado }, { headers: this.headers }).pipe(map(respuesta => respuesta));
+  }
 }

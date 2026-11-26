@@ -1,0 +1,159 @@
+<div class="position-relative d-inline-block">
+    <!-- BOTÓN CAMPANA -->
+    <a href="javascript:;" 
+       class="nav-link text-white p-0 position-relative me-3 d-flex align-items-center cursor-pointer buzon-bell-btn" 
+       (click)="toggleDropdown($event)" 
+       title="Buzón de Notificaciones y Solicitudes">
+        <i class="fas fa-bell fs-5 text-white"></i>
+        <span *ngIf="totalNoLeidas > 0" 
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white buzon-badge">
+            {{ totalNoLeidas > 99 ? '99+' : totalNoLeidas }}
+            <span class="visually-hidden">notificaciones no leídas</span>
+        </span>
+    </a>
+
+    <!-- DROPDOWN FLOTANTE -->
+    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-0 buzon-dropdown" 
+         [class.show]="abierto"
+         *ngIf="abierto">
+        
+        <!-- ENCABEZADO -->
+        <div class="p-3 bg-lumiere text-white rounded-top d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="text-white mb-0 fw-bold">
+                    <i class="fas fa-inbox me-2"></i>Buzón de Notificaciones
+                </h6>
+                <small class="text-white-50" *ngIf="totalNoLeidas > 0">{{ totalNoLeidas }} pendiente(s) por revisar</small>
+                <small class="text-white-50" *ngIf="totalNoLeidas === 0">Al día, sin pendientes</small>
+            </div>
+            <div>
+                <button type="button" class="btn btn-sm btn-link text-white p-0 me-2" (click)="cargarNotificaciones(true)" title="Actualizar">
+                    <i class="fas fa-sync-alt" [class.fa-spin]="cargando"></i>
+                </button>
+                <button type="button" class="btn-close btn-close-white btn-sm" (click)="cerrarDropdown()"></button>
+            </div>
+        </div>
+
+        <!-- CUERPO DE NOTIFICACIONES -->
+        <div class="buzon-list-container">
+
+            <!-- SECCIÓN 1: SOLICITUDES DE VACACIONES POR AUTORIZAR (JEFE / DIRECTIVO) -->
+            <div *ngIf="notificacionesPorAutorizar.length > 0">
+                <div class="px-3 py-2 bg-light border-bottom border-top text-uppercase text-secondary fw-bold buzon-section-title">
+                    <i class="fas fa-user-check text-warning me-1"></i> Solicitudes por Autorizar ({{ notificacionesPorAutorizar.length }})
+                </div>
+
+                <div class="list-group list-group-flush">
+                    <div *ngFor="let item of notificacionesPorAutorizar" 
+                         class="list-group-item list-group-item-action p-3 border-bottom buzon-item"
+                         [class.bg-warning-subtle]="!item.leido_jefe"
+                         (click)="clickNotificacionJefe(item)">
+                        
+                        <div class="d-flex w-100 justify-content-between align-items-start mb-1">
+                            <span class="badge bg-warning text-dark fw-bold">
+                                <i class="fas fa-umbrella-beach me-1"></i> Vacaciones Solicitadas
+                            </span>
+                            <small class="text-muted">{{ item.fechaSolicitud || item.created_at || 'Reciente' }}</small>
+                        </div>
+
+                        <div class="fw-bold text-dark mb-1">
+                            {{ item.empleadoNombre }}
+                            <span class="badge bg-light text-muted border ms-1" *ngIf="item.puesto">{{ item.puesto }}</span>
+                        </div>
+
+                        <div class="small text-muted mb-2">
+                            <i class="fas fa-calendar-alt text-primary me-1"></i>
+                            Periodo: <strong>{{ item.fechaInicio }}</strong> al <strong>{{ item.fechaFin }}</strong>
+                            <span class="badge bg-info text-dark ms-1">{{ item.diasEfectivos }} días efectivos</span>
+                        </div>
+
+                        <div class="small text-secondary mb-2 fst-italic" *ngIf="item.observaciones">
+                            "{{ item.observaciones }}"
+                        </div>
+
+                        <!-- BOTONES DE ACCIÓN RÁPIDA (AUTORIZAR / RECHAZAR SIN ENTRAR A LA VISTA) -->
+                        <div class="d-flex gap-2 mt-2 pt-1 border-top" (click)="$event.stopPropagation()">
+                            <button type="button" 
+                                    class="btn btn-sm btn-success flex-fill py-1 fw-bold" 
+                                    (click)="autorizarRapido(item, $event)" 
+                                    title="Autorizar directamente">
+                                <i class="fas fa-check me-1"></i> Autorizar
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-danger flex-fill py-1 fw-bold" 
+                                    (click)="rechazarRapido(item, $event)" 
+                                    title="Rechazar directamente">
+                                <i class="fas fa-times me-1"></i> Rechazar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: RESPUESTAS DE VACACIONES PARA EL EMPLEADO (APROBADAS / RECHAZADAS) -->
+            <div *ngIf="notificacionesEmpleado.length > 0">
+                <div class="px-3 py-2 bg-light border-bottom border-top text-uppercase text-secondary fw-bold buzon-section-title">
+                    <i class="fas fa-bell text-primary me-1"></i> Mis Solicitudes de Vacaciones ({{ notificacionesEmpleado.length }})
+                </div>
+
+                <div class="list-group list-group-flush">
+                    <div *ngFor="let item of notificacionesEmpleado" 
+                         class="list-group-item list-group-item-action p-3 border-bottom buzon-item"
+                         [class.bg-info-subtle]="!item.leido_empleado"
+                         (click)="clickNotificacionEmpleado(item)">
+                        
+                        <div class="d-flex w-100 justify-content-between align-items-start mb-1">
+                            <span class="badge" 
+                                  [class.bg-success]="item.estatus === 'Autorizado'" 
+                                  [class.bg-danger]="item.estatus === 'Rechazado'"
+                                  [class.bg-warning]="item.estatus === 'Pendiente'">
+                                <i class="fas" 
+                                   [class.fa-check-circle]="item.estatus === 'Autorizado'" 
+                                   [class.fa-times-circle]="item.estatus === 'Rechazado'"
+                                   [class.fa-clock]="item.estatus === 'Pendiente'"></i>
+                                {{ item.estatus === 'Autorizado' ? 'Vacaciones Aprobadas' : (item.estatus === 'Rechazado' ? 'Solicitud Rechazada' : 'Solicitud Pendiente') }}
+                            </span>
+                            <small class="text-muted">{{ item.fechaRespuesta || item.fechaSolicitud || 'Reciente' }}</small>
+                        </div>
+
+                        <div class="text-dark small fw-bold mb-1">
+                            Periodo: {{ item.fechaInicio }} al {{ item.fechaFin }} ({{ item.diasEfectivos }} días)
+                        </div>
+
+                        <div class="small text-muted" *ngIf="item.jefeInmediato">
+                            Revisado por: <strong>{{ item.jefeInmediato }}</strong>
+                        </div>
+
+                        <div class="alert alert-danger py-1 px-2 mt-2 mb-0 small" *ngIf="item.estatus === 'Rechazado' && item.motivoRechazo">
+                            <strong>Motivo:</strong> {{ item.motivoRechazo }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VACÍO -->
+            <div *ngIf="notificacionesPorAutorizar.length === 0 && notificacionesEmpleado.length === 0" 
+                 class="p-4 text-center text-muted">
+                <i class="fas fa-inbox fa-3x text-muted opacity-50 mb-2"></i>
+                <p class="mb-0 fw-bold">No tienes notificaciones pendientes</p>
+                <small>Las nuevas solicitudes y autorizaciones aparecerán aquí.</small>
+            </div>
+        </div>
+
+        <!-- PIE DEL DROPDOWN: ACCESO A LAS 2 NUEVAS VISTAS -->
+        <div class="p-2 bg-light border-top rounded-bottom d-flex flex-column gap-1 text-center">
+            <button type="button" 
+                    class="btn btn-sm btn-outline-primary w-100 fw-bold py-1" 
+                    (click)="irAVacacionesAutorizar()"
+                    *ngIf="notificacionesPorAutorizar.length > 0 || idTipoUsuario == 1">
+                <i class="fas fa-tasks me-1"></i> Ir al Buzón de Autorizaciones
+            </button>
+            <button type="button" 
+                    class="btn btn-sm btn-link text-primary w-100 py-1" 
+                    (click)="irANotificacionesPorDia()">
+                <i class="fas fa-calendar-week me-1"></i> Ver todas las notificaciones por día
+            </button>
+        </div>
+
+    </div>
+</div>

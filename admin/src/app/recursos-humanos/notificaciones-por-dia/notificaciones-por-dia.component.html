@@ -1,0 +1,143 @@
+<div class="card mb-4">
+    <div class="card-header pb-0 bg-lumiere d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-1 text-white">
+                <i class="fas fa-calendar-day me-2"></i>Centro de Notificaciones por Día
+            </h5>
+            <p class="text-white-50 small mb-0">Historial de solicitudes de vacaciones, aprobaciones y rechazos ordenados cronológicamente por día.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-light" (click)="marcarTodasLeidas()" title="Marcar todas como leídas">
+                <i class="fas fa-check-double me-1"></i> Marcar todas leídas
+            </button>
+            <button class="btn btn-sm btn-light text-primary" (click)="cargar()" title="Actualizar">
+                <i class="fas fa-sync-alt me-1" [class.fa-spin]="cargando"></i> Actualizar
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <!-- BARRA DE FILTROS -->
+        <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
+            <span class="text-muted small fw-bold text-uppercase me-2">Filtrar por:</span>
+            <button class="btn btn-sm" 
+                    [class.btn-primary]="filtroTipo === 'todas'" 
+                    [class.btn-outline-primary]="filtroTipo !== 'todas'"
+                    (click)="cambiarFiltro('todas')">
+                <i class="fas fa-list me-1"></i> Todas ({{ todasLasNotificaciones.length }})
+            </button>
+            <button class="btn btn-sm" 
+                    [class.btn-warning]="filtroTipo === 'autorizar'" 
+                    [class.btn-outline-warning]="filtroTipo !== 'autorizar'"
+                    (click)="cambiarFiltro('autorizar')">
+                <i class="fas fa-clock me-1"></i> Por Autorizar
+            </button>
+            <button class="btn btn-sm" 
+                    [class.btn-success]="filtroTipo === 'aprobadas'" 
+                    [class.btn-outline-success]="filtroTipo !== 'aprobadas'"
+                    (click)="cambiarFiltro('aprobadas')">
+                <i class="fas fa-check-circle me-1"></i> Aprobadas
+            </button>
+            <button class="btn btn-sm" 
+                    [class.btn-danger]="filtroTipo === 'rechazadas'" 
+                    [class.btn-outline-danger]="filtroTipo !== 'rechazadas'"
+                    (click)="cambiarFiltro('rechazadas')">
+                <i class="fas fa-times-circle me-1"></i> Rechazadas
+            </button>
+        </div>
+
+        <!-- GRUPOS POR DÍA -->
+        <div *ngIf="gruposPorDia.length > 0">
+            <div *ngFor="let grupo of gruposPorDia" class="mb-4">
+                <!-- ETIQUETA DEL DÍA (HOY, AYER, ESTA SEMANA, ANTERIORES) -->
+                <div class="d-flex align-items-center mb-3">
+                    <span class="badge bg-secondary px-3 py-2 text-uppercase fs-6 me-2 shadow-sm">
+                        <i class="fas fa-calendar-alt me-1"></i> {{ grupo.etiqueta }}
+                    </span>
+                    <hr class="flex-grow-1 my-0 text-muted">
+                    <span class="text-muted small ms-2 fw-bold">{{ grupo.items.length }} evento(s)</span>
+                </div>
+
+                <!-- CARDS DE LAS NOTIFICACIONES DE ESE DÍA -->
+                <div class="row g-3">
+                    <div class="col-lg-6 col-md-12" *ngFor="let item of grupo.items">
+                        <div class="card h-100 shadow-sm border border-start-4 notif-card"
+                             [class.border-start-warning]="item.estatus === 'Pendiente'"
+                             [class.border-start-success]="item.estatus === 'Autorizado'"
+                             [class.border-start-danger]="item.estatus === 'Rechazado'">
+                            
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge" 
+                                          [class.bg-warning]="item.estatus === 'Pendiente'" 
+                                          [class.text-dark]="item.estatus === 'Pendiente'" 
+                                          [class.bg-success]="item.estatus === 'Autorizado'" 
+                                          [class.bg-danger]="item.estatus === 'Rechazado'">
+                                        <i class="fas" 
+                                           [class.fa-clock]="item.estatus === 'Pendiente'"
+                                           [class.fa-check-circle]="item.estatus === 'Autorizado'"
+                                           [class.fa-times-circle]="item.estatus === 'Rechazado'"></i>
+                                        {{ item.estatus === 'Pendiente' ? 'Vacaciones Solicitadas' : (item.estatus === 'Autorizado' ? 'Vacaciones Aprobadas' : 'Vacaciones Rechazadas') }}
+                                    </span>
+                                    <span class="small text-muted">{{ item.fechaGrupo }}</span>
+                                </div>
+
+                                <h6 class="card-title fw-bold text-dark mb-1">
+                                    {{ item.empleadoNombre }}
+                                    <small class="text-muted fw-normal" *ngIf="item.puesto">({{ item.puesto }})</small>
+                                </h6>
+
+                                <div class="small text-muted mb-2">
+                                    <i class="fas fa-calendar-check text-primary me-1"></i>
+                                    Periodo: <strong>{{ item.fechaInicio }}</strong> al <strong>{{ item.fechaFin }}</strong>
+                                    <span class="badge bg-light text-primary border ms-1">{{ item.diasEfectivos }} días efectivos</span>
+                                </div>
+
+                                <div class="small text-secondary mb-2 fst-italic" *ngIf="item.observaciones">
+                                    Observaciones: "{{ item.observaciones }}"
+                                </div>
+
+                                <div class="small text-dark mb-2" *ngIf="item.jefeInmediato">
+                                    Jefe directo: <strong>{{ item.jefeInmediato }}</strong>
+                                </div>
+
+                                <div class="alert alert-danger py-1 px-2 my-2 small" *ngIf="item.motivoRechazo">
+                                    <strong>Motivo de rechazo:</strong> {{ item.motivoRechazo }}
+                                </div>
+
+                                <!-- ACCIONES -->
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2">
+                                    <div>
+                                        <button class="btn btn-xs btn-outline-secondary py-1 px-2" (click)="marcarLeida(item)" title="Marcar leída">
+                                            <i class="fas fa-eye me-1"></i> Leído
+                                        </button>
+                                        <button class="btn btn-xs btn-outline-info py-1 px-2 ms-1" (click)="verFicha(item.idEmpleado)" title="Ver saldo">
+                                            <i class="fas fa-user me-1"></i> Ficha
+                                        </button>
+                                    </div>
+
+                                    <div class="d-flex gap-1" *ngIf="item.tipoNotificacion === 'porAutorizar' && item.estatus === 'Pendiente'">
+                                        <button class="btn btn-sm btn-success py-1 px-3 fw-bold" (click)="autorizar(item)">
+                                            <i class="fas fa-check me-1"></i> Autorizar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger py-1 px-2 fw-bold" (click)="rechazar(item)">
+                                            <i class="fas fa-times me-1"></i> Rechazar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIN REGISTROS -->
+        <div class="alert alert-light text-center py-5 border" *ngIf="gruposPorDia.length === 0">
+            <i class="fas fa-inbox fa-3x text-muted opacity-50 mb-3 d-block"></i>
+            <h5 class="fw-bold text-dark">No hay notificaciones para mostrar</h5>
+            <p class="text-muted small mb-0">No se encontraron notificaciones en esta categoría.</p>
+        </div>
+    </div>
+</div>
+<app-cargando *ngIf="cargando"></app-cargando>

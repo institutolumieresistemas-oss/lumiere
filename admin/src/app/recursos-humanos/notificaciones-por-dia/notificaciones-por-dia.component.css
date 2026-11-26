@@ -1,0 +1,29 @@
+.notif-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notif-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.border-start-4 {
+    border-left-width: 4px !important;
+}
+
+.border-start-warning {
+    border-left-color: #ffc107 !important;
+}
+
+.border-start-success {
+    border-left-color: #198754 !important;
+}
+
+.border-start-danger {
+    border-left-color: #dc3545 !important;
+}
+
+.btn-xs {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+}

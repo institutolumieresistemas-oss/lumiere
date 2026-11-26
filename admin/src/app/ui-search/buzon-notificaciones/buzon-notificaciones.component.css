@@ -1,0 +1,59 @@
+.buzon-bell-btn {
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.buzon-bell-btn:hover {
+    transform: scale(1.1);
+}
+
+.buzon-badge {
+    font-size: 0.65rem;
+    padding: 0.25em 0.45em;
+    transform: translate(25%, -25%) !important;
+    animation: pulseBadge 2s infinite;
+}
+
+@keyframes pulseBadge {
+    0% { transform: translate(25%, -25%) scale(1); }
+    50% { transform: translate(25%, -25%) scale(1.15); }
+    100% { transform: translate(25%, -25%) scale(1); }
+}
+
+.buzon-dropdown {
+    width: 380px;
+    max-width: 90vw;
+    right: 0;
+    left: auto;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    z-index: 1070;
+    margin-top: 0.5rem;
+}
+
+.buzon-list-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.buzon-section-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+}
+
+.buzon-item {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.buzon-item:hover {
+    background-color: #f8f9fa;
+}
+
+.bg-warning-subtle {
+    background-color: #fff9e6 !important;
+}
+
+.bg-info-subtle {
+    background-color: #eef7ff !important;
+}

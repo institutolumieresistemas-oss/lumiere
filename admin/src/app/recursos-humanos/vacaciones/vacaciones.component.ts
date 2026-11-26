@@ -50,6 +50,12 @@ export class VacacionesComponent implements OnInit {
   mostrarDropdownEmpleados = false;
   empleadosFiltrados: any[] = [];
 
+  // Buscador con autocompletado de jefe inmediato
+  filtroTextoJefe = '';
+  mostrarDropdownJefe = false;
+  jefesFiltrados: any[] = [];
+  jefeSeleccionado: any = null;
+
   // Formulario Solicitud
   formSolicitud = {
     idEmpleado: '',
@@ -108,6 +114,7 @@ export class VacacionesComponent implements OnInit {
         this.datos = respuesta.datos || [];
         this.empleados = respuesta.empleados || [];
         this.empleadosFiltrados = [...this.empleados];
+        this.jefesFiltrados = [...this.empleados];
 
         // Escuchar parámetros de ruta (ej: /admin/vacaciones/:id)
         this.route.params.subscribe(params => {
@@ -187,6 +194,45 @@ export class VacacionesComponent implements OnInit {
   onBlurDropdown() {
     setTimeout(() => {
       this.mostrarDropdownEmpleados = false;
+    }, 250);
+  }
+
+  // --- BUSCADOR Y AUTOCOMPLETADO DE JEFE INMEDIATO ---
+
+  filtrarJefes() {
+    const busqueda = (this.filtroTextoJefe || '').toLowerCase().trim();
+    if (!busqueda) {
+      this.jefesFiltrados = [...this.empleados];
+    } else {
+      this.jefesFiltrados = this.empleados.filter(e => {
+        const nombre = (e.nombre || '').toLowerCase();
+        const puesto = (e.puesto || '').toLowerCase();
+        const depto = (e.departamento || '').toLowerCase();
+        const sucursal = (e.sucursal || '').toLowerCase();
+        return nombre.includes(busqueda) || puesto.includes(busqueda) || depto.includes(busqueda) || sucursal.includes(busqueda);
+      });
+    }
+    this.mostrarDropdownJefe = true;
+  }
+
+  seleccionarJefe(emp: any) {
+    this.jefeSeleccionado = emp;
+    this.filtroTextoJefe = emp.nombre;
+    this.formSolicitud.jefeInmediato = emp.nombre;
+    this.mostrarDropdownJefe = false;
+  }
+
+  limpiarJefe() {
+    this.jefeSeleccionado = null;
+    this.filtroTextoJefe = '';
+    this.formSolicitud.jefeInmediato = '';
+    this.jefesFiltrados = [...this.empleados];
+    this.mostrarDropdownJefe = false;
+  }
+
+  onBlurDropdownJefe() {
+    setTimeout(() => {
+      this.mostrarDropdownJefe = false;
     }, 250);
   }
 
@@ -271,6 +317,10 @@ export class VacacionesComponent implements OnInit {
     this.diasDescansoConteo = 0;
     this.textoPeriodo = '';
     this.calendariosPeriodo = [];
+    this.filtroTextoJefe = '';
+    this.jefeSeleccionado = null;
+    this.mostrarDropdownJefe = false;
+    this.jefesFiltrados = [...this.empleados];
   }
 
   onSeleccionarEmpleado(id: any) {
@@ -472,6 +522,7 @@ export class VacacionesComponent implements OnInit {
 
     const payload = {
       idEmpleado: empId,
+      idJefeInmediato: this.jefeSeleccionado ? this.jefeSeleccionado.id : null,
       jefeInmediato: this.formSolicitud.jefeInmediato,
       fechaInicio: this.formSolicitud.fechaInicio,
       fechaFin: this.formSolicitud.fechaFin,
@@ -479,7 +530,7 @@ export class VacacionesComponent implements OnInit {
       diasNaturales: this.diasNaturales,
       diasDescanso: descansosArr,
       observaciones: this.formSolicitud.observaciones,
-      estatus: 'Autorizado'
+      estatus: 'Pendiente'
     };
 
     this.cargando = true;
@@ -583,6 +634,42 @@ export class VacacionesComponent implements OnInit {
 
   imprimirVentana() {
     window.print();
+  }
+
+  autorizarSolicitud(item: any) {
+    if (!item || !item.id) return;
+    this.cargando = true;
+    this.vacacionesService.cambiarEstatus({ id: item.id, estatus: 'Autorizado' }).subscribe(
+      () => {
+        this.cargando = false;
+        item.estatus = 'Autorizado';
+        this.generales.mensajeCorrecto('Solicitud autorizada exitosamente.');
+        this.mostrar();
+      },
+      err => {
+        this.cargando = false;
+        this.generales.interpretarError(err);
+      }
+    );
+  }
+
+  rechazarSolicitud(item: any) {
+    if (!item || !item.id) return;
+    const motivo = prompt('Motivo de rechazo de la solicitud:') || '';
+    this.cargando = true;
+    this.vacacionesService.cambiarEstatus({ id: item.id, estatus: 'Rechazado', motivoRechazo: motivo }).subscribe(
+      () => {
+        this.cargando = false;
+        item.estatus = 'Rechazado';
+        item.motivoRechazo = motivo;
+        this.generales.mensajeCorrecto('Solicitud rechazada.');
+        this.mostrar();
+      },
+      err => {
+        this.cargando = false;
+        this.generales.interpretarError(err);
+      }
+    );
   }
 
   eliminar(item: any) {

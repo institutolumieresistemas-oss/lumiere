@@ -31,6 +31,7 @@ export class InicioComponent {
       localStorage.setItem('permisos', respuesta.usuario.idTipoUsuario);
       localStorage.setItem('foto', respuesta.usuario.foto);
       localStorage.setItem('identificador', respuesta.usuario.id);
+      localStorage.setItem('idEmpleado', respuesta.usuario.idEmpleado ? respuesta.usuario.idEmpleado.toString() : '');
       localStorage.setItem('nombre', respuesta.usuario.nombre);
       localStorage.setItem('calendario', respuesta.usuario.calendario ? respuesta.usuario.calendario.calendario : '');
       localStorage.setItem('ncalendario', respuesta.usuario.calendario ? respuesta.usuario.calendario.ncalendario : '');

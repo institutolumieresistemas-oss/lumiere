@@ -10,6 +10,7 @@ class Vacacion extends Model
 
     protected $fillable = [
         'idEmpleado',
+        'idJefeInmediato',
         'jefeInmediato',
         'fechaInicio',
         'fechaFin',
@@ -17,7 +18,11 @@ class Vacacion extends Model
         'diasNaturales',
         'diasDescanso',
         'observaciones',
+        'motivoRechazo',
         'estatus',
+        'leido_jefe',
+        'leido_empleado',
+        'fechaRespuesta',
         'activo',
         'eliminado'
     ];
@@ -25,5 +30,10 @@ class Vacacion extends Model
     public function empleado()
     {
         return $this->belongsTo(Empleado::class, 'idEmpleado');
+    }
+
+    public function jefe()
+    {
+        return $this->belongsTo(Empleado::class, 'idJefeInmediato');
     }
 }

@@ -178,7 +178,7 @@ class UsuariosController extends Controller
         try{
             $usuario = Usuario::join('empleados', 'idEmpleado', '=', 'empleados.id')->
             join('sucursales', 'empleados.idSucursal', '=', 'sucursales.id')->
-            select('empleados.nombre', 'empleados.idSucursal', 'usuarios.foto', 'usuarios.id', 'usuarios.idTipoUsuario', 'sucursales.nombre as sucursal')->
+            select('empleados.nombre', 'empleados.idSucursal', 'usuarios.foto', 'usuarios.id', 'usuarios.idEmpleado', 'usuarios.idTipoUsuario', 'sucursales.nombre as sucursal')->
             where('usuarios.usuario', '=', $request['usuario'])->
             where('usuarios.activo', '=', 1)->
             where('usuarios.eliminado', '=', 0)->get();

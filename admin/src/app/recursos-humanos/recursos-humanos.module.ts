@@ -21,6 +21,8 @@ import { PrestamosComponent } from './prestamos/prestamos.component';
 import { ModalPrestamoComponent } from './prestamos/modales/modal-prestamo/modal-prestamo.component';
 import { ModalAbonosPrestamosComponent } from './prestamos/modales/modal-abonos/modal-abonos.component';
 import { VacacionesComponent } from './vacaciones/vacaciones.component';
+import { VacacionesAutorizarComponent } from './vacaciones-autorizar/vacaciones-autorizar.component';
+import { NotificacionesPorDiaComponent } from './notificaciones-por-dia/notificaciones-por-dia.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { VacacionesComponent } from './vacaciones/vacaciones.component';
     PrestamosComponent,
     ModalPrestamoComponent,
     ModalAbonosPrestamosComponent,
-    VacacionesComponent
+    VacacionesComponent,
+    VacacionesAutorizarComponent,
+    NotificacionesPorDiaComponent
   ],
   imports: [
     CommonModule,

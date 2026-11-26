@@ -132,6 +132,8 @@ import { CreditosComponent } from '../directivos/creditos/creditos.component';
 import { CreditoComponent } from '../principal/credito/credito.component';
 import { PrestamosComponent } from '../recursos-humanos/prestamos/prestamos.component';
 import { VacacionesComponent } from '../recursos-humanos/vacaciones/vacaciones.component';
+import { VacacionesAutorizarComponent } from '../recursos-humanos/vacaciones-autorizar/vacaciones-autorizar.component';
+import { NotificacionesPorDiaComponent } from '../recursos-humanos/notificaciones-por-dia/notificaciones-por-dia.component';
 import { ReporteIngresosBasicoComponent } from '../reportes/reporte-ingresos-basico/reporte-ingresos-basico.component';
 import { ReporteEgresosBasicoComponent } from '../reportes/reporte-egresos-basico/reporte-egresos-basico.component';
 import { PrestamoComponent } from '../principal/prestamo/prestamo.component';
@@ -223,6 +225,8 @@ const routes: Routes = [
     { path: 'nominasEmpleados', canActivate: [auntenticacionGuard], component: NominasComponent },
     { path: 'vacaciones', canActivate: [auntenticacionGuard], component: VacacionesComponent },
     { path: 'vacaciones/:id', canActivate: [auntenticacionGuard], component: VacacionesComponent },
+    { path: 'buzon/vacaciones-autorizar', canActivate: [auntenticacionGuard], component: VacacionesAutorizarComponent },
+    { path: 'buzon/notificaciones', canActivate: [auntenticacionGuard], component: NotificacionesPorDiaComponent },
     { path: 'inscripcionesVentas', canActivate: [auntenticacionGuard], component: InscripcionesVentasComponent },
     { path: 'aulas', canActivate: [auntenticacionGuard], component: AulasComponent },
     { path: 'balanceGerentes', canActivate: [auntenticacionGuard], component: BalanceGerentesComponent },
