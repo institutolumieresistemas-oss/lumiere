@@ -27,9 +27,7 @@ export class EmpleadosComponent {
 
   irAVacaciones() {
     if (this.seleccion && this.seleccion.id) {
-      this.router.navigate(['admin/vacaciones'], { queryParams: { idEmpleado: this.seleccion.id } });
-    } else {
-      this.router.navigate(['admin/vacaciones']);
+      this.router.navigate(['admin/vacaciones', this.seleccion.id]);
     }
   }
   

@@ -222,6 +222,7 @@ const routes: Routes = [
     { path: 'empleados', canActivate: [auntenticacionGuard], component: EmpleadosComponent },
     { path: 'nominasEmpleados', canActivate: [auntenticacionGuard], component: NominasComponent },
     { path: 'vacaciones', canActivate: [auntenticacionGuard], component: VacacionesComponent },
+    { path: 'vacaciones/:id', canActivate: [auntenticacionGuard], component: VacacionesComponent },
     { path: 'inscripcionesVentas', canActivate: [auntenticacionGuard], component: InscripcionesVentasComponent },
     { path: 'aulas', canActivate: [auntenticacionGuard], component: AulasComponent },
     { path: 'balanceGerentes', canActivate: [auntenticacionGuard], component: BalanceGerentesComponent },

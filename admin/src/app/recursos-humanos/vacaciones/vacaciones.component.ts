@@ -26,8 +26,8 @@ interface CalendarioMes {
 })
 export class VacacionesComponent implements OnInit {
   configuracion: datatableConfig = {
-    alias: ['Empleado', 'Fecha Inicio', 'Fecha Fin', 'Días Efectivos', 'Jefe Inmediato', 'Estatus'],
-    encabezados: ['empleado', 'fechaInicio', 'fechaFin', 'diasEfectivos', 'jefeInmediato', 'estatus'],
+    alias: ['Fecha Inicio', 'Fecha Fin', 'Días Efectivos', 'Días Naturales', 'Jefe Inmediato', 'Estatus'],
+    encabezados: ['fechaInicio', 'fechaFin', 'diasEfectivos', 'diasNaturales', 'jefeInmediato', 'estatus'],
     busqueda: true
   };
 
@@ -109,17 +109,28 @@ export class VacacionesComponent implements OnInit {
         this.empleados = respuesta.empleados || [];
         this.empleadosFiltrados = [...this.empleados];
 
-        // Verificar si viene idEmpleado en los queryParams desde el módulo de Empleados
-        this.route.queryParams.subscribe(params => {
-          if (params && params['idEmpleado']) {
-            const empId = params['idEmpleado'];
+        // Escuchar parámetros de ruta (ej: /admin/vacaciones/:id)
+        this.route.params.subscribe(params => {
+          const empId = params ? params['id'] : null;
+          if (empId && this.empleados.length > 0) {
             const emp = this.empleados.find(e => e.id == empId);
             if (emp) {
-              this.seleccionarEmpleado(emp);
+              this.seleccionarEmpleado(emp, false);
+              return;
             }
-          } else {
-            this.actualizarDatosMostrados();
           }
+
+          // Fallback a queryParams (?idEmpleado=...)
+          const qId = this.route.snapshot.queryParams['idEmpleado'];
+          if (qId && this.empleados.length > 0) {
+            const emp = this.empleados.find(e => e.id == qId);
+            if (emp) {
+              this.seleccionarEmpleado(emp, false);
+              return;
+            }
+          }
+
+          this.actualizarDatosMostrados();
         });
       },
       error => {
@@ -147,12 +158,16 @@ export class VacacionesComponent implements OnInit {
     this.mostrarDropdownEmpleados = true;
   }
 
-  seleccionarEmpleado(emp: any) {
+  seleccionarEmpleado(emp: any, cambiarRuta: boolean = true) {
     this.empleadoSeleccionado = emp;
     this.filtroTextoEmpleado = emp.nombre;
     this.mostrarDropdownEmpleados = false;
     this.filtroPeriodo = 'actual';
     this.calcularBalanceEmpleado();
+
+    if (cambiarRuta) {
+      this.router.navigate(['admin/vacaciones', emp.id]);
+    }
   }
 
   limpiarSeleccionEmpleado() {
@@ -161,14 +176,8 @@ export class VacacionesComponent implements OnInit {
     this.filtroTextoEmpleado = '';
     this.empleadosFiltrados = [...this.empleados];
     this.mostrarDropdownEmpleados = false;
-    this.actualizarDatosMostrados();
-
-    // Limpiar query params de la URL sin recargar
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {},
-      replaceUrl: true
-    });
+    this.datosMostrados = [];
+    this.router.navigate(['admin/vacaciones']);
   }
 
   irAEmpleados() {
@@ -206,7 +215,7 @@ export class VacacionesComponent implements OnInit {
 
   actualizarDatosMostrados() {
     if (!this.empleadoSeleccionado) {
-      this.datosMostrados = [...this.datos];
+      this.datosMostrados = [];
       return;
     }
 
@@ -227,8 +236,9 @@ export class VacacionesComponent implements OnInit {
   modalNuevaSolicitud() {
     this.resetForm();
 
-    // Si ya hay un empleado seleccionado, preseleccionarlo en el formulario
     if (this.empleadoSeleccionado) {
+      this.formSolicitud.idEmpleado = this.empleadoSeleccionado.id;
+      this.formSolicitud.empleadoObj = this.empleadoSeleccionado;
       this.onSeleccionarEmpleado(this.empleadoSeleccionado.id);
     }
 
@@ -342,10 +352,7 @@ export class VacacionesComponent implements OnInit {
     this.diasEfectivos = efectivos;
     this.diasDescansoConteo = descansos;
 
-    // Formatear texto en español (ej: "del martes 4 de abril al viernes 4 de mayo")
     this.textoPeriodo = `Del ${this.formatFechaLegible(start)} al ${this.formatFechaLegible(end)}`;
-
-    // Construir los 2 calendarios contiguos
     this.generarDosCalendarios(start, end, diasVacacionesMap, diasDescansoMap);
   }
 
@@ -435,7 +442,9 @@ export class VacacionesComponent implements OnInit {
   }
 
   guardarSolicitud() {
-    if (!this.formSolicitud.idEmpleado) {
+    const empId = this.empleadoSeleccionado ? this.empleadoSeleccionado.id : this.formSolicitud.idEmpleado;
+
+    if (!empId) {
       this.generales.mensajeError('Debe seleccionar un empleado.');
       return;
     }
@@ -462,7 +471,7 @@ export class VacacionesComponent implements OnInit {
     if (this.formSolicitud.diasDescanso.viernes) descansosArr.push('Viernes');
 
     const payload = {
-      idEmpleado: this.formSolicitud.idEmpleado,
+      idEmpleado: empId,
       jefeInmediato: this.formSolicitud.jefeInmediato,
       fechaInicio: this.formSolicitud.fechaInicio,
       fechaFin: this.formSolicitud.fechaFin,
@@ -480,16 +489,12 @@ export class VacacionesComponent implements OnInit {
         this.generales.mensajeCorrecto('Solicitud de vacaciones registrada con éxito.');
         this.datos = [respuesta, ...this.datos];
 
-        // Recalcular balance si el empleado coincide
-        if (this.empleadoSeleccionado && this.empleadoSeleccionado.id == payload.idEmpleado) {
+        // Recalcular balance del empleado actual
+        if (this.empleadoSeleccionado) {
           this.calcularBalanceEmpleado();
-        } else {
-          this.actualizarDatosMostrados();
         }
 
         this.generales.cerrarModal();
-
-        // Preparar para imprimir inmediatamente
         this.prepararImpresion(respuesta);
       },
       error => {
@@ -500,7 +505,7 @@ export class VacacionesComponent implements OnInit {
   }
 
   prepararImpresion(solicitud: any) {
-    const emp = this.empleados.find(e => e.id == solicitud.idEmpleado) || {
+    const emp = this.empleados.find(e => e.id == solicitud.idEmpleado) || this.empleadoSeleccionado || {
       nombre: solicitud.empleado,
       puesto: solicitud.puesto,
       departamento: solicitud.departamento,
@@ -592,8 +597,6 @@ export class VacacionesComponent implements OnInit {
 
           if (this.empleadoSeleccionado) {
             this.calcularBalanceEmpleado();
-          } else {
-            this.actualizarDatosMostrados();
           }
         },
         error => {

@@ -1,7 +1,7 @@
 <div class="card mb-4">
     <div class="card-header pb-0 bg-lumiere d-flex justify-content-between align-items-center">
         <h5 class="mb-1 text-white">
-            <i class="fas fa-umbrella-beach me-2"></i>Control y Solicitudes de Vacaciones
+            <i class="fas fa-umbrella-beach me-2"></i>Control de Vacaciones por Empleado
         </h5>
         <div>
             <button class="btn btn-sm btn-outline-light me-2" [class.active]="vistaActual === 'solicitudes'" (click)="vistaActual = 'solicitudes'">
@@ -43,29 +43,29 @@
         <!-- VISTA SOLICITUDES -->
         <div *ngIf="vistaActual === 'solicitudes'">
 
-            <!-- BARRA DE BÚSQUEDA Y FILTRADO CON SELECT COMPLETE DE EMPLEADO -->
+            <!-- BARRA DE BÚSQUEDA Y FILTRADO CON SELECT COMPLETE ("SI QUIEREN A OTRO PUES QUE BUSQUEN AL OTRO") -->
             <div class="card bg-light border-0 shadow-sm mb-4">
                 <div class="card-body py-3">
                     <div class="row align-items-center g-3">
-                        <div class="col-lg-7 col-md-8 position-relative">
+                        <div class="col-lg-8 col-md-8 position-relative">
                             <label class="form-label fw-bold text-dark mb-1">
-                                <i class="fas fa-user-search text-primary me-1"></i> Buscar y Seleccionar Empleado:
+                                <i class="fas fa-search text-primary me-1"></i> Buscar otro Empleado:
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0">
-                                    <i class="fas fa-search text-muted"></i>
+                                    <i class="fas fa-user-search text-muted"></i>
                                 </span>
                                 <input 
                                     type="text" 
                                     class="form-control border-start-0 ps-0" 
-                                    placeholder="Escribe el nombre del empleado para filtrar coincidencias..."
+                                    placeholder="Escribe el nombre de otro empleado para cambiar..."
                                     [(ngModel)]="filtroTextoEmpleado"
                                     (input)="filtrarEmpleados()"
                                     (focus)="mostrarDropdownEmpleados = true; filtrarEmpleados()"
                                     (blur)="onBlurDropdown()"
                                 >
-                                <button class="btn btn-outline-secondary" type="button" *ngIf="filtroTextoEmpleado || empleadoSeleccionado" (click)="limpiarSeleccionEmpleado()" title="Quitar selección y ver todos">
-                                    <i class="fas fa-times me-1"></i> Ver Todos
+                                <button class="btn btn-outline-secondary" type="button" *ngIf="filtroTextoEmpleado || empleadoSeleccionado" (click)="limpiarSeleccionEmpleado()" title="Cerrar ficha">
+                                    <i class="fas fa-times me-1"></i> Limpiar
                                 </button>
                             </div>
 
@@ -102,12 +102,26 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-5 col-md-4 text-md-end mt-3 mt-md-0">
+                        <div class="col-lg-4 col-md-4 text-md-end mt-3 mt-md-0" *ngIf="empleadoSeleccionado">
                             <button class="btn btn-success" (click)="modalNuevaSolicitud()">
                                 <i class="fas fa-plus-circle me-1"></i> Nueva Solicitud
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- CUANDO NO HAY EMPLEADO SELECCIONADO (INVITACIÓN A SELECCIONAR DESDE EMPLEADOS O BUSCADOR) -->
+            <div class="card border-0 bg-light shadow-sm text-center py-5 my-3" *ngIf="!empleadoSeleccionado">
+                <div class="card-body">
+                    <i class="fas fa-user-clock fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold text-dark">Consulta de Vacaciones por Empleado</h5>
+                    <p class="text-muted mx-auto mb-3" style="max-width: 550px;">
+                        Selecciona un empleado desde la lista de <a (click)="irAEmpleados()" role="button" class="text-primary fw-bold text-decoration-underline pointer">Empleados</a> haciendo clic en el botón <strong>"Vacaciones"</strong>, o escribe su nombre en el buscador superior para ver exclusivamente sus solicitudes y periodos.
+                    </p>
+                    <button class="btn btn-outline-primary btn-sm" (click)="irAEmpleados()">
+                        <i class="fas fa-users me-1"></i> Ir a Lista de Empleados
+                    </button>
                 </div>
             </div>
 
@@ -151,7 +165,7 @@
                         </div>
                     </div>
 
-                    <!-- 4 TARJETAS DE DÍAS: CORRESPONDIENTES, A FAVOR ANTERIORES, TOMADOS Y DISPONIBLES -->
+                    <!-- 4 TARJETAS DE DÍAS: CORRESPONDIENTES, A FAVOR ANTERIORES, TOMADOS Y DISPONIBLES (ALTO CONTRASTE) -->
                     <div class="row g-3 text-center mb-3">
                         <div class="col-md-3 col-sm-6">
                             <div class="p-3 border rounded h-100 text-center" style="background-color: #ffffff; border: 2px solid #0d6efd !important;">
@@ -199,43 +213,42 @@
                                 <i class="fas fa-calendar-day me-1"></i> Solicitudes del Año Actual ({{ balanceEmpleado.solicitudesActuales?.length || 0 }})
                             </button>
                             <button type="button" class="btn" [class.btn-primary]="filtroPeriodo === 'todos'" [class.btn-outline-primary]="filtroPeriodo !== 'todos'" (click)="cambiarFiltroPeriodo('todos')">
-                                <i class="fas fa-history me-1"></i> Histórico Completo de Vacaciones
+                                <i class="fas fa-history me-1"></i> Histórico Completo de este Empleado
                             </button>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-outline-danger" (click)="limpiarSeleccionEmpleado()">
-                                <i class="fas fa-times me-1"></i> Quitar Filtro de Empleado
+                            <button class="btn btn-sm btn-success me-2" (click)="modalNuevaSolicitud()">
+                                <i class="fas fa-plus-circle me-1"></i> Nueva Solicitud
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" (click)="limpiarSeleccionEmpleado()">
+                                <i class="fas fa-user-times me-1"></i> Cambiar Empleado
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TABLA DE SOLICITUDES (MOSTRADAS SEGÚN EL FILTRO) -->
-            <div class="row">
+            <!-- TABLA EXCLUSIVA DE SOLICITUDES DEL EMPLEADO SELECCIONADO -->
+            <div class="row" *ngIf="empleadoSeleccionado">
                 <div class="col-sm-12">
-                    <div class="d-flex justify-content-between align-items-center mb-2" *ngIf="empleadoSeleccionado">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="text-muted small fw-bold">
                             <span *ngIf="filtroPeriodo === 'actual'">
-                                Mostrando las solicitudes de <strong>{{ empleadoSeleccionado.nombre }}</strong> correspondientes a su periodo anual actual:
+                                Solicitudes de <strong>{{ empleadoSeleccionado.nombre }}</strong> en su periodo anual activo:
                             </span>
                             <span *ngIf="filtroPeriodo === 'todos'">
-                                Mostrando todas las solicitudes históricas de <strong>{{ empleadoSeleccionado.nombre }}</strong>:
+                                Todas las solicitudes históricas registradas para <strong>{{ empleadoSeleccionado.nombre }}</strong>:
                             </span>
                         </span>
-                        <span class="badge bg-secondary">{{ datosMostrados.length }} registro(s)</span>
+                        <span class="badge bg-secondary">{{ datosMostrados.length }} solicitud(es)</span>
                     </div>
 
-                    <div class="alert alert-info py-2" *ngIf="!empleadoSeleccionado">
-                        <i class="fas fa-info-circle me-1"></i> Mostrando todas las solicitudes registradas. Para consultar el periodo de 1 año y los días a favor de un empleado, búscalo en el selector superior o selecciónalo desde la lista de <a (click)="irAEmpleados()" role="button" class="text-primary fw-bold text-decoration-underline pointer">Empleados</a>.
-                    </div>
-
-                    <div class="alert alert-warning text-center py-4 my-3" *ngIf="empleadoSeleccionado && datosMostrados.length === 0">
+                    <div class="alert alert-warning text-center py-4 my-3" *ngIf="datosMostrados.length === 0">
                         <i class="fas fa-umbrella-beach fa-2x text-warning d-block mb-2"></i>
-                        <h6 class="fw-bold mb-1">Sin solicitudes registradas en este periodo</h6>
-                        <p class="text-muted small mb-3">El empleado no ha registrado solicitudes de vacaciones durante el periodo seleccionado.</p>
+                        <h6 class="fw-bold mb-1">Sin solicitudes registradas</h6>
+                        <p class="text-muted small mb-3">No hay solicitudes de vacaciones registradas para {{ empleadoSeleccionado.nombre }} en este periodo.</p>
                         <button class="btn btn-sm btn-success" (click)="modalNuevaSolicitud()">
-                            <i class="fas fa-plus-circle me-1"></i> Registrar Primera Solicitud
+                            <i class="fas fa-plus-circle me-1"></i> Registrar Solicitud de Vacaciones
                         </button>
                     </div>
 
@@ -274,9 +287,23 @@
             </h5>
         </div>
         <div class="modal-body">
-            <!-- SELECCIÓN EMPLEADO Y JEFE INMEDIATO -->
+            <!-- EMPLEADO SOLICITANTE DIRECTO (FIJO PARA EL EMPLEADO SELECCIONADO) Y JEFE INMEDIATO -->
             <div class="row g-3 mb-3">
-                <div class="col-md-6">
+                <div class="col-md-6" *ngIf="empleadoSeleccionado">
+                    <label class="form-label fw-bold">Empleado Solicitante</label>
+                    <div class="p-2 border rounded bg-light d-flex align-items-center">
+                        <i class="fas fa-user-circle text-primary fa-2x me-2"></i>
+                        <div>
+                            <strong class="text-dark d-block">{{ empleadoSeleccionado.nombre }}</strong>
+                            <small class="text-muted">
+                                {{ empleadoSeleccionado.puesto || 'Sin puesto asignado' }}
+                                <span *ngIf="empleadoSeleccionado.sucursal"> • {{ empleadoSeleccionado.sucursal }}</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6" *ngIf="!empleadoSeleccionado">
                     <label class="form-label fw-bold">Empleado Solicitante <span class="text-danger">*</span></label>
                     <select class="form-select" [ngModel]="formSolicitud.idEmpleado" (ngModelChange)="onSeleccionarEmpleado($event)">
                         <option value="">-- Seleccionar Empleado --</option>
@@ -285,6 +312,7 @@
                         </option>
                     </select>
                 </div>
+
                 <div class="col-md-6">
                     <label class="form-label fw-bold">Jefe Inmediato <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" placeholder="Nombre completo del jefe inmediato" [(ngModel)]="formSolicitud.jefeInmediato">
@@ -311,7 +339,7 @@
                             <div class="col-md-3" *ngIf="balanceEmpleado && balanceEmpleado.fechaIngreso === formSolicitud.empleadoObj.fechaIngreso">
                                 <span class="text-muted d-block small">Saldo Total Disponible:</span>
                                 <span class="badge bg-success fs-6">{{ balanceEmpleado.diasDisponibles }} días</span>
-                                <small class="text-success d-block small mt-1" *ngIf="balanceEmpleado.diasPendientesAnteriores > 0">
+                                <small class="text-dark fw-bold d-block small mt-1" *ngIf="balanceEmpleado.diasPendientesAnteriores > 0">
                                     (+{{ balanceEmpleado.diasPendientesAnteriores }} días a favor acumulados)
                                 </small>
                             </div>
